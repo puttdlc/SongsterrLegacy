@@ -1,5 +1,5 @@
 /*
- * Songsterr Classic: content script
+ * Classic Skin: content script
  * ==================================
  * All styling is plain CSS (declared in manifest.json) scoped under
  * html.sc-enabled. This script only:
@@ -20,7 +20,6 @@
     enabled: true,
     theme: 'dark',          // dark | light | auto
     density: 'compact',     // compact | comfortable
-    toneDownPromos: false,
     showAuthor: true,
     navCollapsed: false,
     paneMinimized: false
@@ -29,7 +28,7 @@
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
   };
-  const BOOLEANS = ['toneDownPromos', 'showAuthor', 'navCollapsed', 'paneMinimized'];
+  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized'];
   // Mirror of the last-known settings in the page's localStorage. It is read
   // synchronously at document_start so the right theme paints on the first
   // frame; chrome.storage stays the source of truth.
@@ -51,7 +50,6 @@
   function classesFor(s) {
     if (!s.enabled) return [];
     const list = ['sc-enabled', `sc-theme-${s.theme}`, `sc-density-${s.density}`];
-    if (s.toneDownPromos) list.push('sc-tone-promos');
     if (s.showAuthor) list.push('sc-show-author');
     if (s.navCollapsed) list.push('sc-nav-collapsed');
     if (s.paneMinimized) list.push('sc-pane-min');

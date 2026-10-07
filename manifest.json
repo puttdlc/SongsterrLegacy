@@ -1,12 +1,16 @@
 {
   "manifest_version": 3,
-  "name": "Songsterr Classic",
-  "version": "0.1.0",
-  "description": "A clean, classic reskin of songsterr.com: flat rectangular controls, segmented toolbars and subtle bevels. Visual only.",
-  "permissions": ["storage"],
+  "name": "Classic Skin - Songsterr Extension",
+  "version": "0.2.0",
+  "description": "Unofficial classic reskin for songsterr.com: flat docked controls, dark/light themes, and the tab author back under the title.",
+  "permissions": [
+    "storage"
+  ],
   "content_scripts": [
     {
-      "matches": ["*://*.songsterr.com/*"],
+      "matches": [
+        "*://*.songsterr.com/*"
+      ],
       "run_at": "document_start",
       "all_frames": false,
       "css": [
@@ -17,18 +21,25 @@
         "src/styles/menus.css",
         "src/styles/header.css"
       ],
-      "js": ["src/selectors.js", "src/content.js"]
+      "js": [
+        "src/selectors.js",
+        "src/content.js"
+      ]
     },
     {
-      "matches": ["*://*.songsterr.com/*"],
+      "matches": [
+        "*://*.songsterr.com/*"
+      ],
       "run_at": "document_start",
       "all_frames": false,
       "world": "MAIN",
-      "js": ["src/page-meta.js"]
+      "js": [
+        "src/page-meta.js"
+      ]
     }
   ],
   "action": {
-    "default_title": "Songsterr Classic",
+    "default_title": "Classic Skin - Songsterr Extension",
     "default_popup": "popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",

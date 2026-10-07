@@ -1,5 +1,5 @@
 /*
- * Songsterr Classic: passive metadata observer (runs in the page's MAIN world)
+ * Classic Skin: passive metadata observer (runs in the page's MAIN world)
  * ===========================================================================
  * Songsterr's header no longer shows who wrote a tab, but the data is still in
  * the song metadata the site already downloads (/api/meta/{songId}[/{revId}],

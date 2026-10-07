@@ -1,4 +1,6 @@
-# Songsterr Classic
+# Classic Skin - Songsterr Extension
+
+Unofficial. Not affiliated with or endorsed by Songsterr.
 
 A Manifest V3 Chrome extension that reskins songsterr.com with flat, rectangular,
 tightly aligned controls and subtle edge lighting (bevels, hairline highlights,
@@ -12,7 +14,7 @@ inset shadows). It changes the look only. The site behaves exactly as before.
 > **Build status: step 3.** The classic style is now site-wide: player pane,
 > nav bar, side panels (Search, My tabs, Help, Account ...), dialogs (mixer,
 > settings, feature popups, inbox), menus, switches and segmented controls, plus
-> the clickable tab author. Still open: promo tone-down.
+> the clickable tab author.
 
 ## Install
 
@@ -36,7 +38,6 @@ Click the toolbar icon to open the settings popup:
 | Author | Show / Hide | "Tab by <name>" under the song title (see below). |
 | Nav bar | Shown / Collapsed | Same as the chevron tab at the bottom-left of the page. |
 | Player | Full / Minimised | Same as the chevron at the end of the favourite / display-mode / editor strip. |
-| Promos | Normal / Toned down | Visual only. Never hides content or unlocks anything. (Takes effect once the promos region lands.) |
 
 Settings live in `chrome.storage.sync` and apply live to every open Songsterr tab.
 
@@ -48,7 +49,7 @@ panel is open, so a 0 is not automatically a problem. See below.
 
 - All styling is plain CSS, injected at `document_start` (no flash of the old UI).
 - Every rule is scoped under `html.sc-enabled`. `content.js` adds that class plus
-  `sc-theme-*`, `sc-density-*` and `sc-tone-promos` to `<html>`. Removing the class
+  `sc-theme-*`, `sc-density-*` and a few state classes to `<html>`. Removing the class
   turns the reskin off instantly.
 - Themes are CSS custom properties (`--sc-bg`, `--sc-surface`, `--sc-accent`,
   `--sc-highlight`, `--sc-shade` and so on) in `src/styles/tokens.css`. A theme is
@@ -166,9 +167,8 @@ selector can never make the play button or the tab disappear.
   inset rectangular readout; the floating 20px "card" becomes a hairline-bordered
   panel with one tight shadow; the drag-handle pill becomes a flat bar.
 
-### Planned (next steps)
+### Not yet verified
 
-- Promo tone-down (`#showroom`, `#promo`, Plus banners). Visual only.
 - Logged-in-only surfaces (inbox, profile menu, plan badge) were styled from the
   site source but could not be checked in a logged-out test browser.
 

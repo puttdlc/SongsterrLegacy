@@ -1,5 +1,5 @@
 /*
- * Songsterr Classic: popup
+ * Classic Skin: popup
  * Reads/writes chrome.storage.sync. Open Songsterr tabs pick up changes via
  * chrome.storage.onChanged in content.js, so nothing is sent to tabs here
  * except the optional "Check selectors" diagnostic.
@@ -11,12 +11,11 @@
     enabled: true,
     theme: 'dark',
     density: 'compact',
-    toneDownPromos: false,
     showAuthor: true,
     navCollapsed: false,
     paneMinimized: false
   };
-  const BOOLEAN_KEYS = new Set(['enabled', 'toneDownPromos', 'showAuthor', 'navCollapsed', 'paneMinimized']);
+  const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized']);
 
   const form = document.getElementById('settings');
   const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');

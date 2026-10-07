@@ -1,5 +1,5 @@
 /*
- * Songsterr Classic: selector map
+ * Classic Skin: selector map
  * ================================
  * The single reference for every part of songsterr.com this extension styles.
  * The CSS files use these same selectors; each CSS block names its region key
