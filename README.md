@@ -126,8 +126,7 @@ selector can never make the play button or the tab disappear.
   where there are no specific rules. The notation and the song header keep
   Songsterr's own colours.
 - **Side panels** (Search, My tabs, Help, Account, New tab …): full height
-  from the top edge down to the nav bar, centred on screen (kept left of the
-  player pane on narrow windows). Compact title, sunken rectangular
+  from the top edge down to the nav bar, always centred on screen. Compact title, sunken rectangular
   search field, flat hairline-separated rows with hover, the current song shown
   with an accent tint and a left edge bar, and square segmented groups
   (Favorites / Contributions / Playlists).
