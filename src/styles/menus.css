@@ -77,37 +77,63 @@ html.sc-enabled main[id^="panel-"] #song-list-header {
 /* ---------------------------------------------------------------------------
  * panels.rows: song lists (search results, favourites, playlists ...)
  * Flat rows, hairline separated; current song gets a left accent bar.
+ * Segmented-control tabs also carry aria-selected, so they are excluded.
  * ------------------------------------------------------------------------- */
-html.sc-enabled main[id^="panel-"] a[aria-selected] {
+html.sc-enabled main[id^="panel-"] a[aria-selected]:not([class*="_groupItem"]) {
   border-radius: 0;
   padding-top: 6px;
   padding-bottom: 6px;
   border-bottom: 1px solid var(--sc-divider);
 }
-html.sc-enabled main[id^="panel-"] a[aria-selected]:hover {
+html.sc-enabled main[id^="panel-"] a[aria-selected]:not([class*="_groupItem"]):hover {
   background-color: var(--sc-row-hover);
 }
-html.sc-enabled main[id^="panel-"] a[aria-selected="true"],
-html.sc-enabled main[id^="panel-"] a[aria-selected][class*="_active"] {
+html.sc-enabled main[id^="panel-"] a[aria-selected="true"]:not([class*="_groupItem"]),
+html.sc-enabled main[id^="panel-"] a[aria-selected]:not([class*="_groupItem"])[class*="_active"] {
   background-color: var(--sc-selected-bg);
   box-shadow: inset 3px 0 0 var(--sc-accent);
 }
 
 /* ---------------------------------------------------------------------------
  * Segmented groups (My tabs: Favorites / Contributions / Playlists, settings
- * theme switch ...). The site draws a sliding pill behind the active item;
- * square it off and give the group a sunken well.
+ * theme switch ...). Songsterr paints the selection with a separate sliding
+ * element ([class*=_activeButton]) whose size and position its JS computes;
+ * it is a fixed 28px tall while the segments in panels are taller, and any
+ * border/padding change knocks its position off. Instead the selected segment
+ * itself gets the pressed, accent-filled look, like a classic segmented
+ * control. The slider is only hidden while a selected segment exists, so if
+ * that class is renamed the site's own slider comes back.
  * ------------------------------------------------------------------------- */
 html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"]:has(> [class*="_groupItem"]) {
   border: 1px solid var(--sc-border);
   border-radius: var(--sc-radius);
+  background: var(--sc-surface-sunken);
   box-shadow: inset 0 1px 2px var(--sc-shade);
 }
-html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) :is([class*="_groupItem"], [class*="_activeButton"]) {
-  border-radius: 2px;
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItem"] {
+  border-radius: 0;
+  transition: background-color var(--sc-ease), color var(--sc-ease);
 }
-html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_activeButton"] {
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItem"]:not([class*="_groupItemActive"]):hover {
+  background: var(--sc-row-hover);
+}
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItemActive"] {
+  background: var(--sc-accent-fill);
+  color: var(--sc-on-accent);
+  fill: var(--sc-on-accent);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+}
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"]:has(> [class*="_groupItemActive"]) > [class*="_activeButton"] {
+  visibility: hidden;
+}
+/* Hairline dividers between segments; hide the ones next to the selection. */
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"] > [class*="_divider"] {
+  align-self: stretch;
+  height: auto;
+}
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"] > [class*="_groupItemActive"] + [class*="_divider"],
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"] > [class*="_divider"]:has(+ [class*="_groupItemActive"]) {
+  visibility: hidden;
 }
 
 /* Filter dropdown toggles in list headers. */

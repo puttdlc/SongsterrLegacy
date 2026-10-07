@@ -93,7 +93,7 @@
       main:     { sel: 'main[id^="panel-"][class*="_mainPanel"]', tier: 'id', note: 'Full height down to the nav bar, always centred horizontally.' },
       title:    { sel: 'main[id^="panel-"] h1', tier: 'id', note: '"Search tabs" / "My tabs" heading.' },
       field:    { sel: 'main[id^="panel-"] input[placeholder]', tier: 'id', note: 'Search / filter text field.' },
-      rows:     { sel: 'main[id^="panel-"] a[aria-selected]', tier: 'aria', note: 'Song rows; aria-selected="true" = current song.' },
+      rows:     { sel: 'main[id^="panel-"] a[aria-selected]:not([class*="_groupItem"])', tier: 'aria', note: 'Song rows; aria-selected="true" = current song.' },
       segments: { sel: '[class*="_group"]:has(> [class*="_groupItem"])', tier: 'stem', note: 'Segmented groups (Favorites / Contributions / Playlists).' }
     },
 
