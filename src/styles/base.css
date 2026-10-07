@@ -1,0 +1,27 @@
+/*
+ * Songsterr Classic: base
+ * ========================
+ * Typography and focus handling, applied ONLY to regions this extension
+ * restyles. Nothing here is global: the notation renderer may inherit fonts
+ * from <body>, so the body font is deliberately left alone.
+ *
+ * Restyled regions so far (keep in sync as regions land):
+ *   toolbar  -> #controls   (selectors.js: toolbar.pane)
+ */
+
+/* ---------- Typography ---------- */
+html.sc-enabled #controls {
+  font-family: var(--sc-font);
+  font-size: var(--sc-font-size);
+  line-height: var(--sc-line);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Keyboard focus ---------- */
+/* One consistent ring for every restyled control. Drawn inset so joined
+   (segmented) buttons don't have it clipped by their neighbours. */
+html.sc-enabled #controls :is(button, a, [role="button"]):focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+  z-index: 2; /* buttons are already positioned by the site */
+}

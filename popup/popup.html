@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Songsterr Classic</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <header class="titlebar">
+    <img src="../icons/icon32.png" width="16" height="16" alt="">
+    <h1>Songsterr Classic</h1>
+  </header>
+
+  <form id="settings" class="panel" autocomplete="off">
+    <fieldset class="row">
+      <legend>Reskin</legend>
+      <div class="seg" role="radiogroup" aria-label="Reskin">
+        <label><input type="radio" name="enabled" value="true"><span>On</span></label>
+        <label><input type="radio" name="enabled" value="false"><span>Off</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="row">
+      <legend>Theme</legend>
+      <div class="seg" role="radiogroup" aria-label="Theme">
+        <label><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+        <label><input type="radio" name="theme" value="light"><span>Light</span></label>
+        <label title="Match Songsterr's own theme setting"><input type="radio" name="theme" value="auto"><span>Auto</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="row">
+      <legend>Density</legend>
+      <div class="seg" role="radiogroup" aria-label="Density">
+        <label><input type="radio" name="density" value="compact"><span>Compact</span></label>
+        <label><input type="radio" name="density" value="comfortable"><span>Comfortable</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="row">
+      <legend>Promos</legend>
+      <div class="seg" role="radiogroup" aria-label="Promotional banners">
+        <label><input type="radio" name="toneDownPromos" value="false"><span>Normal</span></label>
+        <label title="Visual only: smaller, lower contrast. Never unlocks anything."><input type="radio" name="toneDownPromos" value="true"><span>Toned down</span></label>
+      </div>
+    </fieldset>
+  </form>
+
+  <section class="panel diag">
+    <div class="diag-head">
+      <button type="button" id="diagnose" class="btn">Check selectors</button>
+      <span id="diag-status" class="muted" aria-live="polite"></span>
+    </div>
+    <div id="diag-results" hidden></div>
+  </section>
+
+  <footer class="statusbar muted">Changes apply instantly to open Songsterr tabs.</footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

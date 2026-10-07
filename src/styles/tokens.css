@@ -1,0 +1,168 @@
+/*
+ * Songsterr Classic: design tokens
+ * =================================
+ * Every color, size and edge effect used by the extension lives here.
+ * Themes are just variable swaps:
+ *   html.sc-enabled                   -> Dark (default)
+ *   html.sc-enabled.sc-theme-light    -> Light
+ *   html.sc-enabled.sc-theme-auto     -> follows Songsterr's own theme setting
+ *                                        (html[color-scheme]) and, when that is
+ *                                        "auto", the OS prefers-color-scheme.
+ * Following Songsterr's setting keeps the chrome and the notation area in the
+ * same scheme, which is why Auto is the recommended choice.
+ */
+
+/* ---------- Shared (theme-independent) ---------- */
+html.sc-enabled {
+  --sc-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sc-font-size: 13px;
+  --sc-font-size-small: 12px;
+  --sc-line: 1.25;
+
+  --sc-radius: 3px;          /* buttons, inputs, menus: hard max */
+  --sc-radius-panel: 3px;
+
+  /* Density: compact (default) */
+  --sc-ctl-h: 32px;          /* toolbar control height */
+  --sc-ctl-w: 38px;          /* icon button width */
+  --sc-ctl-pad-x: 6px;
+  --sc-row-pad: 5px;
+  --sc-group-gap: 6px;       /* space between segmented groups */
+  --sc-list-row-pad-y: 4px;
+
+  --sc-ease: 120ms ease-out;
+}
+
+html.sc-enabled.sc-density-comfortable {
+  --sc-ctl-h: 38px;
+  --sc-ctl-w: 44px;
+  --sc-ctl-pad-x: 8px;
+  --sc-row-pad: 7px;
+  --sc-group-gap: 8px;
+  --sc-list-row-pad-y: 7px;
+}
+
+/* ---------- Dark (default) ---------- */
+html.sc-enabled {
+  --sc-bg:              #1b1c1f;
+  --sc-surface:         #232428;
+  --sc-surface-raised:  #2c2e33;
+  --sc-surface-sunken:  #18191b;
+  --sc-border:          #0e0f11;
+  --sc-divider:         #36383e;
+
+  --sc-text:            #e4e5e8;
+  --sc-text-muted:      #a5a9b1;
+  --sc-text-disabled:   #6b6f77;
+  --sc-icon:            #b4b8bf;
+
+  --sc-accent:          #3a82e4;   /* muted take on Songsterr's #007aff */
+  --sc-accent-hover:    #4b8fee;
+  --sc-accent-border:   #1f5fb8;
+  --sc-on-accent:       #ffffff;
+  --sc-selected-bg:     #29405f;   /* accent tint for toggled-on controls */
+  --sc-selected-fg:     #9cc4ff;
+  --sc-focus:           #74abff;
+
+  /* Edge lighting */
+  --sc-highlight:       rgba(255, 255, 255, 0.07);
+  --sc-shade:           rgba(0, 0, 0, 0.30);
+  --sc-shade-strong:    rgba(0, 0, 0, 0.45);
+
+  /* Surfaces for controls */
+  --sc-btn-top:         #303237;
+  --sc-btn-bottom:      #2a2c31;
+  --sc-btn-hover-top:   #383a40;
+  --sc-btn-hover-bottom:#313338;
+  --sc-btn-pressed:     #222327;
+
+  --sc-toolbar-top:     #26282c;
+  --sc-toolbar-bottom:  #212226;
+}
+
+/* ---------- Light ---------- */
+/* Declared twice on purpose: once for the explicit Light theme / Auto when
+   Songsterr is set to light, once for Auto following the OS. */
+html.sc-enabled.sc-theme-light,
+html.sc-enabled.sc-theme-auto[color-scheme="light"] {
+  --sc-bg:              #e9ebee;
+  --sc-surface:         #f3f4f6;
+  --sc-surface-raised:  #fbfbfc;
+  --sc-surface-sunken:  #e2e4e8;
+  --sc-border:          #aeb3bb;
+  --sc-divider:         #cfd3d9;
+
+  --sc-text:            #1c1e22;
+  --sc-text-muted:      #4f545c;
+  --sc-text-disabled:   #9a9fa7;
+  --sc-icon:            #4a4f57;
+
+  --sc-accent:          #1b66d2;
+  --sc-accent-hover:    #2a74de;
+  --sc-accent-border:   #134fa6;
+  --sc-on-accent:       #ffffff;
+  --sc-selected-bg:     #d6e5fa;
+  --sc-selected-fg:     #0f4fa8;
+  --sc-focus:           #1b66d2;
+
+  --sc-highlight:       rgba(255, 255, 255, 0.75);
+  --sc-shade:           rgba(0, 0, 0, 0.10);
+  --sc-shade-strong:    rgba(0, 0, 0, 0.18);
+
+  --sc-btn-top:         #fdfdfe;
+  --sc-btn-bottom:      #f1f2f4;
+  --sc-btn-hover-top:   #ffffff;
+  --sc-btn-hover-bottom:#f7f8f9;
+  --sc-btn-pressed:     #e3e5e9;
+
+  --sc-toolbar-top:     #f6f7f8;
+  --sc-toolbar-bottom:  #eceef1;
+}
+
+@media (prefers-color-scheme: light) {
+  html.sc-enabled.sc-theme-auto:not([color-scheme="dark"]) {
+    --sc-bg:              #e9ebee;
+    --sc-surface:         #f3f4f6;
+    --sc-surface-raised:  #fbfbfc;
+    --sc-surface-sunken:  #e2e4e8;
+    --sc-border:          #aeb3bb;
+    --sc-divider:         #cfd3d9;
+
+    --sc-text:            #1c1e22;
+    --sc-text-muted:      #4f545c;
+    --sc-text-disabled:   #9a9fa7;
+    --sc-icon:            #4a4f57;
+
+    --sc-accent:          #1b66d2;
+    --sc-accent-hover:    #2a74de;
+    --sc-accent-border:   #134fa6;
+    --sc-on-accent:       #ffffff;
+    --sc-selected-bg:     #d6e5fa;
+    --sc-selected-fg:     #0f4fa8;
+    --sc-focus:           #1b66d2;
+
+    --sc-highlight:       rgba(255, 255, 255, 0.75);
+    --sc-shade:           rgba(0, 0, 0, 0.10);
+    --sc-shade-strong:    rgba(0, 0, 0, 0.18);
+
+    --sc-btn-top:         #fdfdfe;
+    --sc-btn-bottom:      #f1f2f4;
+    --sc-btn-hover-top:   #ffffff;
+    --sc-btn-hover-bottom:#f7f8f9;
+    --sc-btn-pressed:     #e3e5e9;
+
+    --sc-toolbar-top:     #f6f7f8;
+    --sc-toolbar-bottom:  #eceef1;
+  }
+}
+
+/* ---------- Composite tokens (derive from the above) ---------- */
+html.sc-enabled {
+  --sc-bevel:          inset 0 1px 0 var(--sc-highlight), inset 0 -1px 0 var(--sc-shade);
+  --sc-bevel-pressed:  inset 0 1px 2px var(--sc-shade-strong);
+  --sc-btn-bg:         linear-gradient(to bottom, var(--sc-btn-top), var(--sc-btn-bottom));
+  --sc-btn-bg-hover:   linear-gradient(to bottom, var(--sc-btn-hover-top), var(--sc-btn-hover-bottom));
+  --sc-toolbar-bg:     linear-gradient(to bottom, var(--sc-toolbar-top), var(--sc-toolbar-bottom));
+  --sc-elev:           0 2px 6px rgba(0, 0, 0, 0.25);
+  --sc-focus-ring:     0 0 0 2px var(--sc-focus);
+}

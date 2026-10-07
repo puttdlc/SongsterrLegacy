@@ -1,0 +1,8 @@
+/*
+ * Songsterr Classic: tracklist
+ * Region: Track list / mixer (#default-mixer, [id^="mixer-item-"])
+ * Region keys: selectors.js -> tracklist
+ *
+ * Not styled yet. This region comes after the player toolbar is reviewed.
+ * Selectors are already mapped in selectors.js (status: "planned").
+ */

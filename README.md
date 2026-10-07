@@ -1,0 +1,156 @@
+# Songsterr Classic
+
+A Manifest V3 Chrome extension that reskins songsterr.com with flat, rectangular,
+tightly aligned controls and subtle edge lighting (bevels, hairline highlights,
+inset shadows). It changes the look only. The site behaves exactly as before.
+
+- No network requests, analytics, remote code, fonts or CDNs.
+- Permissions: `storage` only, and the content script runs only on `*://*.songsterr.com/*`.
+- Paid/Plus features, paywalls and account checks are not touched.
+- The notation renderer's output is never styled.
+
+> **Build status: step 1 of the incremental plan.** Tokens, themes, popup and
+> the **player toolbar** are done. Track list, menus/popovers, header/nav and
+> the promo tone-down come next (their selectors are already mapped in
+> `src/selectors.js`, with status `planned`).
+
+## Install
+
+1. Open `chrome://extensions`.
+2. Turn on **Developer mode** (top right).
+3. Click **Load unpacked** and pick this folder (the one that contains `manifest.json`).
+4. Open or reload a Songsterr tab, for example a song page under `https://www.songsterr.com/a/wsa/...`.
+
+After editing any file, click the reload icon on the extension card, then
+reload the Songsterr tab.
+
+## Using it
+
+Click the toolbar icon to open the settings popup:
+
+| Setting | Options | Notes |
+|---|---|---|
+| Reskin | On / Off | Off removes every style instantly, no reload. |
+| Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
+| Density | Compact (default) / Comfortable | 32px vs 38px control height. |
+| Promos | Normal / Toned down | Visual only. Never hides content or unlocks anything. (Takes effect once the promos region lands.) |
+
+Settings live in `chrome.storage.sync` and apply live to every open Songsterr tab.
+
+**Check selectors** in the popup counts how many elements each mapped selector
+matches on the current page. Many regions only exist on certain pages or while a
+panel is open, so a 0 is not automatically a problem. See below.
+
+## How it works
+
+- All styling is plain CSS, injected at `document_start` (no flash of the old UI).
+- Every rule is scoped under `html.sc-enabled`. `content.js` adds that class plus
+  `sc-theme-*`, `sc-density-*` and `sc-tone-promos` to `<html>`. Removing the class
+  turns the reskin off instantly.
+- Themes are CSS custom properties (`--sc-bg`, `--sc-surface`, `--sc-accent`,
+  `--sc-highlight`, `--sc-shade` and so on) in `src/styles/tokens.css`. A theme is
+  just a variable swap.
+- Songsterr is a single-page app, but nothing needs re-applying on navigation
+  because the styling is pure CSS keyed off `<html>`. A small `MutationObserver`
+  that watches only `<html class>` re-adds our classes if the site ever strips them.
+- To pick the right theme on the very first frame, `content.js` mirrors the last
+  settings into the page's `localStorage` under `sc-classic:settings`.
+  `chrome.storage.sync` stays the source of truth.
+
+## Fixing after a Songsterr update
+
+Songsterr's class names look like `_8e144G_button`, a 6-character module hash plus a
+readable stem. **The hash changes between deploys, so this extension never
+uses it.** It relies, in order, on:
+
+1. Stable ids: `#controls`, `#control-play`, `#c-speed`, `#header`, `#default-mixer` …
+2. ARIA/state attributes: `aria-pressed`, `disabled`, `data-active`, `role="dialog"`.
+3. Readable class stems matched hash-agnostically: `[class*="_controlsCard"]`, `[class*="_textSpeed"]`.
+
+When something stops looking right:
+
+1. Open a song page, click the extension icon, then **Check selectors**. Any
+   `styled` region showing **0** where you can see the element on screen is a
+   broken selector. Hover a row to see the selector.
+2. In DevTools, inspect the element and find its new id, ARIA attribute or class
+   stem (the part after the first `_`).
+3. Update the entry in `src/selectors.js`. Each entry has a short note on what it
+   targets.
+4. Each CSS block is labelled with its region key (for example `toolbar.speedText`).
+   Grep the CSS for that key and update the selector there too.
+5. Reload the extension and the tab.
+
+A broken selector is always safe. The rules that use it stop applying and
+Songsterr's original styling shows through. No rule hides content, so a missed
+selector can never make the play button or the tab disappear.
+
+## Regions
+
+### Restyled (so far)
+
+- **Player toolbar** (`#controls`): flat, joined segmented strip; 3px max radius;
+  bevel highlight/shade; inverted bevel on press; accent tint + inverted bevel for
+  toggled-on buttons (loop, metronome, count-in, solo, mute, speed ≠ 100% …); dimmed
+  icons for disabled controls; inset focus ring; the speed "100%" pill becomes an
+  inset rectangular readout; the floating 20px "card" becomes a hairline-bordered
+  panel with one tight shadow; the drag-handle pill becomes a flat bar.
+
+### Planned (next steps)
+
+- Track list / mixer (`#default-mixer`, `[id^="mixer-item-"]`): flat rows, hover
+  highlight, left-edge accent bar for the active track, segmented solo/mute.
+- Menus, popovers, modals (`[role="dialog"]`, speed/metronome/settings popovers).
+- Song header and site nav (`#header`, `#tablist`, `#logo`).
+- Promo tone-down (`#showroom`, `#promo`, Plus banners). Visual only.
+
+### Intentionally left alone
+
+- **Notation** (`#tablature` and everything the renderer draws): not styled.
+- **Plus/lock badges** on toolbar buttons: recolored at most, never hidden or moved.
+- **Disabled/locked logic**: Songsterr decides what is disabled; we only change how it looks.
+- **Page body font**: unchanged, because the notation may inherit it. The system
+  font is applied only inside restyled regions.
+- **Editor-only toolbars** (note menus, drum toolbar and so on): out of scope for now.
+
+## Design decisions
+
+- **Play button is a rounded square, not a circle.** It keeps the accent fill so
+  it stays the obvious primary action, but uses the same 3px radius as everything
+  else. When the original/synth audio toggle is present, the two join as one
+  segmented control.
+- **Toolbar = one segmented strip.** Songsterr's toolbar is a wrapping panel
+  (about 360px wide, bottom right), so each row reads as a single strip of joined
+  buttons. Play and the mixer button stand apart as their own groups.
+- **Control height is 32px (compact) / 38px (comfortable), not 28px.** The
+  toolbar icons are 28px sprites. Shrinking the buttons to 28px would force the
+  icons to scale to an odd size and blur, so the buttons grew to fit the icons.
+- **Speed readout sits beside its icon** (it was stacked) so it fits the shorter row.
+- **Dark/Light don't recolor the notation.** Explicit Dark or Light reskins the
+  controls only. To make the tab area match, set Songsterr's own theme the same
+  way, or use **Auto**, which follows it.
+- **Accent:** a muted Songsterr blue (`#3a82e4` dark, `#1b66d2` light), so the
+  playback cursor and selections stay recognisable.
+
+## Contrast (WCAG AA)
+
+Checked for both themes: body text on buttons ≥ 11:1, muted text on toolbar ≥ 6.5:1,
+selected text on its accent tint ≈ 6:1, white play icon on accent ≥ 3.2:1 (a
+non-text graphic, so 3:1 is the requirement), focus ring on toolbar ≥ 4.6:1.
+
+## Files
+
+```
+manifest.json
+src/
+  content.js        theme/density classes, live settings, SPA safety net, diagnostics
+  selectors.js      selector map, the single place to fix after site updates
+  styles/
+    tokens.css      CSS variables for Dark / Light / Auto + density
+    base.css        typography + focus ring, scoped to restyled regions
+    toolbar.css     player toolbar               (done)
+    tracklist.css   track list / mixer           (planned)
+    menus.css       popovers, dialogs, promos    (planned)
+    header.css      song header + site nav       (planned)
+popup/              settings popup (same bevel/segmented look)
+icons/              original 16/32/48/128 icon
+```

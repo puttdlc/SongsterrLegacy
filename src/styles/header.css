@@ -1,0 +1,8 @@
+/*
+ * Songsterr Classic: header
+ * Region: Song header and site nav (#header, #tablist, #logo)
+ * Region keys: selectors.js -> header
+ *
+ * Not styled yet. This region comes after the player toolbar is reviewed.
+ * Selectors are already mapped in selectors.js (status: "planned").
+ */

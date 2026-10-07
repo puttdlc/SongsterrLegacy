@@ -1,0 +1,39 @@
+{
+  "manifest_version": 3,
+  "name": "Songsterr Classic",
+  "version": "0.1.0",
+  "description": "A clean, classic reskin of songsterr.com: flat rectangular controls, segmented toolbars and subtle bevels. Visual only.",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": ["*://*.songsterr.com/*"],
+      "run_at": "document_start",
+      "all_frames": false,
+      "css": [
+        "src/styles/tokens.css",
+        "src/styles/base.css",
+        "src/styles/toolbar.css",
+        "src/styles/tracklist.css",
+        "src/styles/menus.css",
+        "src/styles/header.css"
+      ],
+      "js": ["src/selectors.js", "src/content.js"]
+    }
+  ],
+  "action": {
+    "default_title": "Songsterr Classic",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

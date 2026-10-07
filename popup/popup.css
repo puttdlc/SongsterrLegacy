@@ -1,0 +1,234 @@
+/*
+ * Songsterr Classic: popup
+ * Same token names and bevel language as the content styles (tokens.css),
+ * redeclared here because the popup is its own document.
+ */
+
+:root {
+  --sc-font: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --sc-radius: 3px;
+
+  --sc-bg:             #1b1c1f;
+  --sc-surface:        #232428;
+  --sc-surface-sunken: #18191b;
+  --sc-border:         #0e0f11;
+  --sc-divider:        #36383e;
+  --sc-text:           #e4e5e8;
+  --sc-text-muted:     #a5a9b1;
+  --sc-selected-bg:    #29405f;
+  --sc-selected-fg:    #9cc4ff;
+  --sc-focus:          #74abff;
+  --sc-ok:             #7fd18b;
+  --sc-warn:           #e8b85c;
+  --sc-highlight:      rgba(255, 255, 255, 0.07);
+  --sc-shade:          rgba(0, 0, 0, 0.30);
+  --sc-shade-strong:   rgba(0, 0, 0, 0.45);
+  --sc-btn-top:        #303237;
+  --sc-btn-bottom:     #2a2c31;
+  --sc-btn-hover-top:  #383a40;
+  --sc-btn-hover-bottom:#313338;
+  --sc-btn-pressed:    #222327;
+  --sc-bar-top:        #26282c;
+  --sc-bar-bottom:     #212226;
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --sc-bg:             #e9ebee;
+  --sc-surface:        #f3f4f6;
+  --sc-surface-sunken: #e2e4e8;
+  --sc-border:         #aeb3bb;
+  --sc-divider:        #cfd3d9;
+  --sc-text:           #1c1e22;
+  --sc-text-muted:     #4f545c;
+  --sc-selected-bg:    #d6e5fa;
+  --sc-selected-fg:    #0f4fa8;
+  --sc-focus:          #1b66d2;
+  --sc-ok:             #1d7a2e;
+  --sc-warn:           #8a5a00;
+  --sc-highlight:      rgba(255, 255, 255, 0.75);
+  --sc-shade:          rgba(0, 0, 0, 0.10);
+  --sc-shade-strong:   rgba(0, 0, 0, 0.18);
+  --sc-btn-top:        #fdfdfe;
+  --sc-btn-bottom:     #f1f2f4;
+  --sc-btn-hover-top:  #ffffff;
+  --sc-btn-hover-bottom:#f7f8f9;
+  --sc-btn-pressed:    #e3e5e9;
+  --sc-bar-top:        #f6f7f8;
+  --sc-bar-bottom:     #eceef1;
+  color-scheme: light;
+}
+
+:root {
+  --sc-bevel:         inset 0 1px 0 var(--sc-highlight), inset 0 -1px 0 var(--sc-shade);
+  --sc-bevel-pressed: inset 0 1px 2px var(--sc-shade-strong);
+}
+
+* { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  width: 300px;
+  background: var(--sc-bg);
+  color: var(--sc-text);
+  font: 13px/1.25 var(--sc-font);
+  -webkit-font-smoothing: antialiased;
+}
+
+.muted { color: var(--sc-text-muted); }
+
+/* ---------- Title bar / status bar ---------- */
+.titlebar,
+.statusbar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: linear-gradient(to bottom, var(--sc-bar-top), var(--sc-bar-bottom));
+}
+.titlebar {
+  border-bottom: 1px solid var(--sc-border);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+}
+.titlebar h1 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+.statusbar {
+  border-top: 1px solid var(--sc-border);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+  font-size: 11px;
+}
+
+/* ---------- Panels ---------- */
+.panel {
+  margin: 0;
+  padding: 8px 10px;
+  background: var(--sc-surface);
+  border-bottom: 1px solid var(--sc-divider);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  align-items: center;
+  margin: 0;
+  padding: 4px 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.row + .row { border-top: 1px solid var(--sc-divider); }
+.row legend {
+  float: left;               /* lets legend sit in the grid's first column */
+  padding: 0;
+  color: var(--sc-text-muted);
+}
+
+/* ---------- Segmented control ---------- */
+.seg {
+  display: flex;
+}
+.seg label {
+  flex: 1 1 auto;
+  position: relative;
+  margin-left: -1px;
+}
+.seg label:first-child { margin-left: 0; }
+.seg input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+.seg span,
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--sc-border);
+  background: linear-gradient(to bottom, var(--sc-btn-top), var(--sc-btn-bottom));
+  box-shadow: var(--sc-bevel);
+  color: var(--sc-text);
+  font: inherit;
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+}
+.seg label:first-child span { border-radius: var(--sc-radius) 0 0 var(--sc-radius); }
+.seg label:last-child span  { border-radius: 0 var(--sc-radius) var(--sc-radius) 0; }
+
+.seg span:hover,
+.btn:hover {
+  background: linear-gradient(to bottom, var(--sc-btn-hover-top), var(--sc-btn-hover-bottom));
+}
+.seg span:active,
+.btn:active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+.seg input:checked + span {
+  background: var(--sc-selected-bg);
+  box-shadow: var(--sc-bevel-pressed);
+  color: var(--sc-selected-fg);
+  font-weight: 600;
+}
+.seg input:focus-visible + span,
+.btn:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+  position: relative;
+  z-index: 1;
+}
+.seg input:disabled + span,
+.btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.btn { border-radius: var(--sc-radius); }
+
+/* ---------- Diagnostics ---------- */
+.diag-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#diag-status { font-size: 11px; }
+
+#diag-results {
+  margin-top: 8px;
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  background: var(--sc-surface-sunken);
+  box-shadow: inset 0 1px 2px var(--sc-shade);
+  font-size: 11px;
+}
+#diag-results table {
+  width: 100%;
+  border-collapse: collapse;
+}
+#diag-results th,
+#diag-results td {
+  padding: 3px 6px;
+  text-align: left;
+  border-bottom: 1px solid var(--sc-divider);
+}
+#diag-results th {
+  position: sticky;
+  top: 0;
+  background: var(--sc-surface);
+  color: var(--sc-text-muted);
+  font-weight: 600;
+}
+#diag-results td.n { text-align: right; font-variant-numeric: tabular-nums; }
+#diag-results .ok { color: var(--sc-ok); }
+#diag-results .miss { color: var(--sc-warn); }
+#diag-results .region td {
+  background: var(--sc-surface);
+  font-weight: 600;
+}
