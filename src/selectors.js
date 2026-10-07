@@ -46,7 +46,8 @@
       topItems:  { sel: '[data-controls-top-panel] [class*="_controlsTopItem"]', tier: 'stem', note: 'Item slots inside the top row.' },
       favorite:  { sel: '#favorite-toggle', tier: 'id', note: 'Favourite star. Chosen state = class stem _toggleChosen.' },
       displayMode: { sel: '#display-mode-button', tier: 'id', note: 'Tab / Sheet / Chords select (role="combobox").' },
-      editor:    { sel: '#control-editor', tier: 'id', note: 'Tab editor toggle (pencil). aria-pressed when on.' }
+      editor:    { sel: '#control-editor', tier: 'id', note: 'Tab editor toggle (pencil). aria-pressed when on.' },
+      minimize:  { sel: '#sc-pane-toggle', tier: 'id', note: 'Ours: minimise toggle appended to the top strip; hides the pane, keeps the strip.' }
     },
 
     nav: {

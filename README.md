@@ -35,6 +35,7 @@ Click the toolbar icon to open the settings popup:
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
 | Author | Show / Hide | "Tab by <name>" under the song title (see below). |
 | Nav bar | Shown / Collapsed | Same as the chevron tab at the bottom-left of the page. |
+| Player | Full / Minimised | Same as the chevron at the end of the favourite / display-mode / editor strip. |
 | Promos | Normal / Toned down | Visual only. Never hides content or unlocks anything. (Takes effect once the promos region lands.) |
 
 Settings live in `chrome.storage.sync` and apply live to every open Songsterr tab.
@@ -151,6 +152,12 @@ selector can never make the play button or the tab disappear.
   collapses it off-screen and brings it back. The state is remembered.
   Songsterr's own rules still decide when the bar exists at all (hidden below
   880px wide and on the Plus page).
+- **Player minimise** (third collapse level): on top of Songsterr's own
+  expand / one-row collapse, a chevron at the end of the favourite / Tab-Sheet-Chords /
+  editor strip slides the button rows away. Only that strip stays, docked in the
+  corner, and it stays visible during playback (Songsterr normally fades it out).
+  Keyboard shortcuts keep working. Fail-safe: the pane is only hidden while that
+  chevron exists, so it can never get stuck hidden.
 - **Tab author** under the song title (see "Tab author").
 - **Player toolbar buttons** (`#controls`): flat, joined segmented strip; 3px max radius;
   bevel highlight/shade; inverted bevel on press; accent tint + inverted bevel for

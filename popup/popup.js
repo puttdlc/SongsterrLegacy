@@ -13,9 +13,10 @@
     density: 'compact',
     toneDownPromos: false,
     showAuthor: true,
-    navCollapsed: false
+    navCollapsed: false,
+    paneMinimized: false
   };
-  const BOOLEAN_KEYS = new Set(['enabled', 'toneDownPromos', 'showAuthor', 'navCollapsed']);
+  const BOOLEAN_KEYS = new Set(['enabled', 'toneDownPromos', 'showAuthor', 'navCollapsed', 'paneMinimized']);
 
   const form = document.getElementById('settings');
   const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');

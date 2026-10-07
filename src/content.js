@@ -7,7 +7,8 @@
  *   2. keeps them in sync with chrome.storage.sync (live, no reload),
  *   3. re-adds them if the page ever strips them (SPA safety net),
  *   4. adds a collapse toggle for the bottom nav bar (our own element, placed
- *      outside Songsterr's app root),
+ *      outside Songsterr's app root) and a minimise toggle for the player pane
+ *      (appended to the favourite / display-mode / editor strip),
  *   5. shows the tab author as a "Tab by <name>" link under the song title,
  *   6. answers the popup's "Check selectors" request.
  * It never changes Songsterr's own state, requests or feature logic.
@@ -21,13 +22,14 @@
     density: 'compact',     // compact | comfortable
     toneDownPromos: false,
     showAuthor: true,
-    navCollapsed: false
+    navCollapsed: false,
+    paneMinimized: false
   });
   const VALID = {
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
   };
-  const BOOLEANS = ['toneDownPromos', 'showAuthor', 'navCollapsed'];
+  const BOOLEANS = ['toneDownPromos', 'showAuthor', 'navCollapsed', 'paneMinimized'];
   // Mirror of the last-known settings in the page's localStorage. It is read
   // synchronously at document_start so the right theme paints on the first
   // frame; chrome.storage stays the source of truth.
@@ -52,6 +54,7 @@
     if (s.toneDownPromos) list.push('sc-tone-promos');
     if (s.showAuthor) list.push('sc-show-author');
     if (s.navCollapsed) list.push('sc-nav-collapsed');
+    if (s.paneMinimized) list.push('sc-pane-min');
     return list;
   }
 
@@ -69,6 +72,7 @@
     wanted = classesFor(settings);
     syncClasses();
     updateNavToggle();
+    updatePaneToggle();
     schedule();
     try {
       localStorage.setItem(MIRROR_KEY, JSON.stringify(settings));
@@ -88,20 +92,25 @@
   const NAV_SELECTOR = '[class*="_bottomBarWide"]';
   let navToggle = null;
 
+  /** Small stroked chevron; `d` is the path, w/h the viewBox size. */
+  function chevron(d, w, h) {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('width', String(w));
+    svg.setAttribute('height', String(h));
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', d);
+    svg.append(path);
+    return svg;
+  }
+
   function buildNavToggle() {
     const btn = document.createElement('button');
     btn.id = 'sc-nav-toggle';
     btn.type = 'button';
     btn.hidden = true;
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 8 12');
-    svg.setAttribute('width', '8');
-    svg.setAttribute('height', '12');
-    svg.setAttribute('aria-hidden', 'true');
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    path.setAttribute('d', 'M6 1 1.5 6 6 11');
-    svg.append(path);
-    btn.append(svg);
+    btn.append(chevron('M6 1 1.5 6 6 11', 8, 12));
     btn.addEventListener('click', () => save({ navCollapsed: !settings.navCollapsed }));
     return btn;
   }
@@ -129,6 +138,52 @@
       getComputedStyle(nav).display !== 'none';
     // Only offer the toggle while the nav bar itself can be shown.
     if (navToggle.hidden === navShown) navToggle.hidden = !navShown;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Player pane minimise toggle (selectors.js: toolbar.minimize)
+  // A third collapse level on top of Songsterr's own expand/collapse: the
+  // button rows slide away and only the favourite / display-mode / editor
+  // strip stays, docked in the corner. The toggle lives at the end of that
+  // strip. CSS only hides the pane while this toggle is in the page, so if a
+  // Songsterr update removes the strip, the pane can never get stuck hidden.
+  // ---------------------------------------------------------------------------
+  const TOP_STRIP = '[data-controls-top-panel] > [class*="_controlsTopPanel"]';
+  let paneToggle = null;
+
+  function buildPaneToggle() {
+    const btn = document.createElement('button');
+    btn.id = 'sc-pane-toggle';
+    btn.type = 'button';
+    btn.setAttribute('aria-controls', 'controls');
+    btn.append(chevron('M1 1.5 6 6.5 11 1.5', 12, 8));
+    btn.addEventListener('click', (event) => {
+      event.stopPropagation();
+      save({ paneMinimized: !settings.paneMinimized });
+    });
+    return btn;
+  }
+
+  function updatePaneToggle() {
+    if (!paneToggle) return;
+    const min = settings.paneMinimized;
+    const label = min ? 'Show player controls' : 'Minimise player controls';
+    paneToggle.setAttribute('aria-expanded', String(!min));
+    paneToggle.setAttribute('aria-label', label);
+    paneToggle.title = label;
+  }
+
+  function syncPaneToggle() {
+    const strip = document.querySelector(TOP_STRIP);
+    if (!strip || !settings.enabled) {
+      if (paneToggle && paneToggle.isConnected) paneToggle.remove();
+      return;
+    }
+    if (!paneToggle) {
+      paneToggle = buildPaneToggle();
+      updatePaneToggle();
+    }
+    if (paneToggle.parentNode !== strip || strip.lastChild !== paneToggle) strip.append(paneToggle);
   }
 
   // ---------------------------------------------------------------------------
@@ -226,6 +281,7 @@
       timer = 0;
       if (wanted.some((c) => !root.classList.contains(c))) syncClasses();
       syncNavToggle();
+      syncPaneToggle();
       syncAuthor();
     }, 250);
   }

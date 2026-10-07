@@ -423,3 +423,80 @@ html.sc-enabled #controls #controls-panel-handle {
   padding-top: 4px;
   border-bottom: 1px solid var(--sc-divider);
 }
+
+/* ---------------------------------------------------------------------------
+ * toolbar.minimize: third collapse level (ours).
+ *   expanded  -> all rows            (Songsterr)
+ *   collapsed -> first row           (Songsterr, drag handle)
+ *   minimised -> top strip only      (this extension, #sc-pane-toggle)
+ * Fail-safe: the pane is only hidden while #sc-pane-toggle exists, so the way
+ * back is always on screen. Keyboard shortcuts (Space etc.) keep working.
+ * `translate` is used instead of `transform` because Songsterr writes inline
+ * transforms on the pane while dragging; the two compose instead of clashing.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #controls {
+  transition: transform 0.3s ease-out, translate 0.2s ease-out, visibility 0s;
+}
+html.sc-enabled.sc-pane-min:has(#sc-pane-toggle) #controls {
+  translate: 0 calc(100% + 2px);
+  visibility: hidden;              /* out of the tab order while minimised */
+  transition: transform 0.3s ease-out, translate 0.2s ease-out, visibility 0s linear 0.2s;
+}
+html.sc-enabled.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel] {
+  bottom: 0;
+  transition: bottom 0.2s ease-out, opacity 0.2s;
+}
+/* Songsterr fades the strip out during playback; while minimised it is the
+   only visible control, so keep it. */
+html.sc-enabled.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel][data-hidden="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+html.sc-enabled.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel] > [class*="_controlsTopPanel"] {
+  pointer-events: auto;
+}
+
+/* The toggle: last segment of the strip, joined to the pencil. */
+#sc-pane-toggle {
+  display: none;
+}
+html.sc-enabled [data-controls-top-panel] #sc-pane-toggle {
+  box-sizing: border-box;
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: calc(var(--sc-ctl-w) - 12px);
+  height: var(--sc-ctl-h);
+  margin: 0 0 0 -1px;
+  padding: 0;
+  border: 1px solid var(--sc-border);
+  border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  cursor: pointer;
+}
+html.sc-enabled [data-controls-top-panel] #sc-pane-toggle:hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled [data-controls-top-panel] #sc-pane-toggle:active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled [data-controls-top-panel] #sc-pane-toggle:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+}
+html.sc-enabled [data-controls-top-panel] #sc-pane-toggle svg {
+  fill: none;
+  stroke: var(--sc-icon);
+  stroke-width: 1.6;
+  stroke-linecap: square;
+  transition: transform 0.2s ease-out;
+}
+html.sc-enabled [data-controls-top-panel] #sc-pane-toggle:hover svg {
+  stroke: var(--sc-text);
+}
+html.sc-enabled.sc-pane-min [data-controls-top-panel] #sc-pane-toggle svg {
+  transform: scaleY(-1);           /* chevron points up: "restore" */
+}
