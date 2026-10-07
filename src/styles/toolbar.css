@@ -30,12 +30,128 @@
  */
 
 /* ---------------------------------------------------------------------------
- * toolbar.card: kill the floating 20px-radius bubble
+ * toolbar.dock: the pane becomes a docked panel in the bottom-right corner.
+ * Songsterr positions the pane, the top row and anything stacked above them
+ * with --controls-panel-right (15px gap from the edge). Zeroing it pins all of
+ * them to the screen edge; the site's own JS still computes heights.
  * ------------------------------------------------------------------------- */
+html.sc-enabled {
+  --controls-panel-right: 0px;
+}
+
+html.sc-enabled #controls {
+  padding-bottom: 0;                 /* was 20px of empty space under the bubble */
+  border-radius: 0;
+  border-top: 1px solid var(--sc-border);
+  border-left: 1px solid var(--sc-border);
+  background: var(--sc-toolbar-bg);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+}
+
+/* toolbar.card: the 20px-radius "floating" backdrop shown while dragging. */
 html.sc-enabled #controls [class*="_controlsCard"]::before {
-  border-radius: var(--sc-radius-panel);
+  border-radius: 0;
   background: var(--sc-toolbar-bg);
   box-shadow: 0 0 0 1px var(--sc-border), var(--sc-elev);
+}
+
+/* ---------------------------------------------------------------------------
+ * toolbar.topPanel: favourite / display mode / editor row above the pane.
+ * Was a separate floating pill 15px above the pane; now a flush title strip
+ * sitting directly on the pane (same width, shared border).
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [data-controls-top-panel] {
+  /* Site places it at (pane height + 15px gap); drop the gap. */
+  bottom: calc(var(--controls-top-panel-bottom, 0px) - var(--controls-panel-padding, 15px));
+  --controls-top-panel-hight: calc(var(--sc-ctl-h) + 2 * var(--sc-row-pad));
+}
+html.sc-enabled [data-controls-top-panel] > [class*="_controlsTopPanel"] {
+  gap: 0;
+  padding: var(--sc-row-pad) 8px;
+  border-radius: 0;
+  border-top: 1px solid var(--sc-border);
+  border-left: 1px solid var(--sc-border);
+  background: var(--sc-toolbar-bg);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+}
+html.sc-enabled [data-controls-top-panel] [class*="_controlsTopItem"] {
+  width: auto;
+  height: var(--sc-ctl-h);
+  flex-basis: auto;
+  margin-left: -1px;
+}
+html.sc-enabled [data-controls-top-panel] [class*="_controlsTopItem"]:first-child {
+  margin-left: 0;
+}
+
+/* Favourite toggle, editor (pencil) and "go to top": same buttons as the row. */
+html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start) {
+  box-sizing: border-box;
+  width: var(--sc-ctl-w);
+  height: var(--sc-ctl-h);
+  border: 1px solid var(--sc-border);
+  border-radius: 0;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
+}
+html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start) svg {
+  fill: var(--sc-icon);
+}
+html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):hover svg {
+  fill: var(--sc-text);
+}
+html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+/* Selected: favourited star / editor on. */
+html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]),
+html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]):is(:hover, :active) {
+  background: var(--sc-selected-bg);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) svg {
+  fill: var(--sc-selected-fg);
+}
+/* Strip corners: first and last control of the top row. */
+html.sc-enabled [data-controls-top-panel] [class*="_controlsTopItem"]:first-child :is(button, [role="combobox"]) {
+  border-top-left-radius: var(--sc-radius);
+  border-bottom-left-radius: var(--sc-radius);
+}
+html.sc-enabled [data-controls-top-panel] [class*="_controlsTopItem"]:last-child :is(button, [role="combobox"]) {
+  border-top-right-radius: var(--sc-radius);
+  border-bottom-right-radius: var(--sc-radius);
+}
+
+/* Display-mode select (Tab / Sheet / Chords ...): sunken field look. */
+html.sc-enabled [data-controls-top-panel] #display-mode-button {
+  height: var(--sc-ctl-h);
+  border: 1px solid var(--sc-border);
+  border-radius: 0;
+  background: var(--sc-surface-sunken);
+  box-shadow: inset 0 1px 2px var(--sc-shade);
+  color: var(--sc-text);
+  font: var(--sc-font-size) / 1 var(--sc-font);
+}
+html.sc-enabled [data-controls-top-panel] #display-mode-button:hover {
+  background: var(--sc-surface);
+}
+html.sc-enabled [data-controls-top-panel] #display-mode-button [class*="_placeholder"],
+html.sc-enabled [data-controls-top-panel] #display-mode-button [class*="_valueText"] {
+  color: var(--sc-text);
+}
+html.sc-enabled [data-controls-top-panel] #display-mode-button svg {
+  fill: var(--sc-icon);
+}
+html.sc-enabled [data-controls-top-panel] #display-mode-button:focus-visible,
+html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+  border-radius: 0;
 }
 
 /* ---------------------------------------------------------------------------
@@ -45,14 +161,14 @@ html.sc-enabled #controls [class*="_controlsCard"] > div {
   gap: var(--sc-group-gap) 0;       /* row gap only; buttons in a row touch */
   padding: var(--sc-row-pad) 8px;
   background: var(--sc-toolbar-bg);
-  border-top: 1px solid var(--sc-border);
-  box-shadow: inset 0 1px 0 var(--sc-highlight);
   align-items: center;
 }
 
-/* Collapsed state shows exactly one row of the new, shorter controls. */
+/* Collapsed: show exactly the first row. The shorter controls would otherwise
+   let the top of the second row peek out under the first. */
 html.sc-enabled #controls [class*="_controlsCard"] > div[class*="_controlsCollapsed"] {
-  max-height: calc(var(--sc-ctl-h) + 2 * var(--sc-row-pad) + 1px);
+  max-height: var(--sc-ctl-h);      /* content box: padding is added on top */
+  overflow: hidden;
 }
 
 /* Item wrappers (were fixed 50px columns with 15px gaps). */
@@ -137,6 +253,18 @@ html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"]
 html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"]):is(:disabled, [class*="_disabled"]) svg[class*="_icon"] {
   fill: var(--sc-text-disabled);
   opacity: 0.8;
+}
+
+/* Plus/lock badge colours come from site variables; point them at the panel
+   colours so they stop rendering as white discs. Recolour only: same size,
+   same position, always visible. */
+html.sc-enabled #controls,
+html.sc-enabled [data-controls-top-panel],
+html.sc-enabled #controls [id^="control-"] :is([class*="_lock"], [class*="_plus"]) {
+  --lock-surface: var(--sc-btn-bottom);
+  --lock: var(--sc-icon);
+  --plus-surface: var(--sc-btn-bottom);
+  --plus: var(--sc-icon);
 }
 
 /* Small corner badges (lock, Plus, "R" re-pitch, solo/mute indicator):
@@ -247,6 +375,16 @@ html.sc-enabled #controls #control-source {
 html.sc-enabled #controls #control-source * {
   border-radius: 2px;
 }
+/* Labels: unselected text was the site's --text (dark on our dark panel). */
+html.sc-enabled #controls #control-source [class*="_label"] {
+  color: var(--sc-text-muted);
+}
+html.sc-enabled #controls #control-source [class*="_labelChecked"] {
+  color: var(--sc-on-accent);
+}
+html.sc-enabled #controls #control-source [class*="_background"] {
+  background-color: var(--sc-accent);
+}
 
 /* ---------------------------------------------------------------------------
  * toolbar.metronomeSettings: the "..." tab above the metronome button
@@ -277,4 +415,11 @@ html.sc-enabled #controls #controls-panel-handle [class*="_panelHandleBar"]::bef
 html.sc-enabled #controls #controls-panel-handle [class*="_panelHandleBar"]::after {
   border-radius: 1px;
   height: 3px;
+}
+/* Slimmer grab strip: 24px -> 12px, with a hairline under it. */
+html.sc-enabled #controls #controls-panel-handle {
+  box-sizing: border-box;
+  height: 12px;
+  padding-top: 4px;
+  border-bottom: 1px solid var(--sc-divider);
 }

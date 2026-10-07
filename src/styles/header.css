@@ -1,8 +1,222 @@
 /*
- * Songsterr Classic: header
- * Region: Song header and site nav (#header, #tablist, #logo)
- * Region keys: selectors.js -> header
+ * Songsterr Classic: site nav + song header
+ * ==========================================
+ * Region keys: selectors.js -> nav.*, header.*
  *
- * Not styled yet. This region comes after the player toolbar is reviewed.
- * Selectors are already mapped in selectors.js (status: "planned").
+ * DOM (2026-10 build):
+ *   div[class*=_bottomBarWide][data-ready][data-plus]     (nav.bar, position: fixed)
+ *     nav#tablist[data-compact]                           (nav.list, flex row-reverse)
+ *       div[class*=_bottomBarLeft|_bottomBarCenter|_bottomBarRight]
+ *         div[class*=_itemWrapper] > a#menu-<name>[aria-active]   (nav.items)
+ *           div[class*=_icon] (svg) + div[class*=_text]
+ *   button#sc-nav-toggle                                  (nav.toggle, ours, in <body>)
+ *
+ *   header#header[data-sc-author]                         (header.author, attribute set by content.js)
+ *
+ * Nav design: the floating 30px-radius pill becomes a toolbar docked to the
+ * bottom-left corner, flush with the screen edge. Items are icon + label side
+ * by side, separated by hairlines. A chevron tab on its left edge collapses it
+ * (slides it off-screen); the tab itself always stays reachable.
+ *
+ * Songsterr's own visibility rules are kept: the bar still hides below 880px,
+ * for data-plus="true", and until data-ready="true". We never set `display`.
  */
+
+html.sc-enabled {
+  --sc-nav-h: var(--sc-ctl-h);
+  --sc-nav-toggle-w: 16px;
+}
+
+/* ---------------------------------------------------------------------------
+ * nav.bar: docked rectangle
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [class*="_bottomBarWide"] {
+  top: auto;
+  bottom: 0;
+  left: var(--sc-nav-toggle-w);
+  right: auto;
+  width: auto;
+  max-width: calc(100vw - var(--sc-nav-toggle-w) - var(--controls-panel-width, 360px));
+  margin: 0;
+  border-radius: 0;
+  border-top: 1px solid var(--sc-border);
+  border-right: 1px solid var(--sc-border);
+  background: var(--sc-toolbar-bg);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+  font-family: var(--sc-font);
+  transition: transform 160ms ease-out, visibility 0s;
+}
+
+html.sc-enabled.sc-nav-collapsed [class*="_bottomBarWide"] {
+  transform: translateX(calc(-100% - var(--sc-nav-toggle-w)));
+  visibility: hidden;                /* keeps hidden links out of the tab order */
+  transition: transform 160ms ease-out, visibility 0s linear 160ms;
+}
+
+/* nav.list */
+html.sc-enabled #tablist {
+  height: var(--sc-nav-h);
+  padding: 0;
+  justify-content: flex-start;
+  align-items: stretch;
+}
+html.sc-enabled #tablist > div {
+  column-gap: 0;
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+ * nav.items: flat icon + label buttons, hairline separated
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #tablist [class*="_itemWrapper"] {
+  height: 100%;
+}
+html.sc-enabled #tablist a[id^="menu-"] {
+  box-sizing: border-box;
+  flex-direction: row;
+  gap: 6px;
+  min-width: 0;
+  height: 100%;
+  padding: 0 12px;
+  border-right: 1px solid var(--sc-divider);
+  color: var(--sc-text);
+  transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
+}
+html.sc-enabled #tablist [class*="_icon"] {
+  display: flex;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  fill: var(--sc-icon);
+  transition: fill var(--sc-ease);
+}
+html.sc-enabled #tablist [class*="_text"] {
+  color: var(--sc-text);
+  font: 500 var(--sc-font-size) / 1 var(--sc-font);
+  letter-spacing: 0;
+}
+
+/* Hover: slight lighten. Site rules paint a coloured pill behind the icon on
+   hover/active; flatten those too. */
+html.sc-enabled #tablist a[id^="menu-"]:hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled #tablist a[id^="menu-"]:hover [class*="_icon"] {
+  background: none;
+  fill: var(--sc-text);
+}
+html.sc-enabled #tablist a[id^="menu-"]:hover [class*="_text"] {
+  color: var(--sc-text);
+}
+
+/* Pressed: inverted bevel. */
+html.sc-enabled #tablist a[id^="menu-"]:active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled #tablist a[id^="menu-"]:active [class*="_icon"] {
+  background: none;
+  fill: var(--sc-text);
+}
+
+/* Current page (aria-active="true"): accent tint + inverted bevel + accent
+   underline, the horizontal-bar equivalent of the track list's edge bar. */
+html.sc-enabled #tablist a[id^="menu-"][aria-active="true"],
+html.sc-enabled #tablist a[id^="menu-"][aria-active="true"]:hover {
+  background: var(--sc-selected-bg);
+  box-shadow: var(--sc-bevel-pressed), inset 0 -2px 0 var(--sc-accent);
+}
+html.sc-enabled #tablist a[id^="menu-"][aria-active="true"] [class*="_icon"] {
+  background: none;
+  fill: var(--sc-selected-fg);
+}
+html.sc-enabled #tablist a[id^="menu-"][aria-active="true"] [class*="_text"] {
+  color: var(--sc-selected-fg);
+}
+
+html.sc-enabled #tablist a[id^="menu-"]:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+}
+
+/* Small badges in the nav (e.g. "plus" on the profile item, inbox count). */
+html.sc-enabled #tablist [class*="_badge"],
+html.sc-enabled #tablist [class*="Badge"] {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * nav.toggle: our collapse tab at the bottom-left edge
+ * Hidden by default (also when the reskin is off); content.js un-hides it only
+ * while Songsterr is actually showing the nav bar.
+ * ------------------------------------------------------------------------- */
+#sc-nav-toggle {
+  display: none;
+}
+html.sc-enabled #sc-nav-toggle:not([hidden]) {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  z-index: 112;                      /* just above the nav bar (--zIndexSidebar: 111) */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sc-nav-toggle-w);
+  height: calc(var(--sc-nav-h) + 1px);   /* + the bar's top border */
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--sc-border);
+  border-left: 0;
+  border-bottom: 0;
+  border-radius: 0 var(--sc-radius) 0 0;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  cursor: pointer;
+}
+html.sc-enabled #sc-nav-toggle:hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled #sc-nav-toggle:active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled #sc-nav-toggle:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+}
+html.sc-enabled #sc-nav-toggle svg {
+  fill: none;
+  stroke: var(--sc-icon);
+  stroke-width: 1.6;
+  stroke-linecap: square;
+  transition: transform 160ms ease-out;
+}
+html.sc-enabled #sc-nav-toggle:hover svg {
+  stroke: var(--sc-text);
+}
+html.sc-enabled.sc-nav-collapsed #sc-nav-toggle svg {
+  transform: scaleX(-1);             /* chevron points right: "expand" */
+}
+/* Songsterr hides the wide nav bar below 880px; so do we. */
+@media (width < 880px) {
+  html.sc-enabled #sc-nav-toggle:not([hidden]) {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * header.author: "Tab by <name>" line under the song title.
+ * The name comes from Songsterr's own song metadata (see content.js and
+ * page-meta.js). Uses the site's text colour variables because the header
+ * sits on the notation background, which follows Songsterr's theme.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-show-author #header[data-sc-author]::after {
+  content: "Tab by " attr(data-sc-author);
+  display: block;
+  margin-top: 2px;
+  text-align: center;
+  color: var(--text-second, currentColor);
+  font: 400 var(--sc-font-size) / 1.3 var(--sc-font);
+  letter-spacing: 0.2px;
+}

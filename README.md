@@ -9,10 +9,11 @@ inset shadows). It changes the look only. The site behaves exactly as before.
 - Paid/Plus features, paywalls and account checks are not touched.
 - The notation renderer's output is never styled.
 
-> **Build status: step 1 of the incremental plan.** Tokens, themes, popup and
-> the **player toolbar** are done. Track list, menus/popovers, header/nav and
-> the promo tone-down come next (their selectors are already mapped in
-> `src/selectors.js`, with status `planned`).
+> **Build status: step 2 of the incremental plan.** Done: tokens, themes, popup,
+> the **player toolbar** (docked bottom-right), the **bottom nav bar** (docked
+> bottom-left, collapsible) and the **tab author** line in the header. Next: track
+> list, menus/popovers, the rest of the header (logo) and the promo tone-down.
+> Their selectors are already mapped in `src/selectors.js` with status `planned`.
 
 ## Install
 
@@ -33,6 +34,8 @@ Click the toolbar icon to open the settings popup:
 | Reskin | On / Off | Off removes every style instantly, no reload. |
 | Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
+| Author | Show / Hide | "Tab by <name>" under the song title (see below). |
+| Nav bar | Shown / Collapsed | Same as the chevron tab at the bottom-left of the page. |
 | Promos | Normal / Toned down | Visual only. Never hides content or unlocks anything. (Takes effect once the promos region lands.) |
 
 Settings live in `chrome.storage.sync` and apply live to every open Songsterr tab.
@@ -57,6 +60,25 @@ panel is open, so a 0 is not automatically a problem. See below.
   settings into the page's `localStorage` under `sc-classic:settings`.
   `chrome.storage.sync` stays the source of truth.
 
+## Tab author
+
+Songsterr's current header no longer shows who wrote a tab, but the data is
+still in the song metadata the site already downloads (`author.name` /
+`author.profileName`). The extension shows it again as "Tab by <name>" under the
+title, without making any request of its own:
+
+- **First page load:** read from the page's embedded `<script id="state">`
+  (`meta.current.author`).
+- **In-app navigation:** that embedded state goes stale, so `src/page-meta.js`
+  (a small script running in the page's own JS world) watches the site's own
+  `/api/meta/{songId}` responses and reads the author from a clone of the
+  response. It never changes the request or what the site receives, and
+  forwards only the song id, revision id and author name.
+
+The name is stored as `data-sc-author` on `#header` and drawn by CSS
+(`header.css`, `::after`), so nothing is inserted into Songsterr's own markup.
+Chords pages are skipped because they use a separate chords revision.
+
 ## Fixing after a Songsterr update
 
 Songsterr's class names look like `_8e144G_button`, a 6-character module hash plus a
@@ -66,6 +88,11 @@ uses it.** It relies, in order, on:
 1. Stable ids: `#controls`, `#control-play`, `#c-speed`, `#header`, `#default-mixer` …
 2. ARIA/state attributes: `aria-pressed`, `disabled`, `data-active`, `role="dialog"`.
 3. Readable class stems matched hash-agnostically: `[class*="_controlsCard"]`, `[class*="_textSpeed"]`.
+
+Docking also leans on the site's own CSS variables (`--controls-panel-right`,
+`--controls-top-panel-bottom`, `--controls-panel-padding`), and the author feature
+leans on the `/api/meta/{songId}` URL shape plus the `author` field. If the
+author line disappears, check those first (`src/page-meta.js`, `content.js`).
 
 When something stops looking right:
 
@@ -88,7 +115,22 @@ selector can never make the play button or the tab disappear.
 
 ### Restyled (so far)
 
-- **Player toolbar** (`#controls`): flat, joined segmented strip; 3px max radius;
+- **Player pane, docked** (`#controls` + `[data-controls-top-panel]`): no longer
+  a floating bubble. The pane is pinned flush to the bottom-right corner with
+  hairline borders and no gap or big shadow. The favourite / display-mode /
+  editor row sits flush on top of it as a title strip with the same segmented
+  buttons and a sunken select field. The drag handle is a slim 12px strip.
+  Collapsed shows exactly one row, and the Plus lock badges use panel colours
+  (same size and position).
+- **Bottom nav bar, docked + collapsible** (`[class*="_bottomBarWide"]`, `#tablist`):
+  the floating 30px pill becomes a toolbar pinned to the bottom-left corner,
+  with icon + label side by side, hairline separators and the current page
+  shown with an accent tint and underline. A chevron tab on its left edge
+  collapses it off-screen and brings it back. The state is remembered.
+  Songsterr's own rules still decide when the bar exists at all (hidden below
+  880px wide and on the Plus page).
+- **Tab author** under the song title (see "Tab author").
+- **Player toolbar buttons** (`#controls`): flat, joined segmented strip; 3px max radius;
   bevel highlight/shade; inverted bevel on press; accent tint + inverted bevel for
   toggled-on buttons (loop, metronome, count-in, solo, mute, speed ≠ 100% …); dimmed
   icons for disabled controls; inset focus ring; the speed "100%" pill becomes an
@@ -100,7 +142,7 @@ selector can never make the play button or the tab disappear.
 - Track list / mixer (`#default-mixer`, `[id^="mixer-item-"]`): flat rows, hover
   highlight, left-edge accent bar for the active track, segmented solo/mute.
 - Menus, popovers, modals (`[role="dialog"]`, speed/metronome/settings popovers).
-- Song header and site nav (`#header`, `#tablist`, `#logo`).
+- Rest of the song header and the floating logo (`#header`, `#logo`).
 - Promo tone-down (`#showroom`, `#promo`, Plus banners). Visual only.
 
 ### Intentionally left alone
@@ -114,6 +156,11 @@ selector can never make the play button or the tab disappear.
 
 ## Design decisions
 
+- **Docked, not floating.** The player pane and nav bar touch the screen edges
+  like classic app toolbars. The nav bar's right edge stops where the player pane
+  begins (`100vw - --controls-panel-width`), so the two never overlap.
+- **Collapsing the nav slides it fully off-screen** and leaves only a 16px
+  chevron tab. Hidden links are also removed from the keyboard tab order.
 - **Play button is a rounded square, not a circle.** It keeps the accent fill so
   it stays the obvious primary action, but uses the same 3px radius as everything
   else. When the original/synth audio toggle is present, the two join as one
@@ -142,15 +189,16 @@ non-text graphic, so 3:1 is the requirement), focus ring on toolbar ≥ 4.6:1.
 ```
 manifest.json
 src/
-  content.js        theme/density classes, live settings, SPA safety net, diagnostics
+  content.js        settings -> <html> classes, nav collapse tab, author attribute, diagnostics
+  page-meta.js      page-world, read-only observer of the site's /api/meta responses (author)
   selectors.js      selector map, the single place to fix after site updates
   styles/
     tokens.css      CSS variables for Dark / Light / Auto + density
     base.css        typography + focus ring, scoped to restyled regions
-    toolbar.css     player toolbar               (done)
+    toolbar.css     player pane, dock, top row   (done)
     tracklist.css   track list / mixer           (planned)
     menus.css       popovers, dialogs, promos    (planned)
-    header.css      song header + site nav       (planned)
+    header.css      bottom nav dock + author     (done; logo/title planned)
 popup/              settings popup (same bevel/segmented look)
 icons/              original 16/32/48/128 icon
 ```

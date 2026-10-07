@@ -18,6 +18,13 @@
         "src/styles/header.css"
       ],
       "js": ["src/selectors.js", "src/content.js"]
+    },
+    {
+      "matches": ["*://*.songsterr.com/*"],
+      "run_at": "document_start",
+      "all_frames": false,
+      "world": "MAIN",
+      "js": ["src/page-meta.js"]
     }
   ],
   "action": {

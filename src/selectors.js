@@ -15,6 +15,7 @@
  *                      stems with [class*="_stem"] and never use the hash.
  *
  * Tiers (most to least stable): id > aria/role/data > stem > hash.
+ * Non-DOM dependency: page-meta.js matches the site's /api/meta/{songId} URLs.
  * No selector currently relies on a full hashed class name.
  *
  * Nothing in here hides content. If a selector stops matching, the rules that
@@ -40,7 +41,20 @@
       mixer:     { sel: '#control-mixer', tier: 'id', note: 'Opens the track list (mixer). Shows the instrument icon or a track counter.' },
       speedText: { sel: '#control-speed [class*="_textSpeed"]', tier: 'stem', note: 'The "100%" label inside the speed button (was a pill).' },
       metronomeSettings: { sel: '#metronome-settings', tier: 'id', note: 'Small "..." tab that appears above the metronome button when it is on.' },
-      handle:    { sel: '#controls-panel-handle', tier: 'id', note: 'Drag handle bar above the row (collapse/expand).' }
+      handle:    { sel: '#controls-panel-handle', tier: 'id', note: 'Drag handle bar above the row (collapse/expand).' },
+      topPanel:  { sel: '[data-controls-top-panel]', tier: 'data', note: 'Row above the pane: favourite, display-mode select, editor. Positioned via --controls-top-panel-bottom.' },
+      topItems:  { sel: '[data-controls-top-panel] [class*="_controlsTopItem"]', tier: 'stem', note: 'Item slots inside the top row.' },
+      favorite:  { sel: '#favorite-toggle', tier: 'id', note: 'Favourite star. Chosen state = class stem _toggleChosen.' },
+      displayMode: { sel: '#display-mode-button', tier: 'id', note: 'Tab / Sheet / Chords select (role="combobox").' },
+      editor:    { sel: '#control-editor', tier: 'id', note: 'Tab editor toggle (pencil). aria-pressed when on.' }
+    },
+
+    nav: {
+      status: 'styled',
+      bar:    { sel: '[class*="_bottomBarWide"]', tier: 'stem', note: 'Fixed bottom nav container (was a floating 30px pill). Site hides it <880px, for data-plus="true", and until data-ready="true".' },
+      list:   { sel: '#tablist', tier: 'id', note: 'The <nav> inside the bar (flex row-reverse).' },
+      items:  { sel: '#tablist a[id^="menu-"]', tier: 'id', note: 'Entries: menu-search, menu-favorites, menu-newtab, menu-help, menu-signin, menu-plus ... aria-active="true" = current page.' },
+      toggle: { sel: '#sc-nav-toggle', tier: 'id', note: "Ours: collapse tab appended to <body> by content.js." }
     },
 
     tracklist: {
@@ -54,13 +68,13 @@
     },
 
     header: {
-      status: 'planned',
+      status: 'planned (author line styled)',
       header:  { sel: '#header', tier: 'id', note: 'Song title header above the tab.' },
+      author:  { sel: '#header[data-sc-author]', tier: 'data', note: 'Ours: author name from page metadata, rendered by header.css ::after.' },
       title:   { sel: '#song-ttl', tier: 'id', note: 'Song title text.' },
       artist:  { sel: '#song-artist', tier: 'id', note: 'Artist link.' },
       logo:    { sel: '#logo', tier: 'id', note: 'Songsterr logo link (top-left).' },
-      nav:     { sel: '#tablist', tier: 'id', note: 'Main site nav: Plus, Search, My tabs, New tab, Help, Sign in.' },
-      navItems:{ sel: '#tablist a[id^="menu-"]', tier: 'id', note: 'Nav entries (menu-search, menu-favorites, menu-signin ...). aria-active marks the current one.' }
+      state:   { sel: 'script#state[type="application/json"]', tier: 'id', note: 'Embedded page state; author at meta.current.author. Read-only.' }
     },
 
     menus: {

@@ -11,9 +11,11 @@
     enabled: true,
     theme: 'dark',
     density: 'compact',
-    toneDownPromos: false
+    toneDownPromos: false,
+    showAuthor: true,
+    navCollapsed: false
   };
-  const BOOLEAN_KEYS = new Set(['enabled', 'toneDownPromos']);
+  const BOOLEAN_KEYS = new Set(['enabled', 'toneDownPromos', 'showAuthor', 'navCollapsed']);
 
   const form = document.getElementById('settings');
   const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
@@ -52,6 +54,15 @@
   });
 
   darkQuery.addEventListener('change', () => applyPopupTheme(current.theme));
+
+  // Reflect changes made elsewhere (e.g. the nav collapse tab on the page).
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'sync') return;
+    for (const [key, { newValue }] of Object.entries(changes)) {
+      if (key in DEFAULTS) current[key] = newValue === undefined ? DEFAULTS[key] : newValue;
+    }
+    render(current);
+  });
 
   // ---------- Diagnostics ----------
   const diagBtn = document.getElementById('diagnose');

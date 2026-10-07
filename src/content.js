@@ -6,8 +6,11 @@
  *   1. puts the right classes on <html> as early as possible,
  *   2. keeps them in sync with chrome.storage.sync (live, no reload),
  *   3. re-adds them if the page ever strips them (SPA safety net),
- *   4. answers the popup's "Check selectors" request.
- * It never touches Songsterr's own DOM, state, network or feature logic.
+ *   4. adds a collapse toggle for the bottom nav bar (our own element, placed
+ *      outside Songsterr's app root),
+ *   5. exposes the tab author as a data attribute on #header (rendered by CSS),
+ *   6. answers the popup's "Check selectors" request.
+ * It never changes Songsterr's own state, requests or feature logic.
  */
 (() => {
   'use strict';
@@ -16,12 +19,15 @@
     enabled: true,
     theme: 'dark',          // dark | light | auto
     density: 'compact',     // compact | comfortable
-    toneDownPromos: false
+    toneDownPromos: false,
+    showAuthor: true,
+    navCollapsed: false
   });
   const VALID = {
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
   };
+  const BOOLEANS = ['toneDownPromos', 'showAuthor', 'navCollapsed'];
   // Mirror of the last-known settings in the page's localStorage. It is read
   // synchronously at document_start so the right theme paints on the first
   // frame; chrome.storage stays the source of truth.
@@ -34,7 +40,7 @@
   function normalize(raw) {
     const s = { ...DEFAULTS, ...(raw || {}) };
     s.enabled = s.enabled !== false;
-    s.toneDownPromos = s.toneDownPromos === true;
+    for (const key of BOOLEANS) s[key] = typeof s[key] === 'boolean' ? s[key] : DEFAULTS[key];
     if (!VALID.theme.includes(s.theme)) s.theme = DEFAULTS.theme;
     if (!VALID.density.includes(s.density)) s.density = DEFAULTS.density;
     return s;
@@ -44,6 +50,8 @@
     if (!s.enabled) return [];
     const list = ['sc-enabled', `sc-theme-${s.theme}`, `sc-density-${s.density}`];
     if (s.toneDownPromos) list.push('sc-tone-promos');
+    if (s.showAuthor) list.push('sc-show-author');
+    if (s.navCollapsed) list.push('sc-nav-collapsed');
     return list;
   }
 
@@ -60,9 +68,137 @@
     settings = normalize(raw);
     wanted = classesFor(settings);
     syncClasses();
+    updateNavToggle();
     try {
       localStorage.setItem(MIRROR_KEY, JSON.stringify(settings));
     } catch (_) { /* storage blocked: first paint just uses defaults */ }
+  }
+
+  function save(patch) {
+    apply({ ...settings, ...patch });
+    try {
+      chrome.storage.sync.set(patch);
+    } catch (_) { /* extension reloaded; the class change still applies here */ }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Nav collapse toggle (selectors.js: nav.toggle)
+  // ---------------------------------------------------------------------------
+  const NAV_SELECTOR = '[class*="_bottomBarWide"]';
+  let navToggle = null;
+
+  function buildNavToggle() {
+    const btn = document.createElement('button');
+    btn.id = 'sc-nav-toggle';
+    btn.type = 'button';
+    btn.hidden = true;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 8 12');
+    svg.setAttribute('width', '8');
+    svg.setAttribute('height', '12');
+    svg.setAttribute('aria-hidden', 'true');
+    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    path.setAttribute('d', 'M6 1 1.5 6 6 11');
+    svg.append(path);
+    btn.append(svg);
+    btn.addEventListener('click', () => save({ navCollapsed: !settings.navCollapsed }));
+    return btn;
+  }
+
+  function updateNavToggle() {
+    if (!navToggle) return;
+    const collapsed = settings.navCollapsed;
+    const label = collapsed ? 'Show navigation bar' : 'Hide navigation bar';
+    navToggle.setAttribute('aria-expanded', String(!collapsed));
+    navToggle.setAttribute('aria-label', label);
+    navToggle.title = label;
+  }
+
+  function syncNavToggle() {
+    if (!document.body) return;
+    if (!navToggle) {
+      navToggle = buildNavToggle();
+      updateNavToggle();
+    }
+    // Lives outside Songsterr's #root so the app's renderer never touches it.
+    if (navToggle.parentNode !== document.body) document.body.append(navToggle);
+    const nav = document.querySelector(NAV_SELECTOR);
+    const navShown = !!nav &&
+      nav.getAttribute('data-ready') !== 'false' &&
+      getComputedStyle(nav).display !== 'none';
+    // Only offer the toggle while the nav bar itself can be shown.
+    if (navToggle.hidden === navShown) navToggle.hidden = !navShown;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Author (selectors.js: header.author). Data sources, no requests made:
+  //   - <script id="state"> embedded in the first page load (meta.current.author)
+  //   - "sc-classic:meta" events from page-meta.js, which reads the site's own
+  //     /api/meta responses during in-app navigation.
+  // The name is set as data-sc-author on #header; header.css renders it.
+  // ---------------------------------------------------------------------------
+  const authors = new Map(); // songId -> display name
+  let stateRead = false;
+
+  function rememberAuthor(songId, author) {
+    if (songId == null || !author) return;
+    const name = String(author.name || author.profileName || '').trim();
+    if (name) authors.set(String(songId), name.slice(0, 80));
+  }
+
+  function readEmbeddedState() {
+    if (stateRead) return;
+    const el = document.getElementById('state');
+    if (!el) return;
+    stateRead = true;
+    try {
+      const current = JSON.parse(el.textContent || '{}')?.meta?.current;
+      if (current) rememberAuthor(current.songId, current.author);
+    } catch (_) { /* malformed or changed format: no author shown */ }
+  }
+
+  document.addEventListener('sc-classic:meta', (event) => {
+    try {
+      const data = JSON.parse(event.detail);
+      rememberAuthor(data.songId, data.author);
+      schedule();
+    } catch (_) { /* ignore */ }
+  });
+
+  function songIdFromUrl() {
+    // /a/wsa/metallica-enter-sandman-tab-s19, ...-s19t2, ...-sheet-s19
+    const m = location.pathname.match(/-s(\d+)(?:t\d+)?\/?$/);
+    if (!m || /-chords-s\d+/.test(location.pathname)) return null;
+    return m[1];
+  }
+
+  function syncAuthor() {
+    readEmbeddedState();
+    const header = document.getElementById('header');
+    if (!header) return;
+    const id = songIdFromUrl();
+    const name = id ? authors.get(id) : undefined;
+    if (name) {
+      if (header.getAttribute('data-sc-author') !== name) header.setAttribute('data-sc-author', name);
+    } else if (header.hasAttribute('data-sc-author')) {
+      header.removeAttribute('data-sc-author');
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Upkeep, coalesced. Songsterr is a single-page app and re-renders often
+  // (the playback cursor animates constantly), so DOM changes only schedule
+  // one cheap pass at most every 250ms.
+  // ---------------------------------------------------------------------------
+  let timer = 0;
+  function schedule() {
+    if (timer) return;
+    timer = setTimeout(() => {
+      timer = 0;
+      if (wanted.some((c) => !root.classList.contains(c))) syncClasses();
+      syncNavToggle();
+      syncAuthor();
+    }, 250);
   }
 
   // 1. First paint: mirrored settings (or defaults), synchronously.
@@ -85,18 +221,17 @@
     });
   } catch (_) { /* extension context gone (e.g. reloaded); keep last classes */ }
 
-  // 3. Safety net: Songsterr is a single-page app. It does not currently
-  // rewrite <html class>, but if a future build does, put ours back. Only
-  // watches the class attribute of <html>, coalesced to one frame.
-  let pending = false;
-  new MutationObserver(() => {
-    if (pending) return;
-    pending = true;
-    requestAnimationFrame(() => {
-      pending = false;
-      if (wanted.some((c) => !root.classList.contains(c))) syncClasses();
-    });
-  }).observe(root, { attributes: true, attributeFilter: ['class'] });
+  // 3. Safety net + upkeep triggers.
+  new MutationObserver(schedule).observe(root, {
+    attributes: true,
+    attributeFilter: ['class', 'data-ready', 'data-plus'],
+    childList: true,
+    subtree: true
+  });
+  window.addEventListener('popstate', schedule);
+  window.addEventListener('resize', schedule);
+  document.addEventListener('DOMContentLoaded', schedule);
+  schedule();
 
   // 4. Popup diagnostics.
   try {
