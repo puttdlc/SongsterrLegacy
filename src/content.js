@@ -9,7 +9,7 @@
  *   4. adds a collapse toggle for the bottom nav bar (our own element, placed
  *      outside Songsterr's app root) and a minimise toggle for the player pane
  *      (appended to the favourite / display-mode / editor strip),
- *   5. shows the tab author as a "Tab by <name>" link under the song title,
+ *   5. shows the tab author as a "Last edited by <name>" link under the song title,
  *   6. answers the popup's "Check selectors" request.
  * It never changes Songsterr's own state, requests or feature logic.
  */
@@ -235,7 +235,7 @@
   function buildAuthor() {
     const el = document.createElement('div');
     el.id = 'sc-author';
-    el.append('Tab by ');
+    el.append('Last edited by ');
     const link = document.createElement('a');
     el.append(link);
     return el;

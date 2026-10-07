@@ -41,7 +41,7 @@ personal information is stored.
 
 ## What the extension reads
 
-To show the "Tab by <author>" line under a song title, the extension reads the
+To show the "Last edited by <author>" line under a song title, the extension reads the
 author's name from song information the Songsterr page has already loaded:
 
 - on first page load, from data embedded in the page;

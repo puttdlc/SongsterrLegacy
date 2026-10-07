@@ -71,7 +71,7 @@
     header: {
       status: 'planned (author line styled)',
       header:  { sel: '#header', tier: 'id', note: 'Song title header above the tab.' },
-      author:  { sel: '#header #sc-author', tier: 'id', note: 'Ours: "Tab by <name>" link to /user/<profileName>, appended by content.js into the header\'s empty [class*=_info] slot (or #header).' },
+      author:  { sel: '#header #sc-author', tier: 'id', note: 'Ours: "Last edited by <name>" link to /user/<profileName>, appended by content.js into the header\'s empty [class*=_info] slot (or #header).' },
       infoSlot:{ sel: '#header > [class*="_wrap"] > [class*="_info"]', tier: 'stem', note: 'Empty centred slot under the title where the author line goes.' },
       planBadge: { sel: '#tablist [class*="_planBadge"]', tier: 'stem', note: '"plus"/"pro" badge on the account nav item (logged in).' },
       title:   { sel: '#song-ttl', tier: 'id', note: 'Song title text.' },

@@ -206,7 +206,7 @@ html.sc-enabled.sc-nav-collapsed #sc-nav-toggle svg {
 }
 
 /* ---------------------------------------------------------------------------
- * header.author: "Tab by <name>" line under the song title.
+ * header.author: "Last edited by <name>" line under the song title.
  * #sc-author is our own element (content.js), appended inside #header. The
  * name links to the author's Songsterr profile. Colours use the site's text
  * variables because the header sits on the notation background, which

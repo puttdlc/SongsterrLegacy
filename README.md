@@ -36,7 +36,7 @@ Click the toolbar icon to open the settings popup:
 | Reskin | On / Off | Off removes every style instantly, no reload. |
 | Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
-| Author | Show / Hide | "Tab by <name>" under the song title (see below). |
+| Author | Show / Hide | "Last edited by <name>" under the song title (see below). |
 | Nav bar | Shown / Collapsed | Same as the chevron tab at the bottom-left of the page. |
 | Player | Full / Minimised | Same as the chevron at the end of the favourite / display-mode / editor strip. |
 
@@ -64,9 +64,9 @@ panel is open, so a 0 is not automatically a problem. See below.
 
 ## Tab author
 
-Songsterr's current header no longer shows who wrote a tab, but the data is
+Songsterr's current header no longer shows who last edited a tab, but the data is
 still in the song metadata the site already downloads (`author.name` /
-`author.profileName`). The extension shows it again as "Tab by <name>" under the
+`author.profileName`). The extension shows it again as "Last edited by <name>" under the
 title, without making any request of its own:
 
 - **First page load:** read from the page's embedded `<script id="state">`
@@ -77,8 +77,9 @@ title, without making any request of its own:
   response. It never changes the request or what the site receives, and
   forwards only the song id, revision id and author name.
 
-It is shown as "Tab by **name**", where the name links to the author's
-Songsterr profile (`/user/<profileName>`, the same URL Songsterr's own revision
+It is shown as "Last edited by **name**" (the author of the revision you are
+viewing, which on the latest version is the most recent editor). The name links
+to their Songsterr profile (`/user/<profileName>`, the same URL Songsterr's own revision
 list uses). The line is a small element of ours (`#sc-author`) placed in the
 header's empty, centred info slot under the title, and is removed again when
 the reskin or the Author setting is turned off. Revision URLs
