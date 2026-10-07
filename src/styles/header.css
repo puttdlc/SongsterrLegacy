@@ -11,7 +11,7 @@
  *           div[class*=_icon] (svg) + div[class*=_text]
  *   button#sc-nav-toggle                                  (nav.toggle, ours, in <body>)
  *
- *   header#header[data-sc-author]                         (header.author, attribute set by content.js)
+ *   #header [class*=_info] > div#sc-author > a[href=/user/...]  (header.author, ours, added by content.js)
  *
  * Nav design: the floating 30px-radius pill becomes a toolbar docked to the
  * bottom-left corner, flush with the screen edge. Items are icon + label side
@@ -207,16 +207,65 @@ html.sc-enabled.sc-nav-collapsed #sc-nav-toggle svg {
 
 /* ---------------------------------------------------------------------------
  * header.author: "Tab by <name>" line under the song title.
- * The name comes from Songsterr's own song metadata (see content.js and
- * page-meta.js). Uses the site's text colour variables because the header
- * sits on the notation background, which follows Songsterr's theme.
+ * #sc-author is our own element (content.js), appended inside #header. The
+ * name links to the author's Songsterr profile. Colours use the site's text
+ * variables because the header sits on the notation background, which
+ * follows Songsterr's own theme.
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-show-author #header[data-sc-author]::after {
-  content: "Tab by " attr(data-sc-author);
+#sc-author {
+  display: none;
+}
+html.sc-enabled.sc-show-author #header #sc-author {
   display: block;
   margin-top: 2px;
   text-align: center;
   color: var(--text-second, currentColor);
   font: 400 var(--sc-font-size) / 1.3 var(--sc-font);
   letter-spacing: 0.2px;
+}
+html.sc-enabled #sc-author a {
+  color: var(--text, currentColor);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px dotted currentColor;
+}
+html.sc-enabled #sc-author a[href]:hover {
+  color: var(--link-color-active, var(--sc-accent));
+  border-bottom-style: solid;
+}
+html.sc-enabled #sc-author a:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: 2px;
+}
+@media print {
+  #sc-author { display: none !important; } /* override: never print our addition */
+}
+
+/* ---------------------------------------------------------------------------
+ * nav.badges: the "plus"/"pro" plan badge and inbox count were absolutely
+ * positioned on the icon's corner, which suited the old icon-over-label
+ * layout but covers the label now that they sit side by side. Put them in
+ * the flow next to the icon instead. Same badge, never hidden.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #tablist a[id^="menu-"] [class*="_icon"]:has(> [class*="_planBadge"], > [class*="_badge"]) {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  width: auto;
+}
+html.sc-enabled #tablist [class*="_icon"] > :is([class*="_planBadge"], [class*="_badge"]) {
+  position: static;
+  inset: auto;
+  transform: none;
+  margin: 0;
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * header.logo: the gradient "pill" in the top-left keeps Songsterr's logo
+ * and brand colour, but loses the big soft shadow (via --logo-shadow in
+ * base.css) and sits flush with the edge.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #logo {
+  border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
 }

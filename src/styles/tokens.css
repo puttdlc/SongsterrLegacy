@@ -61,6 +61,8 @@ html.sc-enabled {
   --sc-accent-border:   #1f5fb8;
   --sc-on-accent:       #ffffff;
   --sc-selected-bg:     #29405f;   /* accent tint for toggled-on controls */
+  --sc-accent-fill:     #2a6ccc;   /* solid accent behind white text (5.1:1) */
+  --sc-row-hover:       #2f3136;   /* list/menu row hover */
   --sc-selected-fg:     #9cc4ff;
   --sc-focus:           #74abff;
 
@@ -102,6 +104,8 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
   --sc-accent-border:   #134fa6;
   --sc-on-accent:       #ffffff;
   --sc-selected-bg:     #d6e5fa;
+  --sc-accent-fill:     #1b66d2;
+  --sc-row-hover:       #e6e8ec;
   --sc-selected-fg:     #0f4fa8;
   --sc-focus:           #1b66d2;
 
@@ -138,6 +142,8 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
     --sc-accent-border:   #134fa6;
     --sc-on-accent:       #ffffff;
     --sc-selected-bg:     #d6e5fa;
+    --sc-accent-fill:     #1b66d2;
+    --sc-row-hover:       #e6e8ec;
     --sc-selected-fg:     #0f4fa8;
     --sc-focus:           #1b66d2;
 

@@ -9,11 +9,10 @@ inset shadows). It changes the look only. The site behaves exactly as before.
 - Paid/Plus features, paywalls and account checks are not touched.
 - The notation renderer's output is never styled.
 
-> **Build status: step 2 of the incremental plan.** Done: tokens, themes, popup,
-> the **player toolbar** (docked bottom-right), the **bottom nav bar** (docked
-> bottom-left, collapsible) and the **tab author** line in the header. Next: track
-> list, menus/popovers, the rest of the header (logo) and the promo tone-down.
-> Their selectors are already mapped in `src/selectors.js` with status `planned`.
+> **Build status: step 3.** The classic style is now site-wide: player pane,
+> nav bar, side panels (Search, My tabs, Help, Account ...), dialogs (mixer,
+> settings, feature popups, inbox), menus, switches and segmented controls, plus
+> the clickable tab author. Still open: promo tone-down.
 
 ## Install
 
@@ -75,9 +74,13 @@ title, without making any request of its own:
   response. It never changes the request or what the site receives, and
   forwards only the song id, revision id and author name.
 
-The name is stored as `data-sc-author` on `#header` and drawn by CSS
-(`header.css`, `::after`), so nothing is inserted into Songsterr's own markup.
-Chords pages are skipped because they use a separate chords revision.
+It is shown as "Tab by **name**", where the name links to the author's
+Songsterr profile (`/user/<profileName>`, the same URL Songsterr's own revision
+list uses). The line is a small element of ours (`#sc-author`) placed in the
+header's empty, centred info slot under the title, and is removed again when
+the reskin or the Author setting is turned off. Revision URLs
+(`…-s84335t4/r93259…`) are supported. Chords pages are skipped because they use
+a separate chords revision.
 
 ## Fixing after a Songsterr update
 
@@ -115,6 +118,25 @@ selector can never make the play button or the tab disappear.
 
 ### Restyled (so far)
 
+- **Site-wide base layer** (`base.css`): Songsterr's corner-radius and shadow
+  variables are flattened everywhere (max 3px, one tight shadow plus a hairline).
+  Inside every chrome container (`main[id^="panel-"]`, `[role="dialog"]`,
+  `[role="menu"]`, `[role="listbox"]`, toolbars), Songsterr's colour variables
+  are remapped to the theme tokens, so panels and popups follow Dark/Light even
+  where there are no specific rules. The notation and the song header keep
+  Songsterr's own colours.
+- **Side panels** (Search, My tabs, Help, Account, New tab …): docked to the
+  left edge, full height down to the nav bar. Compact title, sunken rectangular
+  search field, flat hairline-separated rows with hover, the current song shown
+  with an accent tint and a left edge bar, and square segmented groups
+  (Favorites / Contributions / Playlists).
+- **Track list / mixer**: docked bottom-right, compact title strip, flat rows,
+  active track = accent tint + 3px left accent bar, solo/mute as a joined pair.
+- **Settings, feature/speed popups, help (Ctrl+K), inbox, profile menu**: square
+  corners, compact title strips, flat sections; rectangular switches.
+- **Nav "plus"/"pro" badge and inbox count**: moved next to the icon so they no
+  longer cover the label.
+
 - **Player pane, docked** (`#controls` + `[data-controls-top-panel]`): no longer
   a floating bubble. The pane is pinned flush to the bottom-right corner with
   hairline borders and no gap or big shadow. The favourite / display-mode /
@@ -139,17 +161,18 @@ selector can never make the play button or the tab disappear.
 
 ### Planned (next steps)
 
-- Track list / mixer (`#default-mixer`, `[id^="mixer-item-"]`): flat rows, hover
-  highlight, left-edge accent bar for the active track, segmented solo/mute.
-- Menus, popovers, modals (`[role="dialog"]`, speed/metronome/settings popovers).
-- Rest of the song header and the floating logo (`#header`, `#logo`).
 - Promo tone-down (`#showroom`, `#promo`, Plus banners). Visual only.
+- Logged-in-only surfaces (inbox, profile menu, plan badge) were styled from the
+  site source but could not be checked in a logged-out test browser.
 
 ### Intentionally left alone
 
 - **Notation** (`#tablature` and everything the renderer draws): not styled.
 - **Plus/lock badges** on toolbar buttons: recolored at most, never hidden or moved.
 - **Disabled/locked logic**: Songsterr decides what is disabled; we only change how it looks.
+- **Song header colours and the logo artwork**: the title/artist keep Songsterr's
+  colours (they sit on the notation background); the logo only loses its big
+  shadow.
 - **Page body font**: unchanged, because the notation may inherit it. The system
   font is applied only inside restyled regions.
 - **Editor-only toolbars** (note menus, drum toolbar and so on): out of scope for now.
@@ -194,10 +217,10 @@ src/
   selectors.js      selector map, the single place to fix after site updates
   styles/
     tokens.css      CSS variables for Dark / Light / Auto + density
-    base.css        typography + focus ring, scoped to restyled regions
+    base.css        site-wide: radius/shadow flattening, colour remap, focus
     toolbar.css     player pane, dock, top row   (done)
-    tracklist.css   track list / mixer           (planned)
-    menus.css       popovers, dialogs, promos    (planned)
+    tracklist.css   track list / mixer           (done)
+    menus.css       side panels, dialogs, menus  (done; promos planned)
     header.css      bottom nav dock + author     (done; logo/title planned)
 popup/              settings popup (same bevel/segmented look)
 icons/              original 16/32/48/128 icon

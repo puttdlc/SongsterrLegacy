@@ -1,8 +1,122 @@
 /*
- * Songsterr Classic: tracklist
- * Region: Track list / mixer (#default-mixer, [id^="mixer-item-"])
- * Region keys: selectors.js -> tracklist
+ * Songsterr Classic: track list (mixer)
+ * ======================================
+ * Region keys: selectors.js -> tracklist.*
  *
- * Not styled yet. This region comes after the player toolbar is reviewed.
- * Selectors are already mapped in selectors.js (status: "planned").
+ * DOM (2026-10 build, lazy-loaded when the mixer opens):
+ *   div#default-mixer[role=dialog]                 docked bottom-right
+ *     div[class*=_header] > [class*=_popupHeader]  title bar ("Mixer" + close)
+ *       switches (AI autoswitch, multitrack), #mixer-sound-value (volume)
+ *     div#mixer-items-scroller > div (tracks, gap 10px)
+ *       div#mixer-item-<partId>[data-active]       one row per track
+ *         a (instrument icon + name)               click = switch track
+ *         [class*=_soloMuteButtons] > button x2    solo / mute
+ *
+ * Design: flat rows separated by hairlines (were 10px-radius cards with
+ * gaps); hover lightens; the active track gets an accent tint plus a 3px
+ * accent bar on its left edge. Solo/mute join into one segmented pair.
  */
+
+html.sc-enabled #default-mixer {
+  border-top: 1px solid var(--sc-border);
+  border-left: 1px solid var(--sc-border);
+}
+
+/* Header block: tighter rows. */
+html.sc-enabled #default-mixer [class*="_mixerHeaderContainer"] {
+  gap: 4px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--sc-divider);
+}
+
+/* Master volume: pill mute button -> small square. */
+html.sc-enabled #mixer-sound-value button {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * tracklist.rows
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #mixer-items-scroller {
+  padding: 0 0 8px;
+}
+html.sc-enabled #mixer-items-scroller > div {
+  gap: 0;
+}
+
+html.sc-enabled [id^="mixer-item-"] {
+  max-width: none;
+  border-radius: 0;
+  border-bottom: 1px solid var(--sc-divider);
+  background: transparent;
+  padding-right: 8px;
+  transition: background-color var(--sc-ease);
+}
+html.sc-enabled [id^="mixer-item-"]:hover {
+  background: var(--sc-row-hover);
+}
+html.sc-enabled [id^="mixer-item-"][data-active="true"],
+html.sc-enabled [id^="mixer-item-"][data-active="true"]:hover {
+  background: var(--sc-selected-bg);
+  box-shadow: inset 3px 0 0 var(--sc-accent);
+}
+
+/* Row content: denser. */
+html.sc-enabled [id^="mixer-item-"] a {
+  padding-top: var(--sc-list-row-pad-y);
+  padding-bottom: var(--sc-list-row-pad-y);
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_instrument"] {
+  font: 600 var(--sc-font-size) / 1.3 var(--sc-font);
+  letter-spacing: 0;
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_name"] {
+  font: 400 var(--sc-font-size-small) / 1.3 var(--sc-font);
+  letter-spacing: 0;
+  color: var(--sc-text-muted);
+}
+html.sc-enabled [id^="mixer-item-"][data-active="true"] [class*="_name"] {
+  color: var(--sc-selected-fg);
+}
+
+/* ---------------------------------------------------------------------------
+ * tracklist.soloMute: two joined buttons
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] {
+  gap: 0;
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button {
+  box-sizing: border-box;
+  width: 30px;
+  height: 26px;
+  margin-left: -1px;
+  border: 1px solid var(--sc-border);
+  border-radius: 0;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > :first-child button,
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > button:first-child {
+  border-radius: var(--sc-radius) 0 0 var(--sc-radius);
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > :last-child button,
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > button:last-child {
+  border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:not(:disabled):hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:not(:disabled):active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button[aria-pressed="true"] {
+  background: var(--sc-selected-bg);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button[aria-pressed="true"] svg {
+  fill: var(--sc-selected-fg);
+}
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:disabled {
+  background: var(--sc-btn-bg);
+}

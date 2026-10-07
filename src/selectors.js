@@ -58,7 +58,7 @@
     },
 
     tracklist: {
-      status: 'planned',
+      status: 'styled',
       dialog:   { sel: '#default-mixer', tier: 'id', note: 'Mixer dialog (role="dialog"), lazy-loaded when the track list opens.' },
       scroller: { sel: '#mixer-items-scroller', tier: 'id', note: 'Scrollable track list.' },
       rows:     { sel: '[id^="mixer-item-"]', tier: 'id', note: 'One row per track; data-active="true" on the current track.' },
@@ -70,18 +70,40 @@
     header: {
       status: 'planned (author line styled)',
       header:  { sel: '#header', tier: 'id', note: 'Song title header above the tab.' },
-      author:  { sel: '#header[data-sc-author]', tier: 'data', note: 'Ours: author name from page metadata, rendered by header.css ::after.' },
+      author:  { sel: '#header #sc-author', tier: 'id', note: 'Ours: "Tab by <name>" link to /user/<profileName>, appended by content.js into the header\'s empty [class*=_info] slot (or #header).' },
+      infoSlot:{ sel: '#header > [class*="_wrap"] > [class*="_info"]', tier: 'stem', note: 'Empty centred slot under the title where the author line goes.' },
+      planBadge: { sel: '#tablist [class*="_planBadge"]', tier: 'stem', note: '"plus"/"pro" badge on the account nav item (logged in).' },
       title:   { sel: '#song-ttl', tier: 'id', note: 'Song title text.' },
       artist:  { sel: '#song-artist', tier: 'id', note: 'Artist link.' },
       logo:    { sel: '#logo', tier: 'id', note: 'Songsterr logo link (top-left).' },
       state:   { sel: 'script#state[type="application/json"]', tier: 'id', note: 'Embedded page state; author at meta.current.author. Read-only.' }
     },
 
+    chrome: {
+      status: 'styled (colour remap, base.css)',
+      panels:  { sel: 'main[id^="panel-"]', tier: 'id', note: 'Side panels: panel-search, panel-favorites, panel-help, panel-account ...' },
+      dialogs: { sel: '[role="dialog"]', tier: 'aria', note: 'Mixer, settings, speed/feature popups, help popup, inbox.' },
+      menus:   { sel: '[role="menu"]', tier: 'aria', note: 'Profile menu.' },
+      lists:   { sel: '[role="listbox"]', tier: 'aria', note: 'Dropdown option lists.' }
+    },
+
+    panels: {
+      status: 'styled',
+      main:     { sel: 'main[id^="panel-"][class*="_mainPanel"]', tier: 'id', note: 'Docked to the left edge, full height down to the nav bar.' },
+      title:    { sel: 'main[id^="panel-"] h1', tier: 'id', note: '"Search tabs" / "My tabs" heading.' },
+      field:    { sel: 'main[id^="panel-"] input[placeholder]', tier: 'id', note: 'Search / filter text field.' },
+      rows:     { sel: 'main[id^="panel-"] a[aria-selected]', tier: 'aria', note: 'Song rows; aria-selected="true" = current song.' },
+      segments: { sel: '[class*="_group"]:has(> [class*="_groupItem"])', tier: 'stem', note: 'Segmented groups (Favorites / Contributions / Playlists).' }
+    },
+
     menus: {
-      status: 'planned',
-      dialogs: { sel: '[role="dialog"]', tier: 'aria', note: 'Generic dialogs/popovers (mixer, settings, speed ...).' },
-      popupsLayer: { sel: '#tab-controls [class*="_popupsLayer"]', tier: 'stem', note: 'Layer holding the toolbar popovers (speed, metronome, settings).' },
-      metronomePopup: { sel: '#metronome-popup', tier: 'id', note: 'Metronome settings popover.' }
+      status: 'styled',
+      settings: { sel: '#settings-popup', tier: 'id', note: 'Settings dialog, docked bottom-right.' },
+      header:   { sel: '[role="dialog"] [class*="_popupHeader"]', tier: 'stem', note: 'Title bars of Mixer / Settings.' },
+      inbox:    { sel: '#inbox-popup', tier: 'id', note: 'Inbox popup (logged in).' },
+      profile:  { sel: '#profile-popup', tier: 'id', note: 'Account / Sign out menu (logged in).' },
+      switches: { sel: '[class*="_switchSlider"]', tier: 'stem', note: 'Toggle switches (role="switch" inputs).' },
+      popupsLayer: { sel: '#tab-controls [class*="_popupsLayer"]', tier: 'stem', note: 'Layer holding the toolbar popovers (speed, metronome, settings).' }
     },
 
     promos: {

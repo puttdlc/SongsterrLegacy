@@ -1,27 +1,200 @@
 /*
- * Songsterr Classic: base
- * ========================
- * Typography and focus handling, applied ONLY to regions this extension
- * restyles. Nothing here is global: the notation renderer may inherit fonts
- * from <body>, so the body font is deliberately left alone.
+ * Songsterr Classic: base (site-wide layer)
+ * ==========================================
+ * Three layers that make the classic look apply everywhere, including panels
+ * and popups that have no dedicated rules yet:
  *
- * Restyled regions so far (keep in sync as regions land):
- *   toolbar  -> #controls   (selectors.js: toolbar.pane)
+ *   1. Shape + elevation: Songsterr routes most corner radii and shadows
+ *      through CSS variables. Flattening those variables flattens every
+ *      component that uses them, and degrades safely: if a variable is
+ *      renamed, that component simply keeps its original look.
+ *
+ *   2. Colour: inside "chrome" containers (panels, dialogs, menus, toolbars)
+ *      Songsterr's semantic colour variables (--text, --popup-surface, ...)
+ *      are remapped to our theme tokens. This is scoped to those containers on
+ *      purpose: the notation and the song header keep Songsterr's own colours,
+ *      so they stay readable whatever theme either side uses.
+ *
+ *   3. Typography + keyboard focus for the same containers. The <body> font is
+ *      left alone because the notation renderer may inherit it.
+ *
+ * Chrome containers (selectors.js -> chrome.*):
+ *   main[id^="panel-"]          side panels: Search, My tabs, Help, Account ...
+ *   [role="dialog"]             mixer, settings, speed/upsell popups, inbox ...
+ *   [role="menu"], [role="listbox"]   profile menu, dropdown lists
+ *   #controls, [data-controls-top-panel], [class*="_bottomBarWide"]
  */
 
-/* ---------- Typography ---------- */
-html.sc-enabled #controls {
-  font-family: var(--sc-font);
-  font-size: var(--sc-font-size);
-  line-height: var(--sc-line);
-  -webkit-font-smoothing: antialiased;
+/* ---------------------------------------------------------------------------
+ * 1. Shape + elevation (global variables)
+ * Songsterr declares some of these per theme on html[color-scheme=...]
+ * (specificity 0,1,1) and a few under html[color-scheme][light-theme-colors]
+ * (0,2,1). ":not(#sc-specificity)" lifts our rule above all of them without
+ * !important; no element has that id.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled:not(#sc-specificity) {
+  --border-radius-button: var(--sc-radius);
+  --border-radius-controls-button: var(--sc-radius);
+  --border-radius-controls-top-panel: 0px;
+  --border-radius-input: 2px;
+  --border-radius-select: 2px;
+  --border-radius-song-item: 0px;
+  --border-radius-toolbar-item: 2px;
+  --popup-border-radius: var(--sc-radius);
+  --controls-card-border-radius: 0px;
+  --controls-popup-border-radius: 0px;     /* panels docked bottom-right: square */
+  --mobile-popup-border-radius: 0px;
+
+  /* One tight shadow plus a hairline instead of 35-40px diffuse blurs. */
+  --popup-shadow:   0 0 0 1px var(--sc-border), var(--sc-elev);
+  --popup-body-shadow: none;
+  --panel-shadow:   0 0 0 1px var(--sc-border), var(--sc-elev);
+  --filter-shadow:  0 0 0 1px var(--sc-border), var(--sc-elev);
+  --alert-shadow:   0 0 0 1px var(--sc-border), var(--sc-elev);
+  --notification-shadow: 0 0 0 1px var(--sc-border), var(--sc-elev);
+  --e-popup-drop-down-shadow: 0 0 0 1px var(--sc-border), var(--sc-elev);
+  --diff-line-pair-controls-shadow: 0 0 0 1px var(--sc-border), var(--sc-elev);
+  --mobile-controls-dots-shadow: var(--sc-elev);
+  --logo-shadow: var(--sc-elev);
+
+  /* Popups anchored to the bottom nav: sit directly on our slimmer bar. */
+  --bottombar-height: calc(var(--sc-nav-h, 32px) + 1px);
+  --bottombar-popup-offset: 0px;
 }
 
-/* ---------- Keyboard focus ---------- */
+/* ---------------------------------------------------------------------------
+ * 2. Colour remap inside chrome containers
+ * ------------------------------------------------------------------------- */
+html.sc-enabled :is(
+  main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"],
+  #controls, [data-controls-top-panel], [class*="_bottomBarWide"]
+) {
+  /* text */
+  --text: var(--sc-text);
+  --text-second: var(--sc-text-muted);
+  --text-third: var(--sc-text-muted);
+  --text-disabled: var(--sc-text-disabled);
+  --panel-header: var(--sc-text);
+  --link-color: var(--sc-selected-fg);
+  --link-color-active: var(--sc-text);
+  --contrast-theme: var(--sc-text);
+  --button-text: var(--sc-text);
+  --button-text-active: var(--sc-on-accent);
+
+  /* surfaces */
+  --panel-surface: var(--sc-surface);
+  --popup-surface: var(--sc-surface);
+  --popup-header-surface: var(--sc-surface-raised);
+  --controls-surface: var(--sc-surface);
+  --popup-divider: var(--sc-divider);
+  --divider: var(--sc-divider);
+  --section-divider-color: var(--sc-divider);
+  --faq-divider: var(--sc-divider);
+
+  /* fields */
+  --search-background: var(--sc-surface-sunken);
+  --search-text: var(--sc-text);
+  --search-placeholder: var(--sc-text-muted);
+  --search-header-field-bg: var(--sc-surface-sunken);
+  --search-header-field-placeholder: var(--sc-text-muted);
+  --search-icon-color: var(--sc-icon);
+  --search-icon-reset: var(--sc-icon);
+  --search-icon-reset-hover: var(--sc-text);
+  --input-bg: var(--sc-surface-sunken);
+  --input-border: var(--sc-border);
+  --input-focus: var(--sc-focus);
+  --button-border: var(--sc-border);
+  --checkbox-bg: var(--sc-surface-sunken);
+  --checkbox-border: var(--sc-border);
+  --ep-list-surface: var(--sc-surface-sunken);
+  --ep-list-hover: var(--sc-row-hover);
+  --autocomplete-surface: var(--sc-surface);
+
+  /* lists + rows */
+  --songs-item-hover: var(--sc-row-hover);
+  --songs-item-focus: var(--sc-row-hover);
+  --active-song: var(--sc-selected-bg);
+  --controls-popup-text: var(--sc-text);
+  --controls-popup-item-hover: var(--sc-row-hover);
+  --profile-menu-item-hover: var(--sc-row-hover);
+  --help-menu-item-bg: var(--sc-row-hover);
+  --faq-submenu-hover: var(--sc-row-hover);
+  --inbox-item-background: var(--sc-surface-raised);
+  --inbox-item-hover-background: var(--sc-row-hover);
+  --bottombar-inbox-item-recency: var(--sc-text-muted);
+  --playlist-hover: var(--sc-row-hover);
+  --revision-background-hover: var(--sc-row-hover);
+
+  /* filters + segmented groups */
+  --filter-name: var(--sc-text-muted);
+  --filter-surface: var(--sc-surface-raised);
+  --filter-text-chosen: var(--sc-selected-fg);
+  --filter-chosen: var(--sc-selected-bg);
+  --filter-focus: var(--sc-focus);
+  --button-group-bg: var(--sc-surface-sunken);
+  --button-group-active: var(--sc-accent-fill);
+  --button-group-devider: var(--sc-divider);
+
+  /* buttons */
+  --button-bg: var(--sc-btn-bottom);
+  --button-hover: var(--sc-btn-hover-top);
+  --button-submit: var(--sc-accent-fill);
+
+  /* switches */
+  --switch-background: var(--sc-surface-sunken);
+  --switch-background-active: var(--sc-accent-fill);
+  --switch-round: var(--sc-btn-top);
+
+  /* mixer + settings sections */
+  --mixer-item-surface: var(--sc-surface-raised);
+  --mixer-hover-surface: var(--sc-row-hover);
+  --mixer-item-active: var(--sc-selected-bg);
+  --mixer-item-active-hover: var(--sc-selected-bg);
+  --mixer-text: var(--sc-text);
+  --mixer-text-active: var(--sc-selected-fg);
+  --mixer-item-button: var(--sc-btn-bottom);
+  --mixer-item-active-button: var(--sc-btn-bottom);
+  --mixer-option-button-hover: var(--sc-btn-hover-top);
+  --mixer-option-button-active: var(--sc-accent-fill);
+  --mixer-option-button-active-icon: var(--sc-on-accent);
+  --mixer-button-icon: var(--sc-icon);
+  --mixer-button-icon-hover: var(--sc-text);
+  --mixer-item-checkbox: var(--sc-surface-sunken);
+  --mixer-item-active-checkbox: var(--sc-surface-sunken);
+
+  /* close buttons */
+  --close: var(--sc-icon);
+  --close-hover: var(--sc-text);
+}
+
+/* ---------------------------------------------------------------------------
+ * 3. Typography + focus
+ * ------------------------------------------------------------------------- */
+html.sc-enabled :is(
+  main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"],
+  #controls, [data-controls-top-panel], [class*="_bottomBarWide"]
+) {
+  font-family: var(--sc-font);
+  -webkit-font-smoothing: antialiased;
+  color: var(--sc-text);   /* text that only inherits (no colour of its own) */
+}
+html.sc-enabled #controls {
+  font-size: var(--sc-font-size);
+  line-height: var(--sc-line);
+}
+
 /* One consistent ring for every restyled control. Drawn inset so joined
    (segmented) buttons don't have it clipped by their neighbours. */
-html.sc-enabled #controls :is(button, a, [role="button"]):focus-visible {
+html.sc-enabled :is(
+  main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"], #controls
+) :is(button, a, input, [role="button"], [role="menuitem"], [role="combobox"]):focus-visible {
   outline: 2px solid var(--sc-focus);
   outline-offset: -2px;
   z-index: 2; /* buttons are already positioned by the site */
+}
+
+/* Thin, square scrollbars inside chrome. */
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"]) {
+  scrollbar-color: var(--sc-divider) transparent;
+  scrollbar-width: thin;
 }

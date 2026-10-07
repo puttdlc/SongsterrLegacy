@@ -1,8 +1,242 @@
 /*
- * Songsterr Classic: menus
- * Region: Popovers, dropdowns, modals, promo tone-down ([role="dialog"], #promo, #showroom)
- * Region keys: selectors.js -> menus, promos
+ * Songsterr Classic: panels, dialogs, menus
+ * ==========================================
+ * Region keys: selectors.js -> panels.*, menus.*
+ * Colours and most radii come from base.css (variable remap); this file does
+ * layout (docking, density) and the shapes that are hard-coded in the site.
  *
- * Not styled yet. This region comes after the player toolbar is reviewed.
- * Selectors are already mapped in selectors.js (status: "planned").
+ * DOM (2026-10 build):
+ *   main#panel-<name>[class*=_mainPanel]     Search, My tabs, Help, Account, New tab ...
+ *     (search) input[type=text][placeholder], #song-list-header filters,
+ *              a[aria-selected] song rows
+ *     (my tabs) segmented group [class*=_group] > [class*=_groupItem], sliding
+ *              [class*=_activeButton]
+ *   #settings-popup[role=dialog]             docked bottom-right like the player
+ *   [role=dialog][class*=_popup]             speed/feature popups, help (Ctrl+K) popup
+ *   #inbox-popup[role=dialog]                inbox, anchored to the nav bar
+ *   #profile-popup[role=menu] > [role=menuitem]   Account / Sign out
  */
+
+/* ---------------------------------------------------------------------------
+ * panels.main: the big floating cards become a docked sidebar on the left,
+ * full height down to the nav bar, flush with the screen edge.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled main[id^="panel-"][class*="_mainPanel"] {
+  top: 0;
+  left: 0;
+  bottom: var(--bottombar-height);
+  max-width: calc(100vw - var(--controls-panel-width, 360px));
+  border-radius: 0;
+  border-right: 1px solid var(--sc-border);
+  padding: 14px 6px 6px 16px;
+  box-shadow: var(--sc-elev);
+}
+/* Right-hand variant (rare: narrow side panels docked like the mixer). */
+html.sc-enabled main[id^="panel-"][class*="_sidePanel"] {
+  left: auto;
+  right: 0;
+  border-right: 0;
+  border-left: 1px solid var(--sc-border);
+}
+
+/* Panel title ("Search tabs", "My tabs"): 36px display type -> 18px header. */
+html.sc-enabled main[id^="panel-"] h1 {
+  font: 600 18px / 1.2 var(--sc-font);
+  letter-spacing: 0;
+}
+
+/* Text fields: rounded pills -> sunken rectangles. The fill is only applied
+   to fields that already had one (panel search boxes); dialog inputs with a
+   floating label behind them (e.g. Help "Ask AI Assistant") stay transparent
+   so the label remains visible. */
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) input:is([type="text"], [type="search"], [type="email"], [type="password"], :not([type])) {
+  border-radius: 2px;
+  border: 1px solid var(--sc-border);
+  box-shadow: inset 0 1px 2px var(--sc-shade);
+  color: var(--sc-text);
+}
+html.sc-enabled main[id^="panel-"] input[placeholder]:is([type="text"], [type="search"], :not([type])) {
+  background-color: var(--sc-surface-sunken);
+}
+html.sc-enabled main[id^="panel-"] input[placeholder]:is([type="text"], :not([type])) {
+  height: 32px;
+  font-size: var(--sc-font-size);
+}
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) input:focus {
+  border-color: var(--sc-focus);
+  outline: none;
+}
+
+/* Sticky search/filter bars: hairline under them instead of a blur. */
+html.sc-enabled main[id^="panel-"] #song-list-header {
+  border-bottom: 1px solid var(--sc-divider);
+}
+
+/* ---------------------------------------------------------------------------
+ * panels.rows: song lists (search results, favourites, playlists ...)
+ * Flat rows, hairline separated; current song gets a left accent bar.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled main[id^="panel-"] a[aria-selected] {
+  border-radius: 0;
+  padding-top: 6px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--sc-divider);
+}
+html.sc-enabled main[id^="panel-"] a[aria-selected]:hover {
+  background-color: var(--sc-row-hover);
+}
+html.sc-enabled main[id^="panel-"] a[aria-selected="true"],
+html.sc-enabled main[id^="panel-"] a[aria-selected][class*="_active"] {
+  background-color: var(--sc-selected-bg);
+  box-shadow: inset 3px 0 0 var(--sc-accent);
+}
+
+/* ---------------------------------------------------------------------------
+ * Segmented groups (My tabs: Favorites / Contributions / Playlists, settings
+ * theme switch ...). The site draws a sliding pill behind the active item;
+ * square it off and give the group a sunken well.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"]:has(> [class*="_groupItem"]) {
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  box-shadow: inset 0 1px 2px var(--sc-shade);
+}
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) :is([class*="_groupItem"], [class*="_activeButton"]) {
+  border-radius: 2px;
+}
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_activeButton"] {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Filter dropdown toggles in list headers. */
+html.sc-enabled main[id^="panel-"] [role="combobox"] {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * Switches (role="switch"): pill + round knob -> rectangular rocker.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [class*="_switchSlider"] {
+  border-radius: 2px;
+  border: 1px solid var(--sc-border);
+  box-shadow: inset 0 1px 2px var(--sc-shade);
+}
+html.sc-enabled [class*="_switchSlider"]::before {
+  border-radius: 1px;
+  top: 2px;
+  box-shadow: inset 0 1px 0 var(--sc-highlight), 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+/* Help "?" bubbles, small round icon buttons inside chrome. */
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_tooltipButton"] {
+  border-radius: 2px;
+}
+
+/* Coloured icon tiles in Settings / Account rows. */
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_badge"] {
+  border-radius: 3px;
+}
+
+/* Keyboard hint chips (Ctrl, K ...). */
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="hotkey"] {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * menus.dialogHeader: title bars of docked popups (Mixer, Settings ...).
+ * 55px tall centered headers -> compact title strip.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [role="dialog"] [class*="_popupHeader"] {
+  min-height: calc(var(--sc-ctl-h) + 4px);
+  padding: 0 36px;
+  background: var(--sc-toolbar-bg);
+  border-bottom: 1px solid var(--sc-border);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+}
+html.sc-enabled [role="dialog"] [class*="_popupHeaderTitle"] {
+  font: 600 var(--sc-font-size) / 1 var(--sc-font);
+}
+html.sc-enabled [role="dialog"] [class*="_popupCloseButton"] {
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * menus.settings: docked bottom-right, flush, like the player pane.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #settings-popup {
+  border-top: 1px solid var(--sc-border);
+  border-left: 1px solid var(--sc-border);
+}
+html.sc-enabled #settings-popup [class*="_section"]:not([class*="_sectionHeader"]) {
+  border: 1px solid var(--sc-divider);
+  border-radius: 2px;
+}
+html.sc-enabled #settings-popup [class*="_sectionHeader"] {
+  font: 600 var(--sc-font-size-small) / 1.4 var(--sc-font);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: var(--sc-text-muted);
+}
+html.sc-enabled #settings-popup [class*="_row"]:not([class*="_rowMain"], [class*="_rowText"], [class*="_rowLabel"], [class*="_rowControl"]) {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+html.sc-enabled #settings-popup [class*="_rowLabel"] {
+  font-size: var(--sc-font-size);
+}
+
+/* ---------------------------------------------------------------------------
+ * menus.popups: feature / speed / Plus popups and the help (Ctrl+K) popup.
+ * Their inner "cards" had their own radius + shadow; flatten to one surface.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [role="dialog"] :is([class*="_contentCard"], [class*="_featuresBlock"], [class*="_middleText"]) {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * menus.inbox
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #inbox-popup {
+  border-radius: 0;
+}
+html.sc-enabled #inbox-popup [class*="_item"] {
+  border-radius: 0;
+  margin: 0;
+  border-bottom: 1px solid var(--sc-divider);
+}
+html.sc-enabled #inbox-popup [class*="_actions"] button {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * menus.profile: Account / Sign out
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #profile-popup,
+html.sc-enabled #profile-popup-mobile {
+  border-radius: 0;
+}
+html.sc-enabled :is(#profile-popup, #profile-popup-mobile) [role="menuitem"] {
+  height: 28px;
+  font-size: var(--sc-font-size);
+  -webkit-text-stroke-width: 0;
+}
+html.sc-enabled :is(#profile-popup, #profile-popup-mobile) [role="menuitem"]:hover {
+  background: var(--sc-row-hover);
+}
+html.sc-enabled :is(#profile-popup, #profile-popup-mobile) svg {
+  fill: var(--sc-icon);
+}
+
+/* ---------------------------------------------------------------------------
+ * Generic dropdown lists (role="listbox"): selects, filters, language ...
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [role="listbox"] {
+  border-radius: 2px;
+}
+html.sc-enabled [role="listbox"] [role="option"] {
+  border-radius: 0;
+}

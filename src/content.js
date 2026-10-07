@@ -8,7 +8,7 @@
  *   3. re-adds them if the page ever strips them (SPA safety net),
  *   4. adds a collapse toggle for the bottom nav bar (our own element, placed
  *      outside Songsterr's app root),
- *   5. exposes the tab author as a data attribute on #header (rendered by CSS),
+ *   5. shows the tab author as a "Tab by <name>" link under the song title,
  *   6. answers the popup's "Check selectors" request.
  * It never changes Songsterr's own state, requests or feature logic.
  */
@@ -69,6 +69,7 @@
     wanted = classesFor(settings);
     syncClasses();
     updateNavToggle();
+    schedule();
     try {
       localStorage.setItem(MIRROR_KEY, JSON.stringify(settings));
     } catch (_) { /* storage blocked: first paint just uses defaults */ }
@@ -135,15 +136,20 @@
   //   - <script id="state"> embedded in the first page load (meta.current.author)
   //   - "sc-classic:meta" events from page-meta.js, which reads the site's own
   //     /api/meta responses during in-app navigation.
-  // The name is set as data-sc-author on #header; header.css renders it.
+  // Rendered as our own <div id="sc-author"> appended to #header (after the
+  // site's children, so Songsterr's renderer keeps its own nodes in order).
+  // The link goes to the author's public profile, /user/<profileName>, the
+  // same URL Songsterr uses in its revision list.
   // ---------------------------------------------------------------------------
-  const authors = new Map(); // songId -> display name
+  const authors = new Map(); // songId -> { name, profileName }
   let stateRead = false;
+  let authorEl = null;
 
   function rememberAuthor(songId, author) {
     if (songId == null || !author) return;
-    const name = String(author.name || author.profileName || '').trim();
-    if (name) authors.set(String(songId), name.slice(0, 80));
+    const name = String(author.name || author.profileName || '').trim().slice(0, 80);
+    const profileName = String(author.profileName || '').trim().slice(0, 80);
+    if (name) authors.set(String(songId), { name, profileName });
   }
 
   function readEmbeddedState() {
@@ -166,23 +172,46 @@
   });
 
   function songIdFromUrl() {
-    // /a/wsa/metallica-enter-sandman-tab-s19, ...-s19t2, ...-sheet-s19
-    const m = location.pathname.match(/-s(\d+)(?:t\d+)?\/?$/);
+    // /a/wsa/metallica-enter-sandman-tab-s19, ...-s19t2, ...-sheet-s19,
+    // ...-s84335t4/r93259 (a specific revision)
+    const m = location.pathname.match(/-s(\d+)(?:t\d+)?(?:\/r\d+)?\/?$/);
     if (!m || /-chords-s\d+/.test(location.pathname)) return null;
     return m[1];
+  }
+
+  function buildAuthor() {
+    const el = document.createElement('div');
+    el.id = 'sc-author';
+    el.append('Tab by ');
+    const link = document.createElement('a');
+    el.append(link);
+    return el;
   }
 
   function syncAuthor() {
     readEmbeddedState();
     const header = document.getElementById('header');
-    if (!header) return;
     const id = songIdFromUrl();
-    const name = id ? authors.get(id) : undefined;
-    if (name) {
-      if (header.getAttribute('data-sc-author') !== name) header.setAttribute('data-sc-author', name);
-    } else if (header.hasAttribute('data-sc-author')) {
-      header.removeAttribute('data-sc-author');
+    const info = id ? authors.get(id) : undefined;
+    if (!header || !info || !settings.enabled || !settings.showAuthor) {
+      if (authorEl && authorEl.isConnected) authorEl.remove();
+      return;
     }
+    if (!authorEl) authorEl = buildAuthor();
+    const link = authorEl.lastChild;
+    if (link.textContent !== info.name) link.textContent = info.name;
+    const href = info.profileName ? `/user/${encodeURIComponent(info.profileName)}` : '';
+    if (href) {
+      if (link.getAttribute('href') !== href) link.setAttribute('href', href);
+      link.title = `${info.name}'s profile`;
+    } else {
+      link.removeAttribute('href');
+      link.removeAttribute('title');
+    }
+    // Prefer the header's empty, centred "info" slot under the title; fall back
+    // to the end of #header if a future build drops it.
+    const slot = header.querySelector(':scope > [class*="_wrap"] > [class*="_info"]') || header;
+    if (authorEl.parentNode !== slot || slot.lastChild !== authorEl) slot.append(authorEl);
   }
 
   // ---------------------------------------------------------------------------
