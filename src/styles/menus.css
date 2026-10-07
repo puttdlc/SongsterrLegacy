@@ -18,15 +18,22 @@
  */
 
 /* ---------------------------------------------------------------------------
- * panels.main: the big floating cards become a docked sidebar on the left,
- * full height down to the nav bar, flush with the screen edge.
+ * panels.main: the big floating cards become a full-height window (top edge
+ * down to the nav bar), centred horizontally on screen. On narrow screens the
+ * centre would slide under the docked player pane, so the position is clamped
+ * to stay left of it (and never past the left edge).
  * ------------------------------------------------------------------------- */
 html.sc-enabled main[id^="panel-"][class*="_mainPanel"] {
   top: 0;
-  left: 0;
+  left: clamp(
+    0px,
+    (100vw - var(--panel-width, 846px)) / 2,
+    100vw - var(--controls-panel-width, 360px) - var(--panel-width, 846px)
+  );
   bottom: var(--bottombar-height);
   max-width: calc(100vw - var(--controls-panel-width, 360px));
   border-radius: 0;
+  border-left: 1px solid var(--sc-border);
   border-right: 1px solid var(--sc-border);
   padding: 14px 6px 6px 16px;
   box-shadow: var(--sc-elev);
