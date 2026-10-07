@@ -10,6 +10,7 @@ inset shadows). It changes the look only. The site behaves exactly as before.
 - Permissions: `storage` only, and the content script runs only on `*://*.songsterr.com/*`.
 - Paid/Plus features, paywalls and account checks are not touched.
 - The notation renderer's output is never styled.
+- Privacy: no data collected or sent. See [PRIVACY.md](PRIVACY.md).
 
 > **Build status: step 3.** The classic style is now site-wide: player pane,
 > nav bar, side panels (Search, My tabs, Help, Account ...), dialogs (mixer,
