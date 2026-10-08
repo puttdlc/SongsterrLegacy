@@ -117,7 +117,7 @@
       settings: { sel: '#settings-popup', tier: 'id', note: 'Settings dialog, docked bottom-right.' },
       header:   { sel: '[role="dialog"] [class*="_popupHeader"]', tier: 'stem', note: 'Title bars of Mixer / Settings.' },
       inbox:    { sel: '#inbox-popup', tier: 'id', note: 'Inbox popup (logged in).' },
-      profile:  { sel: '#profile-popup', tier: 'id', note: 'Account / Sign out menu (logged in).' },
+      profile:  { sel: '#profile-popup-desktop', tier: 'id', note: 'Account / Sign out menu (logged in; #profile-popup-mobile on phones).' },
       switches: { sel: '[class*="_switchSlider"]', tier: 'stem', note: 'Toggle switches (role="switch" inputs).' },
       popupsLayer: { sel: '#tab-controls [class*="_popupsLayer"]', tier: 'stem', note: 'Layer holding the toolbar popovers (speed, metronome, settings).' }
     },

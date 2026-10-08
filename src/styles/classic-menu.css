@@ -182,9 +182,14 @@ html.sc-enabled.sc-menu-classic #sc-nav-toggle {
 html.sc-enabled.sc-menu-classic main[id^="panel-"][class*="_mainPanel"] {
   top: calc(var(--sc-menu-h) + 1px);
 }
-html.sc-enabled.sc-menu-classic :is(#inbox-popup, #profile-popup) {
-  top: calc(var(--sc-menu-h) + 1px);
+/* Account menu (id profile-popup-desktop): absolute on the Account item and
+   opens upward (bottom: 100%), which put it off the top of the screen. Open
+   it downward, right-aligned to the item, since Account is at the far right. */
+html.sc-enabled.sc-menu-classic #profile-popup-desktop {
+  top: calc(100% + var(--bottombar-popup-offset, 4px));
   bottom: auto;
+  left: auto;
+  right: 0;
 }
 /* The inbox sets top/bottom/max-height inline (bottom-docked, sized from its
    own bottom edge), so only !important moves it under the bar. Its inline

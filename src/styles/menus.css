@@ -14,7 +14,7 @@
  *   #settings-popup[role=dialog]             docked bottom-right like the player
  *   [role=dialog][class*=_popup]             speed/feature popups, help (Ctrl+K) popup
  *   #inbox-popup[role=dialog]                inbox, anchored to the nav bar
- *   #profile-popup[role=menu] > [role=menuitem]   Account / Sign out
+ *   #profile-popup-desktop[role=menu] > [role=menuitem]   Account / Sign out
  */
 
 /* ---------------------------------------------------------------------------
@@ -247,19 +247,19 @@ html.sc-enabled #inbox-popup [class*="_actions"] button {
 /* ---------------------------------------------------------------------------
  * menus.profile: Account / Sign out
  * ------------------------------------------------------------------------- */
-html.sc-enabled #profile-popup,
+html.sc-enabled #profile-popup-desktop,
 html.sc-enabled #profile-popup-mobile {
   border-radius: 0;
 }
-html.sc-enabled :is(#profile-popup, #profile-popup-mobile) [role="menuitem"] {
+html.sc-enabled :is(#profile-popup-desktop, #profile-popup-mobile) [role="menuitem"] {
   height: 28px;
   font-size: var(--sc-font-size);
   -webkit-text-stroke-width: 0;
 }
-html.sc-enabled :is(#profile-popup, #profile-popup-mobile) [role="menuitem"]:hover {
+html.sc-enabled :is(#profile-popup-desktop, #profile-popup-mobile) [role="menuitem"]:hover {
   background: var(--sc-row-hover);
 }
-html.sc-enabled :is(#profile-popup, #profile-popup-mobile) svg {
+html.sc-enabled :is(#profile-popup-desktop, #profile-popup-mobile) svg {
   fill: var(--sc-icon);
 }
 
