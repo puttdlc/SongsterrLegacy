@@ -12,7 +12,8 @@
  *   5. shows the tab author as a "Last edited by <name>" link under the song title,
  *   6. in the Classic layout, feeds the track name to the track selector and
  *      measures the right-hand strip so the bar can make room for it,
- *   7. answers the popup's "Check selectors" request.
+ *   7. keeps Songsterr's player panel open once the user opens it (Fusion),
+ *   8. answers the popup's "Check selectors" request.
  * It never changes Songsterr's own state, requests or feature logic.
  */
 (() => {
@@ -29,7 +30,8 @@
     density: 'compact',     // compact | comfortable
     showAuthor: true,
     navCollapsed: false,
-    paneMinimized: false
+    paneMinimized: false,
+    keepOpen: true          // Fusion: undo Songsterr folding the player on its own
   });
   const VALID = {
     layout: ['fusion', 'classic'],
@@ -39,7 +41,7 @@
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
   };
-  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized'];
+  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'keepOpen'];
   // Mirror of the last-known settings in the page's localStorage. It is read
   // synchronously at document_start so the right theme paints on the first
   // frame; chrome.storage stays the source of truth.
@@ -108,6 +110,7 @@
     syncAccentColor();
     updateNavToggle();
     updatePaneToggle();
+    syncKeepOpen();
     schedule();
     try {
       localStorage.setItem(MIRROR_KEY, JSON.stringify(settings));
@@ -404,6 +407,80 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Keep the player open (Fusion; popup "Stay open").
+  // Songsterr folds its player panel back to one row on its own: after any
+  // button/link click inside the panel once it was opened by hand, when
+  // playback starts, and when Tab/Sheet/Chords changes. Its handle bar loses
+  // the _panelHandleBarOpen class the moment that happens (the fold animation
+  // only starts on the next frame), so an observer on that class re-opens it
+  // straight away by clicking Songsterr's own handle, which is the same
+  // toggle the user would click (after a short delay, see reopen()). Folds the user asked for are left alone: a click or touch on the
+  // handle, or a drag on the panel (Songsterr lets you drag anywhere on it).
+  // The extension never closes the panel and never opens it first; it only
+  // keeps it open once the user has opened it.
+  // ---------------------------------------------------------------------------
+  const HANDLE = '#controls-panel-handle';
+  const USER_FOLD_MS = 1000;   // a fold this soon after the user touched the handle/dragged is theirs
+  let lastUserFold = 0;
+  let dragStart = null;
+  let observedBar = null;
+  let barObserver = null;
+  let barWasOpen = false;
+
+  document.addEventListener('pointerdown', (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target) return;
+    if (target.closest(HANDLE)) lastUserFold = Date.now();
+    dragStart = target.closest('#controls') ? event.clientY : null;
+  }, true);
+  document.addEventListener('pointermove', (event) => {
+    if (dragStart !== null && event.buttons && Math.abs(event.clientY - dragStart) > 6) lastUserFold = Date.now();
+  }, true);
+  document.addEventListener('pointerup', () => {
+    if (dragStart !== null && Date.now() - lastUserFold < 50) lastUserFold = Date.now();
+    dragStart = null;
+  }, true);
+
+  function barIsOpen(bar) {
+    return /_panelHandleBarOpen/.test(bar.className);
+  }
+
+  // Re-open a moment later, not synchronously: on Play, Songsterr folds twice
+  // in one go (the click, then its "playback started" effect), and a re-open
+  // squeezed in between is folded again before anything is drawn.
+  const REOPEN_DELAY_MS = 60;
+  let reopenTimer = 0;
+
+  function reopen() {
+    reopenTimer = 0;
+    const bar = observedBar;
+    if (!bar || !bar.isConnected || barIsOpen(bar)) return;
+    if (Date.now() - lastUserFold <= USER_FOLD_MS) return;
+    const handle = document.querySelector(HANDLE);
+    if (handle) handle.click();
+  }
+
+  function onBarChange() {
+    const open = barIsOpen(observedBar);
+    if (barWasOpen && !open && Date.now() - lastUserFold > USER_FOLD_MS && !reopenTimer) {
+      reopenTimer = setTimeout(reopen, REOPEN_DELAY_MS);
+    }
+    barWasOpen = open;
+  }
+
+  function syncKeepOpen() {
+    const active = settings.enabled && settings.layout === 'fusion' && settings.keepOpen;
+    const bar = active ? document.querySelector(`${HANDLE} [class*="_panelHandleBar"]`) : null;
+    if (bar === observedBar) return;
+    if (barObserver) barObserver.disconnect();
+    observedBar = bar;
+    if (!bar) return;
+    barWasOpen = barIsOpen(bar);
+    barObserver = new MutationObserver(onBarChange);
+    barObserver.observe(bar, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  // ---------------------------------------------------------------------------
   // Upkeep, coalesced. Songsterr is a single-page app and re-renders often
   // (the playback cursor animates constantly), so DOM changes only schedule
   // one cheap pass at most every 250ms.
@@ -418,6 +495,7 @@
       syncPaneToggle();
       syncAuthor();
       syncClassic();
+      syncKeepOpen();
     }, 250);
   }
 

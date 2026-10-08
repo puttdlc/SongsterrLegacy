@@ -18,9 +18,10 @@
     density: 'compact',
     showAuthor: true,
     navCollapsed: false,
-    paneMinimized: false
+    paneMinimized: false,
+    keepOpen: true
   };
-  const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized']);
+  const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized', 'keepOpen']);
 
   const form = document.getElementById('settings');
   document.getElementById('version').textContent = `V${chrome.runtime.getManifest().version}`;
@@ -66,7 +67,10 @@
     for (const input of form.querySelectorAll('input[name="classicBar"]')) {
       input.disabled = off || settings.layout !== 'classic';
     }
-    // Minimising only exists in the Fusion layout.
+    // Minimising and Stay open only exist in the Fusion layout.
+    for (const input of form.querySelectorAll('input[name="keepOpen"]')) {
+      input.disabled = off || settings.layout !== 'fusion';
+    }
     for (const input of form.querySelectorAll('input[name="paneMinimized"]')) {
       input.disabled = off || settings.layout === 'classic';
     }

@@ -42,6 +42,7 @@ Click the toolbar icon to open the settings popup:
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
 | Author | Show / Hide | "Last edited by <name>" under the song title (see below). |
 | Nav bar | Shown / Collapsed | Fusion quick menu only. Same as the chevron tab at the bottom-left of the page. |
+| Stay open | On (default) / Off | Fusion only. Songsterr folds its player panel back to one row whenever you click a button in it, press play, or switch Tab/Sheet/Chords. With **On**, once you open it, it stays open until you close it yourself (handle or drag). |
 | Player | Full / Minimised | Fusion only. Same as the chevron at the end of the favourite / display-mode / editor strip. |
 
 Settings live in `chrome.storage.sync` and apply live to every open Songsterr tab.
