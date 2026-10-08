@@ -49,6 +49,22 @@ html.sc-enabled.sc-menu-minimal:not(.sc-layout-classic):not(#sc-specificity) {
   --bottombar-height: 0px;
 }
 
+/* minimalMenu.page: Songsterr keeps the header and the tab 90px from each
+   side (--app-tab-horizontal-margin), exactly the sidebar's width, so the
+   tab touched it. Both sides get the same gap instead, measured from the
+   sidebar and from whatever is on the right (the Minimal button column, or
+   nothing). 34px is the gap the column leaves inside Songsterr's 90px.
+   Below 880px Songsterr hides the sidebar and drops its margins itself. */
+html.sc-enabled.sc-menu-minimal {
+  --sc-page-gap: 34px;
+}
+@media (width >= 880px) {
+  html.sc-enabled.sc-menu-minimal :is(#header, #apptab) {
+    margin-left: calc(var(--sc-left-inset) + var(--sc-page-gap));
+    margin-right: calc(var(--sc-right-inset, 0px) + var(--sc-page-gap));
+  }
+}
+
 /* ---------------------------------------------------------------------------
  * minimalMenu.bar: full-height column on the left edge
  * ------------------------------------------------------------------------- */

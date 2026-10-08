@@ -33,6 +33,7 @@
 html.sc-enabled.sc-layout-minimal {
   --sc-rail-w: 56px;
   --sc-rail-btn: 44px;
+  --sc-right-inset: var(--sc-rail-w);   /* what the page keeps clear of */
   --controls-panel-right: var(--sc-rail-w);
 }
 html.sc-enabled.sc-layout-minimal.sc-density-comfortable {
