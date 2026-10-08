@@ -34,12 +34,13 @@ Click the toolbar icon to open the settings popup:
 | Setting | Options | Notes |
 |---|---|---|
 | Reskin | On / Off | Off removes every style instantly, no reload. |
-| Layout | Fusion (default) / Classic | How the player is laid out. See "Layouts" below. |
+| Controls | Fusion (default) / Classic | How the player controls are laid out. See "Layouts" below. |
+| Quick menu | Fusion (default) / Classic | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |
 | Color theme | Blue / Green / Red / Custom / Off | Accent colour for both layouts: play button, toggled buttons, selections, focus ring, Classic's base line. Until you pick one, Fusion uses Blue and Classic uses Green. **Custom** shows a colour picker; **Off** uses neutral greys only. |
 | Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
 | Author | Show / Hide | "Last edited by <name>" under the song title (see below). |
-| Nav bar | Shown / Collapsed | Same as the chevron tab at the bottom-left of the page. |
+| Nav bar | Shown / Collapsed | Fusion quick menu only. Same as the chevron tab at the bottom-left of the page. |
 | Player | Full / Minimised | Fusion only. Same as the chevron at the end of the favourite / display-mode / editor strip. |
 
 Settings live in `chrome.storage.sync` and apply live to every open Songsterr tab.
@@ -50,6 +51,21 @@ panel is open, so a 0 is not automatically a problem. See below.
 
 ## Layouts
 
+Controls and Quick menu each have their own Fusion / Classic switch, so any
+mix works.
+
+### Quick menu
+
+- **Fusion** (default): the menu docked bottom-left, icon beside label, with a
+  collapse tab (`header.css`).
+- **Classic**: the older Songsterr header menu, docked top-right with each
+  icon above an uppercase label, in the old order: Songsterr Plus, Search,
+  My tabs, New tab, For teachers, Help, Inbox, Account (`classic-menu.css`). The
+  logo stays where it is. The song title moves down to clear the bar, and side
+  panels open below it. It can't be collapsed.
+
+### Controls
+
 - **Fusion** (default): the player pane docked in the bottom-right corner as
   a compact segmented strip, with the favourite / display-mode / editor row on
   top (`toolbar.css`). This is the layout described under "Regions" below.
@@ -59,16 +75,18 @@ panel is open, so a 0 is not automatically a problem. See below.
   a big green play button with the Orig. / Synth toggle stacked beside it, then
   flat icon-over-label buttons (Speed, Loop, Solo, Mute, Count in, Metronome,
   Export, Print, More ...). Favourite, the Tab/Sheet select and Editor sit at
-  the right end. A green line runs along the bottom. The nav bar and side
-  panels sit on top of the bar.
+  the right end. A line in the accent colour runs along the bottom. The track
+  list (mixer) opens on the left, straight above the track selector. With the
+  Fusion quick menu, the nav bar sits on top of the bar.
 
 How Classic is built:
 
 - Songsterr's buttons only have icons, so the labels are CSS `::after` text
   (English only), set per button id in `classic.css`. A button that isn't on
   that list just shows no label.
-- The track selector text comes from the page title
-  (`<Song> Tab by <Artist> - <Track> - <Instrument> | ...`). `content.js` puts
+- The track selector text comes from the header's print-only track line
+  (`#header [class*=_trackForPrint]`), or the page title
+  (`<Song> Tab by <Artist> - <Track> - <Instrument> | ...`) if that's missing. `content.js` puts
   it on `#control-mixer` as `data-sc-instrument` / `data-sc-track`, and
   publishes the right-hand strip's width as `--sc-classic-strip-w` so the
   buttons stop before it.
@@ -268,7 +286,8 @@ src/
     classic.css     full-width bottom bar        (done; Classic layout)
     tracklist.css   track list / mixer           (done)
     menus.css       side panels, dialogs, menus  (done; promos planned)
-    header.css      bottom nav dock + author     (done; logo/title planned)
+    header.css      bottom nav dock + author     (done; Fusion quick menu)
+    classic-menu.css top-right menu               (done; Classic quick menu)
 popup/              settings popup (same bevel/segmented look)
 icons/              original 16/32/48/128 icon
 ```

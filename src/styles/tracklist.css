@@ -120,3 +120,15 @@ html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button[aria-pres
 html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:disabled {
   background: var(--sc-btn-bg);
 }
+
+/* tracklist.help: the "?" next to AI track autoswitch kept a light site
+   background (a white square on the dark panel). */
+html.sc-enabled #default-mixer [class*="_tooltipButton"] {
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+}
+html.sc-enabled #default-mixer [class*="_tooltipButton"] svg {
+  fill: var(--sc-icon);
+}

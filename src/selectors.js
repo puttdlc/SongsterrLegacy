@@ -53,9 +53,16 @@
     classic: {
       status: 'styled (Classic layout only)',
       bar:      { sel: 'html.sc-layout-classic #controls', tier: 'id', note: 'Pane stretched to a full-width bottom bar (classic.css). Handle hidden, row unwrapped and re-ordered.' },
-      track:    { sel: 'html.sc-layout-classic #control-mixer[data-sc-instrument]', tier: 'id', note: 'Track selector. data-sc-instrument / data-sc-track are ours, parsed by content.js from the page title "<Song> Tab by <Artist> - <Track> - <Instrument> | ...".' },
+      track:    { sel: 'html.sc-layout-classic #control-mixer[data-sc-instrument]', tier: 'id', note: 'Track selector. data-sc-instrument / data-sc-track are ours, set by content.js from #header _trackForPrint (fallback: page title "<Song> Tab by <Artist> - <Track> - <Instrument> | ...").' },
+      trackSource: { sel: '#header [class*="_trackForPrint"] > [class*="_trackForPrintPart"]', tier: 'stem', note: 'Print-only "<instrument> <track>" line in the header; source of the track selector text.' },
       source:   { sel: 'html.sc-layout-classic #control-source > span', tier: 'id', note: 'Orig. / Synth options, stacked next to play.' },
       strip:    { sel: 'html.sc-layout-classic [data-controls-top-panel] > [class*="_controlsTopPanel"]', tier: 'data', note: 'Favourite / display mode / editor, moved to the right end of the bar. Width published as --sc-classic-strip-w.' }
+    },
+
+    classicMenu: {
+      status: 'styled (Classic quick menu only)',
+      bar:    { sel: 'html.sc-menu-classic [class*="_bottomBarWide"]', tier: 'stem', note: 'Nav bar docked top-right (classic-menu.css). #tablist switched to row; _bottomBarRight reversed for the old order.' },
+      groups: { sel: '#tablist > [class*="_bottomBar"]', tier: 'stem', note: '_bottomBarLeft (Plus) / _bottomBarCenter / _bottomBarRight (account, inbox, help).' }
     },
 
     nav: {

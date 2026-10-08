@@ -20,7 +20,8 @@
 
   const DEFAULTS = Object.freeze({
     enabled: true,
-    layout: 'fusion',       // fusion | classic
+    layout: 'fusion',       // Controls: fusion | classic
+    navLayout: 'fusion',    // Quick menu: fusion (bottom-left dock) | classic (top right)
     accent: 'auto',         // auto | blue | green | red | custom | off
     accentCustom: '#2f9e44', // #rrggbb, used when accent = custom
     theme: 'dark',          // dark | light | auto
@@ -31,6 +32,7 @@
   });
   const VALID = {
     layout: ['fusion', 'classic'],
+    navLayout: ['fusion', 'classic'],
     accent: ['auto', 'blue', 'green', 'red', 'custom', 'off'],
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
@@ -50,6 +52,7 @@
     s.enabled = s.enabled !== false;
     for (const key of BOOLEANS) s[key] = typeof s[key] === 'boolean' ? s[key] : DEFAULTS[key];
     if (!VALID.layout.includes(s.layout)) s.layout = DEFAULTS.layout;
+    if (!VALID.navLayout.includes(s.navLayout)) s.navLayout = DEFAULTS.navLayout;
     if (!VALID.accent.includes(s.accent)) s.accent = DEFAULTS.accent;
     if (!/^#[0-9a-f]{6}$/i.test(String(s.accentCustom))) s.accentCustom = DEFAULTS.accentCustom;
     if (!VALID.theme.includes(s.theme)) s.theme = DEFAULTS.theme;
@@ -75,10 +78,11 @@
 
   function classesFor(s) {
     if (!s.enabled) return [];
-    const list = ['sc-enabled', `sc-layout-${s.layout}`, `sc-accent-${accentFor(s)}`,
+    const list = ['sc-enabled', `sc-layout-${s.layout}`, `sc-menu-${s.navLayout}`, `sc-accent-${accentFor(s)}`,
       `sc-theme-${s.theme}`, `sc-density-${s.density}`];
     if (s.showAuthor) list.push('sc-show-author');
-    if (s.navCollapsed) list.push('sc-nav-collapsed');
+    // Collapsing only exists for the Fusion quick menu (bottom-left dock).
+    if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
     // Minimising only exists in Fusion; Classic is a single fixed bar.
     if (s.paneMinimized && s.layout === 'fusion') list.push('sc-pane-min');
     return list;
@@ -160,7 +164,7 @@
     // Lives outside Songsterr's #root so the app's renderer never touches it.
     if (navToggle.parentNode !== document.body) document.body.append(navToggle);
     const nav = document.querySelector(NAV_SELECTOR);
-    const navShown = !!nav &&
+    const navShown = settings.navLayout === 'fusion' && !!nav &&
       nav.getAttribute('data-ready') !== 'false' &&
       getComputedStyle(nav).display !== 'none';
     // Only offer the toggle while the nav bar itself can be shown.
@@ -299,17 +303,26 @@
   // ---------------------------------------------------------------------------
   // Classic layout (classic.css)
   // The track selector shows "<instrument>" over "<track name>", as the old
-  // player did. Songsterr's mixer button only carries an icon, but the page
-  // title always names the current track:
+  // player did. Songsterr's mixer button only carries an icon, so the names
+  // are read from the header's print-only line (#header _trackForPrint:
+  // instrument, track name), falling back to the page title
   //   "<Song> Tab by <Artist> - <Track name> - <Instrument> | Songsterr ..."
-  // so both are read from there (counted from the end, so a " - " in the song
-  // name does no harm) and handed to CSS as data attributes on the button.
+  // (counted from the end, so a " - " in the song name does no harm), and
+  // handed to CSS as data attributes on the button.
   // Setting attributes Songsterr's renderer doesn't own leaves its state alone.
   // The favourite / display-mode / editor strip sits over the right end of
   // the bar; its width is published as --sc-classic-strip-w so the button
   // row stops short of it.
   // ---------------------------------------------------------------------------
   const TRACK_ATTRS = ['data-sc-instrument', 'data-sc-track'];
+
+  function trackFromHeader() {
+    const parts = document.querySelectorAll('#header [class*="_trackForPrint"] > [class*="_trackForPrintPart"]');
+    if (parts.length < 2) return null;
+    const instrument = parts[0].textContent.trim();
+    const track = parts[1].textContent.trim();
+    return instrument ? { instrument, track } : null;
+  }
 
   function trackFromTitle() {
     const parts = document.title.split(' | ')[0].split(' - ');
@@ -325,7 +338,7 @@
     const classic = settings.enabled && settings.layout === 'classic';
     const mixer = document.getElementById('control-mixer');
     if (mixer) {
-      const info = classic ? trackFromTitle() : null;
+      const info = classic ? (trackFromHeader() || trackFromTitle()) : null;
       if (classic) {
         setAttr(mixer, 'data-sc-instrument', info ? info.instrument.slice(0, 80) : 'Tracks');
         setAttr(mixer, 'data-sc-track', info ? info.track.slice(0, 80) : '');

@@ -10,6 +10,7 @@
   const DEFAULTS = {
     enabled: true,
     layout: 'fusion',
+    navLayout: 'fusion',
     accent: 'auto',          // auto = Classic green, Fusion blue (see content.js)
     accentCustom: '#2f9e44',
     theme: 'dark',
@@ -54,6 +55,10 @@
     const off = settings.enabled === false;
     for (const input of form.querySelectorAll('input:not([name="enabled"])')) {
       input.disabled = off;
+    }
+    // Collapsing the nav bar only exists in the Fusion quick menu.
+    for (const input of form.querySelectorAll('input[name="navCollapsed"]')) {
+      input.disabled = off || settings.navLayout === 'classic';
     }
     // Minimising only exists in the Fusion layout.
     for (const input of form.querySelectorAll('input[name="paneMinimized"]')) {

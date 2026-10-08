@@ -18,6 +18,9 @@
  * by side, separated by hairlines. A chevron tab on its left edge collapses it
  * (slides it off-screen); the tab itself always stays reachable.
  *
+ * Every nav rule here is the Fusion quick menu (html.sc-menu-fusion). The
+ * Classic quick menu (top right, icon over label) is in classic-menu.css.
+ *
  * Songsterr's own visibility rules are kept: the bar still hides below 880px,
  * for data-plus="true", and until data-ready="true". We never set `display`.
  */
@@ -30,7 +33,7 @@ html.sc-enabled {
 /* ---------------------------------------------------------------------------
  * nav.bar: docked rectangle
  * ------------------------------------------------------------------------- */
-html.sc-enabled [class*="_bottomBarWide"] {
+html.sc-enabled.sc-menu-fusion [class*="_bottomBarWide"] {
   top: auto;
   bottom: 0;
   left: var(--sc-nav-toggle-w);
@@ -47,20 +50,20 @@ html.sc-enabled [class*="_bottomBarWide"] {
   transition: transform 160ms ease-out, visibility 0s;
 }
 
-html.sc-enabled.sc-nav-collapsed [class*="_bottomBarWide"] {
+html.sc-enabled.sc-menu-fusion.sc-nav-collapsed [class*="_bottomBarWide"] {
   transform: translateX(calc(-100% - var(--sc-nav-toggle-w)));
   visibility: hidden;                /* keeps hidden links out of the tab order */
   transition: transform 160ms ease-out, visibility 0s linear 160ms;
 }
 
 /* nav.list */
-html.sc-enabled #tablist {
+html.sc-enabled.sc-menu-fusion #tablist {
   height: var(--sc-nav-h);
   padding: 0;
   justify-content: flex-start;
   align-items: stretch;
 }
-html.sc-enabled #tablist > div {
+html.sc-enabled.sc-menu-fusion #tablist > div {
   column-gap: 0;
   height: 100%;
 }
@@ -68,10 +71,10 @@ html.sc-enabled #tablist > div {
 /* ---------------------------------------------------------------------------
  * nav.items: flat icon + label buttons, hairline separated
  * ------------------------------------------------------------------------- */
-html.sc-enabled #tablist [class*="_itemWrapper"] {
+html.sc-enabled.sc-menu-fusion #tablist [class*="_itemWrapper"] {
   height: 100%;
 }
-html.sc-enabled #tablist a[id^="menu-"] {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"] {
   box-sizing: border-box;
   flex-direction: row;
   gap: 6px;
@@ -82,7 +85,7 @@ html.sc-enabled #tablist a[id^="menu-"] {
   color: var(--sc-text);
   transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
 }
-html.sc-enabled #tablist [class*="_icon"] {
+html.sc-enabled.sc-menu-fusion #tablist [class*="_icon"] {
   display: flex;
   padding: 0;
   border-radius: 0;
@@ -90,7 +93,7 @@ html.sc-enabled #tablist [class*="_icon"] {
   fill: var(--sc-icon);
   transition: fill var(--sc-ease);
 }
-html.sc-enabled #tablist [class*="_text"] {
+html.sc-enabled.sc-menu-fusion #tablist [class*="_text"] {
   color: var(--sc-text);
   font: 500 var(--sc-font-size) / 1 var(--sc-font);
   letter-spacing: 0;
@@ -98,50 +101,50 @@ html.sc-enabled #tablist [class*="_text"] {
 
 /* Hover: slight lighten. Site rules paint a coloured pill behind the icon on
    hover/active; flatten those too. */
-html.sc-enabled #tablist a[id^="menu-"]:hover {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"]:hover {
   background: var(--sc-btn-bg-hover);
 }
-html.sc-enabled #tablist a[id^="menu-"]:hover [class*="_icon"] {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"]:hover [class*="_icon"] {
   background: none;
   fill: var(--sc-text);
 }
-html.sc-enabled #tablist a[id^="menu-"]:hover [class*="_text"] {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"]:hover [class*="_text"] {
   color: var(--sc-text);
 }
 
 /* Pressed: inverted bevel. */
-html.sc-enabled #tablist a[id^="menu-"]:active {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"]:active {
   background: var(--sc-btn-pressed);
   box-shadow: var(--sc-bevel-pressed);
 }
-html.sc-enabled #tablist a[id^="menu-"]:active [class*="_icon"] {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"]:active [class*="_icon"] {
   background: none;
   fill: var(--sc-text);
 }
 
 /* Current page (aria-active="true"): accent tint + inverted bevel + accent
    underline, the horizontal-bar equivalent of the track list's edge bar. */
-html.sc-enabled #tablist a[id^="menu-"][aria-active="true"],
-html.sc-enabled #tablist a[id^="menu-"][aria-active="true"]:hover {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"][aria-active="true"],
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"][aria-active="true"]:hover {
   background: var(--sc-selected-bg);
   box-shadow: var(--sc-bevel-pressed), inset 0 -2px 0 var(--sc-accent);
 }
-html.sc-enabled #tablist a[id^="menu-"][aria-active="true"] [class*="_icon"] {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"][aria-active="true"] [class*="_icon"] {
   background: none;
   fill: var(--sc-selected-fg);
 }
-html.sc-enabled #tablist a[id^="menu-"][aria-active="true"] [class*="_text"] {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"][aria-active="true"] [class*="_text"] {
   color: var(--sc-selected-fg);
 }
 
-html.sc-enabled #tablist a[id^="menu-"]:focus-visible {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"]:focus-visible {
   outline: 2px solid var(--sc-focus);
   outline-offset: -2px;
 }
 
 /* Small badges in the nav (e.g. "plus" on the profile item, inbox count). */
-html.sc-enabled #tablist [class*="_badge"],
-html.sc-enabled #tablist [class*="Badge"] {
+html.sc-enabled.sc-menu-fusion #tablist [class*="_badge"],
+html.sc-enabled.sc-menu-fusion #tablist [class*="Badge"] {
   border-radius: 2px;
 }
 
@@ -153,7 +156,7 @@ html.sc-enabled #tablist [class*="Badge"] {
 #sc-nav-toggle {
   display: none;
 }
-html.sc-enabled #sc-nav-toggle:not([hidden]) {
+html.sc-enabled.sc-menu-fusion #sc-nav-toggle:not([hidden]) {
   position: fixed;
   left: 0;
   bottom: 0;
@@ -174,28 +177,28 @@ html.sc-enabled #sc-nav-toggle:not([hidden]) {
   box-shadow: var(--sc-bevel);
   cursor: pointer;
 }
-html.sc-enabled #sc-nav-toggle:hover {
+html.sc-enabled.sc-menu-fusion #sc-nav-toggle:hover {
   background: var(--sc-btn-bg-hover);
 }
-html.sc-enabled #sc-nav-toggle:active {
+html.sc-enabled.sc-menu-fusion #sc-nav-toggle:active {
   background: var(--sc-btn-pressed);
   box-shadow: var(--sc-bevel-pressed);
 }
-html.sc-enabled #sc-nav-toggle:focus-visible {
+html.sc-enabled.sc-menu-fusion #sc-nav-toggle:focus-visible {
   outline: 2px solid var(--sc-focus);
   outline-offset: -2px;
 }
-html.sc-enabled #sc-nav-toggle svg {
+html.sc-enabled.sc-menu-fusion #sc-nav-toggle svg {
   fill: none;
   stroke: var(--sc-icon);
   stroke-width: 1.6;
   stroke-linecap: square;
   transition: transform 160ms ease-out;
 }
-html.sc-enabled #sc-nav-toggle:hover svg {
+html.sc-enabled.sc-menu-fusion #sc-nav-toggle:hover svg {
   stroke: var(--sc-text);
 }
-html.sc-enabled.sc-nav-collapsed #sc-nav-toggle svg {
+html.sc-enabled.sc-menu-fusion.sc-nav-collapsed #sc-nav-toggle svg {
   transform: scaleX(-1);             /* chevron points right: "expand" */
 }
 /* Songsterr hides the wide nav bar below 880px; so do we. */
@@ -247,13 +250,13 @@ html.sc-enabled #sc-author a:focus-visible {
  * layout but covers the label now that they sit side by side. Put them in
  * the flow next to the icon instead. Same badge, never hidden.
  * ------------------------------------------------------------------------- */
-html.sc-enabled #tablist a[id^="menu-"] [class*="_icon"]:has(> [class*="_planBadge"], > [class*="_badge"]) {
+html.sc-enabled.sc-menu-fusion #tablist a[id^="menu-"] [class*="_icon"]:has(> [class*="_planBadge"], > [class*="_badge"]) {
   display: inline-flex;
   align-items: center;
   gap: 3px;
   width: auto;
 }
-html.sc-enabled #tablist [class*="_icon"] > :is([class*="_planBadge"], [class*="_badge"]) {
+html.sc-enabled.sc-menu-fusion #tablist [class*="_icon"] > :is([class*="_planBadge"], [class*="_badge"]) {
   position: static;
   inset: auto;
   transform: none;

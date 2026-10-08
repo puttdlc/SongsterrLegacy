@@ -1,0 +1,180 @@
+/*
+ * Classic Skin: site nav, "Classic" quick menu
+ * =============================================
+ * Region keys: selectors.js -> classicMenu.*
+ *
+ * The older Songsterr header menu: the nav bar docked to the top-right
+ * corner, each entry an icon over an uppercase label, in the old order
+ *   SONGSTERR PLUS · SEARCH · MY TABS · NEW TAB · FOR TEACHERS · HELP · INBOX · ACCOUNT
+ * The logo stays where Songsterr puts it.
+ *
+ * Every rule applies only while html has .sc-menu-classic. The Fusion quick
+ * menu (bottom-left dock, icon beside label, collapse tab) is in header.css,
+ * scoped to .sc-menu-fusion, so the two share no nav rules.
+ *
+ * DOM (see header.css): nav#tablist is a row-reverse flex of three groups,
+ *   _bottomBarLeft (Plus) | _bottomBarCenter (Search ... For teachers) |
+ *   _bottomBarRight (account, inbox, help)
+ * Switching #tablist to a plain row and reversing only the right group gives
+ * the old order without moving any element.
+ *
+ * Songsterr's own visibility rules are kept: the bar still hides below 880px,
+ * for data-plus="true" and until data-ready="true". We never set `display`
+ * on the bar or on the labels (compact mode hides them).
+ */
+
+html.sc-enabled.sc-menu-classic {
+  --sc-menu-h: 54px;
+}
+html.sc-enabled.sc-menu-classic.sc-density-comfortable {
+  --sc-menu-h: 60px;
+}
+
+/* Nothing is docked at the bottom for the nav any more: panels anchored to
+   the bottom bar reach the screen edge (or the Classic player bar, see
+   classic.css, which out-ranks this). */
+html.sc-enabled.sc-menu-classic.sc-layout-fusion:not(#sc-specificity) {
+  --bottombar-height: 0px;
+}
+
+/* ---------------------------------------------------------------------------
+ * classicMenu.bar: docked to the top-right corner
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-classic [class*="_bottomBarWide"] {
+  top: 0;
+  bottom: auto;
+  left: auto;
+  right: 0;
+  width: auto;
+  max-width: calc(100vw - 230px);    /* never runs into the logo */
+  margin: 0;
+  border-radius: 0;
+  border-bottom: 1px solid var(--sc-border);
+  border-left: 1px solid var(--sc-border);
+  background: var(--sc-toolbar-bg);
+  box-shadow: inset 0 1px 0 var(--sc-highlight), var(--sc-elev);
+  font-family: var(--sc-font);
+}
+
+html.sc-enabled.sc-menu-classic #tablist {
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: stretch;
+  height: var(--sc-menu-h);
+  padding: 0 4px;
+}
+html.sc-enabled.sc-menu-classic #tablist > div {
+  flex: 0 0 auto;
+  column-gap: 0;
+  height: 100%;
+}
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] {
+  flex-direction: row-reverse;       /* help, inbox, account */
+}
+html.sc-enabled.sc-menu-classic #tablist [class*="_itemWrapper"] {
+  height: 100%;
+}
+
+/* ---------------------------------------------------------------------------
+ * classicMenu.items: icon over an uppercase label
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"] {
+  box-sizing: border-box;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  min-width: 0;
+  height: 100%;
+  padding: 2px 14px 0;
+  color: var(--sc-text-muted);
+  transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
+}
+html.sc-enabled.sc-menu-classic #tablist [class*="_icon"] {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  fill: var(--sc-icon);
+  transition: fill var(--sc-ease);
+}
+html.sc-enabled.sc-menu-classic #tablist [class*="_text"] {
+  color: var(--sc-text-muted);
+  font: 600 11px / 1 var(--sc-font);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Hover / pressed */
+html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"]:hover {
+  background: var(--sc-row-hover);
+}
+html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"]:active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"]:is(:hover, :active) [class*="_icon"] {
+  background: none;
+  fill: var(--sc-text);
+}
+html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"]:is(:hover, :active) [class*="_text"] {
+  color: var(--sc-text);
+}
+
+/* Songsterr Plus: always in the accent colour, like the old green link. */
+html.sc-enabled.sc-menu-classic #tablist #menu-plus [class*="_icon"] {
+  fill: var(--sc-selected-fg);
+}
+html.sc-enabled.sc-menu-classic #tablist #menu-plus [class*="_text"] {
+  color: var(--sc-selected-fg);
+}
+
+/* Current page: accent label + icon and an accent underline. */
+html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"][aria-active="true"] {
+  background: var(--sc-selected-bg);
+  box-shadow: inset 0 -2px 0 var(--sc-accent);
+}
+html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"][aria-active="true"] [class*="_icon"] {
+  background: none;
+  fill: var(--sc-selected-fg);
+}
+html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"][aria-active="true"] [class*="_text"] {
+  color: var(--sc-selected-fg);
+}
+
+html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"]:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+}
+
+/* Plan badge / inbox count keep Songsterr's corner position (it suits the
+   icon-over-label layout); only squarer. */
+html.sc-enabled.sc-menu-classic #tablist :is([class*="_badge"], [class*="Badge"]) {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * classicMenu.collapse: the Fusion collapse tab has no job up here.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-classic #sc-nav-toggle {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * classicMenu.panels: side panels and the menu's own popups start below the
+ * bar instead of under it.
+ * Inbox / account popups were styled from the site source and could only be
+ * checked logged out (see README "Not yet verified").
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-classic main[id^="panel-"][class*="_mainPanel"] {
+  top: calc(var(--sc-menu-h) + 1px);
+}
+html.sc-enabled.sc-menu-classic :is(#inbox-popup, #profile-popup) {
+  top: calc(var(--sc-menu-h) + 1px);
+  bottom: auto;
+}
+
+/* ---------------------------------------------------------------------------
+ * classicMenu.header: push the song title down so it clears the bar.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-classic #header {
+  padding-top: calc(var(--sc-menu-h) - 20px);
+}
