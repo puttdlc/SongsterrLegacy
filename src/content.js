@@ -22,8 +22,8 @@
 
   const DEFAULTS = Object.freeze({
     enabled: true,
-    layout: 'classic',      // Controls: classic | fusion | minimal
-    navLayout: 'classic',   // Quick menu: classic (top bar) | fusion (bottom-left dock) | minimal (left sidebar)
+    layout: 'minimal',      // Controls: minimal (shown as "Legacy") | classic | fusion
+    navLayout: 'minimal',   // Quick menu: classic (top bar) | fusion (bottom-left dock) | minimal (left sidebar)
     classicBar: 'spread',   // Classic controls: spread (labels, equal spacing) | icons (packed, no labels)
     accent: 'auto',         // auto | blue | green | red | custom | off
     accentCustom: '#2f9e44', // #rrggbb, used when accent = custom

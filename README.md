@@ -34,9 +34,9 @@ Click the toolbar icon to open the settings popup:
 | Setting | Options | Notes |
 |---|---|---|
 | Reskin | On / Off | Off removes every style instantly, no reload. |
-| Controls | Fusion / Classic (default) / Legacy | How the player controls are laid out. See "Layouts" below. |
+| Controls | Fusion / Classic / Legacy (default) | How the player controls are laid out. See "Layouts" below. |
 | Bar buttons | Spread (default) / Icons | Classic controls only. **Spread**: a label under every icon, buttons spaced equally across the bar. **Icons**: icons only, packed to the left. |
-| Quick menu | Fusion / Classic (default) / Legacy | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |
+| Quick menu | Fusion / Classic / Legacy (default) | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |
 | Color theme | Blue / Green / Red / Custom / Off | Accent colour for every layout: play button, toggled buttons, selections, focus ring, Classic's base line. Until you pick one, Fusion and Legacy use Blue and Classic uses Green. **Custom** shows a colour picker; **Off** uses neutral greys only. |
 | Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
@@ -61,13 +61,13 @@ switch, so any mix works.
 
 - **Fusion**: the menu docked bottom-left, icon beside label, with a
   collapse tab (`header.css`).
-- **Classic** (default): the older Songsterr header menu, a full-width bar
+- **Classic**: the older Songsterr header menu, a full-width bar
   along the top with each icon above an uppercase label, spread out the old
   way: the logo on the left end, then Songsterr Plus, Search / My tabs / New
   tab / For teachers grouped in the middle, Help on its own, and Inbox /
   Account at the right edge (`classic-menu.css`). The song title moves down to
   clear the bar, and side panels open below it. It can't be collapsed.
-- **Legacy**: the 2018-era Songsterr sidebar, a 90px column down the left edge
+- **Legacy** (default): the 2018-era Songsterr sidebar, a 90px column down the left edge
   with the logo on top and each icon above a small label, in clusters: Search /
   My tabs, New tab / For teachers, Songsterr Plus / Help, then Inbox / Account
   at the bottom (`minimal-menu.css`). Songsterr still keeps a 90px margin
@@ -79,7 +79,7 @@ switch, so any mix works.
 - **Fusion**: the player pane docked in the bottom-right corner as
   a compact segmented strip, with the favourite / display-mode / editor row on
   top (`toolbar.css`). This is the layout described under "Regions" below.
-- **Classic** (default): the older Songsterr player, one full-width bar along the bottom
+- **Classic**: the older Songsterr player, one full-width bar along the bottom
   edge (`classic.css`). From left to right: a track selector showing the
   instrument and track name with an up chevron (opens Songsterr's track list),
   a big green play button with the Orig. / Synth toggle stacked beside it, then
@@ -88,7 +88,7 @@ switch, so any mix works.
   the right end. A line in the accent colour runs along the bottom. The track
   list (mixer) opens on the left, straight above the track selector. With the
   Fusion quick menu, the nav bar sits on top of the bar.
-- **Legacy**: the 2018-era Songsterr player, a narrow column of round icon-only
+- **Legacy** (default): the 2018-era Songsterr player, a narrow column of round icon-only
   buttons down the right edge (`minimal.css`): play with the Orig. / Synth
   toggle under it, the track list button, then the rest in Songsterr's order.
   Toggled buttons (loop, solo, the open track list ...) fill with the accent

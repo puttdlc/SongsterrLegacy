@@ -9,8 +9,8 @@
 
   const DEFAULTS = {
     enabled: true,
-    layout: 'classic',
-    navLayout: 'classic',
+    layout: 'minimal',
+    navLayout: 'minimal',
     classicBar: 'spread',
     accent: 'auto',          // auto = Classic green, Fusion / Legacy blue (see content.js)
     accentCustom: '#2f9e44',
