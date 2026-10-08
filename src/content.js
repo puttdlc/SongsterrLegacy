@@ -6,9 +6,10 @@
  *   1. puts the right classes on <html> as early as possible,
  *   2. keeps them in sync with chrome.storage.sync (live, no reload),
  *   3. re-adds them if the page ever strips them (SPA safety net),
- *   4. adds a collapse toggle for the bottom nav bar (our own element, placed
- *      outside Songsterr's app root) and a minimise toggle for the player pane
- *      (appended to the favourite / display-mode / editor strip),
+ *   4. adds a collapse toggle for the bottom nav bar and one for the floating
+ *      video panel (our own elements, placed outside Songsterr's app root) and
+ *      a minimise toggle for the player pane (appended to the favourite /
+ *      display-mode / editor strip),
  *   5. shows the tab author as a "Last edited by <name>" link under the song title,
  *   6. in the Classic layout, feeds the track name to the track selector and
  *      measures the right-hand strip so the bar can make room for it,
@@ -31,6 +32,7 @@
     showAuthor: true,
     navCollapsed: false,
     paneMinimized: false,
+    videoCollapsed: false,  // Classic / Minimal: synced-video panel slid off to the right
     keepOpen: true          // Fusion: undo Songsterr folding the player on its own
   });
   const VALID = {
@@ -41,7 +43,7 @@
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
   };
-  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'keepOpen'];
+  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen'];
   // Mirror of the last-known settings in the page's localStorage. It is read
   // synchronously at document_start so the right theme paints on the first
   // frame; chrome.storage stays the source of truth.
@@ -90,6 +92,8 @@
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
     // Minimising only exists in Fusion; Classic and Minimal are fixed bars.
     if (s.paneMinimized && s.layout === 'fusion') list.push('sc-pane-min');
+    // Fusion keeps the video panel inside its pane (minimised with it).
+    if (s.videoCollapsed && s.layout !== 'fusion') list.push('sc-video-collapsed');
     if (s.layout === 'classic') list.push(`sc-bar-${s.classicBar}`, ...CLASSIC_LEVELS[classicLevel]);
     return list;
   }
@@ -110,6 +114,7 @@
     syncAccentColor();
     updateNavToggle();
     updatePaneToggle();
+    updateVideoToggle();
     syncKeepOpen();
     schedule();
     try {
@@ -222,6 +227,48 @@
       updatePaneToggle();
     }
     if (paneToggle.parentNode !== strip || strip.lastChild !== paneToggle) strip.append(paneToggle);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Video panel collapse toggle (selectors.js: video.toggle)
+  // Classic and Minimal float Songsterr's synced-video / audio-mix panel over
+  // the page (classic.video, minimal.video), where it can cover the tab. This
+  // tab on its left edge slides it off to the right and back; the video keeps
+  // playing. It lives in <body>, outside Songsterr's app root, and is only
+  // shown while the panel is; CSS only hides the panel while the tab is
+  // shown, so the panel can never get stuck hidden.
+  // ---------------------------------------------------------------------------
+  const VIDEO_PANEL = '#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"]))';
+  let videoToggle = null;
+
+  function buildVideoToggle() {
+    const btn = document.createElement('button');
+    btn.id = 'sc-video-toggle';
+    btn.type = 'button';
+    btn.hidden = true;
+    btn.append(chevron('M2 1 6.5 6 2 11', 8, 12));
+    btn.addEventListener('click', () => save({ videoCollapsed: !settings.videoCollapsed }));
+    return btn;
+  }
+
+  function updateVideoToggle() {
+    if (!videoToggle) return;
+    const collapsed = settings.videoCollapsed;
+    const label = collapsed ? 'Show video panel' : 'Hide video panel';
+    videoToggle.setAttribute('aria-expanded', String(!collapsed));
+    videoToggle.setAttribute('aria-label', label);
+    videoToggle.title = label;
+  }
+
+  function syncVideoToggle() {
+    if (!document.body) return;
+    if (!videoToggle) {
+      videoToggle = buildVideoToggle();
+      updateVideoToggle();
+    }
+    if (videoToggle.parentNode !== document.body) document.body.append(videoToggle);
+    const shown = settings.enabled && settings.layout !== 'fusion' && !!document.querySelector(VIDEO_PANEL);
+    if (videoToggle.hidden === shown) videoToggle.hidden = !shown;
   }
 
   // ---------------------------------------------------------------------------
@@ -493,6 +540,7 @@
       if (wanted.some((c) => !root.classList.contains(c))) syncClasses();
       syncNavToggle();
       syncPaneToggle();
+      syncVideoToggle();
       syncAuthor();
       syncClassic();
       syncKeepOpen();

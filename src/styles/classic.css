@@ -620,12 +620,15 @@ html.sc-enabled.sc-layout-classic.sc-menu-fusion #sc-nav-toggle:not([hidden]) {
  * view, so it floats above the right end of the bar instead, at the width the
  * Fusion pane has. Hidden panels (_panelHidden) are left alone.
  * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic {
+  --sc-video-w: min(var(--controls-panel-width, 360px), 100vw - 16px);
+}
 html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
   position: fixed;
   right: 0;
   bottom: var(--sc-classic-h);
   box-sizing: border-box;
-  width: min(var(--controls-panel-width, 360px), 100vw);
+  width: var(--sc-video-w);
   max-height: calc(100vh - var(--sc-classic-h));
   padding-top: 12px;
   overflow: auto;
@@ -633,6 +636,27 @@ html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [c
   border-left: 1px solid var(--sc-border);
   background: var(--sc-toolbar-bg);
   box-shadow: inset 0 1px 0 var(--sc-highlight), var(--sc-elev);
+}
+
+/* classic.videoCollapse: the tab (content.js, #sc-video-toggle) sits on the
+   panel's left edge, near its bottom; collapsed, the panel slides off
+   to the right and the tab moves to the screen edge. The panel only hides
+   while the tab is shown, so it can't get stuck hidden. `translate`, not
+   `transform`, so nothing Songsterr writes clashes with it. */
+html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]) {
+  transition: translate 0.2s ease-out, visibility 0s;
+}
+html.sc-enabled.sc-layout-classic.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
+  translate: 100% 0;
+  visibility: hidden;                /* out of the tab order while collapsed */
+  transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
+}
+html.sc-enabled.sc-layout-classic #sc-video-toggle:not([hidden]) {
+  right: var(--sc-video-w);
+  bottom: calc(var(--sc-classic-h) + 12px);   /* clear of the revision date badge */
+}
+html.sc-enabled.sc-layout-classic.sc-video-collapsed #sc-video-toggle:not([hidden]) {
+  right: 0;
 }
 
 /* ---------------------------------------------------------------------------

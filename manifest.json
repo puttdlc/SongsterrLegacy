@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Classic Skin - Songsterr Extension",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "description": "Unofficial classic reskin for songsterr.com: flat docked controls, dark/light themes, and the tab author back under the title.",
   "browser_specific_settings": {
     "gecko": {

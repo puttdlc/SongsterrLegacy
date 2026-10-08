@@ -44,6 +44,7 @@ Click the toolbar icon to open the settings popup:
 | Nav bar | Shown / Collapsed | Fusion quick menu only. Same as the chevron tab at the bottom-left of the page. |
 | Stay open | On (default) / Off | Fusion only. Songsterr folds its player panel back to one row whenever you click a button in it, press play, or switch Tab/Sheet/Chords. With **On**, once you open it, it stays open until you close it yourself (handle or drag). |
 | Player | Full / Minimised | Fusion only. Same as the chevron at the end of the favourite / display-mode / editor strip. |
+| Video | Shown (default) / Collapsed | Classic and Minimal only. The synced-video / audio-mix panel (some songs, mostly Plus) floats over the page; **Collapsed** slides it off to the right and it keeps playing. Same as the chevron tab on the panel's left edge. |
 
 Settings live in `chrome.storage.sync` and apply live to every open Songsterr tab.
 

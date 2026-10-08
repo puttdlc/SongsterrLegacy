@@ -87,6 +87,12 @@
       toggle: { sel: '#sc-nav-toggle', tier: 'id', note: "Ours: collapse tab appended to <body> by content.js." }
     },
 
+    video: {
+      status: 'styled (Classic and Minimal layouts)',
+      panel:  { sel: '#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"]))', tier: 'stem', note: 'Synced-video / audio-mix panel (unclassed wrapper in #controls), floated over the page by classic.css / minimal.css. Only for some songs and users.' },
+      toggle: { sel: '#sc-video-toggle', tier: 'id', note: "Ours: collapse tab appended to <body> by content.js, shown while the panel is." }
+    },
+
     tracklist: {
       status: 'styled',
       dialog:   { sel: '#default-mixer', tier: 'id', note: 'Mixer dialog (role="dialog"), lazy-loaded when the track list opens.' },

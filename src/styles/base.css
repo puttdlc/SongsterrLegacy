@@ -198,3 +198,56 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"], [role="menu"], [role="l
   scrollbar-color: var(--sc-divider) transparent;
   scrollbar-width: thin;
 }
+
+/* ---------------------------------------------------------------------------
+ * video.toggle: our collapse tab on the left edge of the floating video panel
+ * (Classic and Minimal; content.js). Hidden by default and while the panel
+ * isn't shown; classic.css and minimal.css place it.
+ * ------------------------------------------------------------------------- */
+#sc-video-toggle {
+  display: none;
+}
+html.sc-enabled:is(.sc-layout-classic, .sc-layout-minimal) #sc-video-toggle:not([hidden]) {
+  position: fixed;
+  z-index: calc(var(--zIndexControls, 73) + 2);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 48px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--sc-border);
+  border-right: 0;
+  border-radius: var(--sc-radius) 0 0 var(--sc-radius);
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  cursor: pointer;
+  transition: right 0.2s ease-out;
+}
+html.sc-enabled #sc-video-toggle:hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled #sc-video-toggle:active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled #sc-video-toggle:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+}
+html.sc-enabled #sc-video-toggle svg {
+  fill: none;
+  stroke: var(--sc-icon);
+  stroke-width: 1.6;
+  stroke-linecap: square;
+  transition: transform 0.2s ease-out;
+}
+html.sc-enabled #sc-video-toggle:hover svg {
+  stroke: var(--sc-text);
+}
+html.sc-enabled.sc-video-collapsed #sc-video-toggle svg {
+  transform: scaleX(-1);             /* chevron points left: "show" */
+}
+

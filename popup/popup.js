@@ -19,9 +19,10 @@
     showAuthor: true,
     navCollapsed: false,
     paneMinimized: false,
+    videoCollapsed: false,
     keepOpen: true
   };
-  const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized', 'keepOpen']);
+  const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen']);
 
   const form = document.getElementById('settings');
   document.getElementById('version').textContent = `V${chrome.runtime.getManifest().version}`;
@@ -73,6 +74,10 @@
     }
     for (const input of form.querySelectorAll('input[name="paneMinimized"]')) {
       input.disabled = off || settings.layout !== 'fusion';
+    }
+    // The floating video panel only exists in Classic and Minimal.
+    for (const input of form.querySelectorAll('input[name="videoCollapsed"]')) {
+      input.disabled = off || settings.layout === 'fusion';
     }
     applyPopupTheme(settings.theme);
   }

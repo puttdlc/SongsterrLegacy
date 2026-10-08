@@ -406,7 +406,7 @@ html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [c
   top: var(--sc-top-inset, 0px);
   right: var(--sc-rail-w);
   box-sizing: border-box;
-  width: min(var(--controls-panel-width, 360px), calc(100vw - var(--sc-rail-w)));
+  width: var(--sc-video-w);
   max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
   padding-top: 12px;
   overflow: auto;
@@ -414,6 +414,30 @@ html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [c
   border-left: 1px solid var(--sc-border);
   background: var(--sc-toolbar-bg);
   box-shadow: var(--sc-elev);
+}
+
+html.sc-enabled.sc-layout-minimal {
+  --sc-video-w: min(var(--controls-panel-width, 360px), 100vw - var(--sc-rail-w) - 16px);
+}
+
+/* minimal.videoCollapse: the tab (content.js, #sc-video-toggle) sits on the
+   panel's left edge, level with its top; collapsed, the panel slides off to
+   the right (past the column) and the tab moves next to the column. The
+   panel only hides while the tab is shown, so it can't get stuck hidden. */
+html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]) {
+  transition: translate 0.2s ease-out, visibility 0s;
+}
+html.sc-enabled.sc-layout-minimal.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
+  translate: calc(100% + var(--sc-rail-w)) 0;
+  visibility: hidden;                /* out of the tab order while collapsed */
+  transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
+}
+html.sc-enabled.sc-layout-minimal #sc-video-toggle:not([hidden]) {
+  top: calc(var(--sc-top-inset, 0px) + 12px);
+  right: calc(var(--sc-rail-w) + var(--sc-video-w));
+}
+html.sc-enabled.sc-layout-minimal.sc-video-collapsed #sc-video-toggle:not([hidden]) {
+  right: var(--sc-rail-w);
 }
 
 /* ---------------------------------------------------------------------------
