@@ -34,11 +34,13 @@ Click the toolbar icon to open the settings popup:
 | Setting | Options | Notes |
 |---|---|---|
 | Reskin | On / Off | Off removes every style instantly, no reload. |
+| Layout | Fusion (default) / Classic | How the player is laid out. See "Layouts" below. |
+| Color theme | Blue / Green / Red / Custom / Off | Accent colour for both layouts: play button, toggled buttons, selections, focus ring, Classic's base line. Until you pick one, Fusion uses Blue and Classic uses Green. **Custom** shows a colour picker; **Off** uses neutral greys only. |
 | Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
 | Author | Show / Hide | "Last edited by <name>" under the song title (see below). |
 | Nav bar | Shown / Collapsed | Same as the chevron tab at the bottom-left of the page. |
-| Player | Full / Minimised | Same as the chevron at the end of the favourite / display-mode / editor strip. |
+| Player | Full / Minimised | Fusion only. Same as the chevron at the end of the favourite / display-mode / editor strip. |
 
 Settings live in `chrome.storage.sync` and apply live to every open Songsterr tab.
 
@@ -46,12 +48,47 @@ Settings live in `chrome.storage.sync` and apply live to every open Songsterr ta
 matches on the current page. Many regions only exist on certain pages or while a
 panel is open, so a 0 is not automatically a problem. See below.
 
+## Layouts
+
+- **Fusion** (default): the player pane docked in the bottom-right corner as
+  a compact segmented strip, with the favourite / display-mode / editor row on
+  top (`toolbar.css`). This is the layout described under "Regions" below.
+- **Classic**: the older Songsterr player, one full-width bar along the bottom
+  edge (`classic.css`). From left to right: a track selector showing the
+  instrument and track name with an up chevron (opens Songsterr's track list),
+  a big green play button with the Orig. / Synth toggle stacked beside it, then
+  flat icon-over-label buttons (Speed, Loop, Solo, Mute, Count in, Metronome,
+  Export, Print, More ...). Favourite, the Tab/Sheet select and Editor sit at
+  the right end. A green line runs along the bottom. The nav bar and side
+  panels sit on top of the bar.
+
+How Classic is built:
+
+- Songsterr's buttons only have icons, so the labels are CSS `::after` text
+  (English only), set per button id in `classic.css`. A button that isn't on
+  that list just shows no label.
+- The track selector text comes from the page title
+  (`<Song> Tab by <Artist> - <Track> - <Instrument> | ...`). `content.js` puts
+  it on `#control-mixer` as `data-sc-instrument` / `data-sc-track`, and
+  publishes the right-hand strip's width as `--sc-classic-strip-w` so the
+  buttons stop before it.
+- The bar is one row, so the drag handle and the Player Minimised level are
+  turned off in Classic.
+- Below 1100px wide the labels and the track name are dropped so everything
+  still fits on one row.
+
 ## How it works
 
 - All styling is plain CSS, injected at `document_start` (no flash of the old UI).
 - Every rule is scoped under `html.sc-enabled`. `content.js` adds that class plus
-  `sc-theme-*`, `sc-density-*` and a few state classes to `<html>`. Removing the class
+  `sc-layout-*`, `sc-theme-*`, `sc-density-*` and a few state classes to `<html>`. Removing the class
   turns the reskin off instantly.
+- The accent is a class too (`sc-accent-blue|green|red|custom|off`). Blue keeps
+  the hand-tuned values; Green, Red and Custom derive every accent token from
+  one `--sc-accent-base` colour with `color-mix()` against the theme's surface
+  and text, so the same formula works in Dark and Light. Custom's colour is set
+  as an inline `--sc-accent-base` on `<html>`. Contrast is only checked for the
+  presets: a very light custom colour can make the white play icon hard to see.
 - Themes are CSS custom properties (`--sc-bg`, `--sc-surface`, `--sc-accent`,
   `--sc-highlight`, `--sc-shade` and so on) in `src/styles/tokens.css`. A theme is
   just a variable swap.
@@ -227,7 +264,8 @@ src/
   styles/
     tokens.css      CSS variables for Dark / Light / Auto + density
     base.css        site-wide: radius/shadow flattening, colour remap, focus
-    toolbar.css     player pane, dock, top row   (done)
+    toolbar.css     player pane, dock, top row   (done; Fusion layout)
+    classic.css     full-width bottom bar        (done; Classic layout)
     tracklist.css   track list / mixer           (done)
     menus.css       side panels, dialogs, menus  (done; promos planned)
     header.css      bottom nav dock + author     (done; logo/title planned)

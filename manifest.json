@@ -17,6 +17,7 @@
         "src/styles/tokens.css",
         "src/styles/base.css",
         "src/styles/toolbar.css",
+        "src/styles/classic.css",
         "src/styles/tracklist.css",
         "src/styles/menus.css",
         "src/styles/header.css"

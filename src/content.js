@@ -10,7 +10,9 @@
  *      outside Songsterr's app root) and a minimise toggle for the player pane
  *      (appended to the favourite / display-mode / editor strip),
  *   5. shows the tab author as a "Last edited by <name>" link under the song title,
- *   6. answers the popup's "Check selectors" request.
+ *   6. in the Classic layout, feeds the track name to the track selector and
+ *      measures the right-hand strip so the bar can make room for it,
+ *   7. answers the popup's "Check selectors" request.
  * It never changes Songsterr's own state, requests or feature logic.
  */
 (() => {
@@ -18,6 +20,9 @@
 
   const DEFAULTS = Object.freeze({
     enabled: true,
+    layout: 'fusion',       // fusion | classic
+    accent: 'auto',         // auto | blue | green | red | custom | off
+    accentCustom: '#2f9e44', // #rrggbb, used when accent = custom
     theme: 'dark',          // dark | light | auto
     density: 'compact',     // compact | comfortable
     showAuthor: true,
@@ -25,6 +30,8 @@
     paneMinimized: false
   });
   const VALID = {
+    layout: ['fusion', 'classic'],
+    accent: ['auto', 'blue', 'green', 'red', 'custom', 'off'],
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
   };
@@ -42,17 +49,38 @@
     const s = { ...DEFAULTS, ...(raw || {}) };
     s.enabled = s.enabled !== false;
     for (const key of BOOLEANS) s[key] = typeof s[key] === 'boolean' ? s[key] : DEFAULTS[key];
+    if (!VALID.layout.includes(s.layout)) s.layout = DEFAULTS.layout;
+    if (!VALID.accent.includes(s.accent)) s.accent = DEFAULTS.accent;
+    if (!/^#[0-9a-f]{6}$/i.test(String(s.accentCustom))) s.accentCustom = DEFAULTS.accentCustom;
     if (!VALID.theme.includes(s.theme)) s.theme = DEFAULTS.theme;
     if (!VALID.density.includes(s.density)) s.density = DEFAULTS.density;
     return s;
   }
 
+  /** "auto" (never picked in the popup) = each layout's own look: Classic
+   *  green like the old player, Fusion blue. */
+  function accentFor(s) {
+    if (s.accent !== 'auto') return s.accent;
+    return s.layout === 'classic' ? 'green' : 'blue';
+  }
+
+  // The custom colour is the one value CSS can't hold as a class, so it goes
+  // on <html> as an inline custom property (tokens.css derives the rest).
+  function syncAccentColor() {
+    const value = settings.enabled && accentFor(settings) === 'custom' ? settings.accentCustom : '';
+    if (root.style.getPropertyValue('--sc-accent-base') === value) return;
+    if (value) root.style.setProperty('--sc-accent-base', value);
+    else root.style.removeProperty('--sc-accent-base');
+  }
+
   function classesFor(s) {
     if (!s.enabled) return [];
-    const list = ['sc-enabled', `sc-theme-${s.theme}`, `sc-density-${s.density}`];
+    const list = ['sc-enabled', `sc-layout-${s.layout}`, `sc-accent-${accentFor(s)}`,
+      `sc-theme-${s.theme}`, `sc-density-${s.density}`];
     if (s.showAuthor) list.push('sc-show-author');
     if (s.navCollapsed) list.push('sc-nav-collapsed');
-    if (s.paneMinimized) list.push('sc-pane-min');
+    // Minimising only exists in Fusion; Classic is a single fixed bar.
+    if (s.paneMinimized && s.layout === 'fusion') list.push('sc-pane-min');
     return list;
   }
 
@@ -69,6 +97,7 @@
     settings = normalize(raw);
     wanted = classesFor(settings);
     syncClasses();
+    syncAccentColor();
     updateNavToggle();
     updatePaneToggle();
     schedule();
@@ -173,7 +202,7 @@
 
   function syncPaneToggle() {
     const strip = document.querySelector(TOP_STRIP);
-    if (!strip || !settings.enabled) {
+    if (!strip || !settings.enabled || settings.layout !== 'fusion') {
       if (paneToggle && paneToggle.isConnected) paneToggle.remove();
       return;
     }
@@ -268,6 +297,51 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Classic layout (classic.css)
+  // The track selector shows "<instrument>" over "<track name>", as the old
+  // player did. Songsterr's mixer button only carries an icon, but the page
+  // title always names the current track:
+  //   "<Song> Tab by <Artist> - <Track name> - <Instrument> | Songsterr ..."
+  // so both are read from there (counted from the end, so a " - " in the song
+  // name does no harm) and handed to CSS as data attributes on the button.
+  // Setting attributes Songsterr's renderer doesn't own leaves its state alone.
+  // The favourite / display-mode / editor strip sits over the right end of
+  // the bar; its width is published as --sc-classic-strip-w so the button
+  // row stops short of it.
+  // ---------------------------------------------------------------------------
+  const TRACK_ATTRS = ['data-sc-instrument', 'data-sc-track'];
+
+  function trackFromTitle() {
+    const parts = document.title.split(' | ')[0].split(' - ');
+    if (parts.length < 3) return null;
+    return { instrument: parts[parts.length - 1].trim(), track: parts[parts.length - 2].trim() };
+  }
+
+  function setAttr(el, name, value) {
+    if (el.getAttribute(name) !== value) el.setAttribute(name, value);
+  }
+
+  function syncClassic() {
+    const classic = settings.enabled && settings.layout === 'classic';
+    const mixer = document.getElementById('control-mixer');
+    if (mixer) {
+      const info = classic ? trackFromTitle() : null;
+      if (classic) {
+        setAttr(mixer, 'data-sc-instrument', info ? info.instrument.slice(0, 80) : 'Tracks');
+        setAttr(mixer, 'data-sc-track', info ? info.track.slice(0, 80) : '');
+      } else {
+        for (const name of TRACK_ATTRS) if (mixer.hasAttribute(name)) mixer.removeAttribute(name);
+      }
+    }
+    const strip = classic ? document.querySelector(TOP_STRIP) : null;
+    const width = strip ? `${Math.ceil(strip.getBoundingClientRect().width)}px` : '';
+    if (root.style.getPropertyValue('--sc-classic-strip-w') !== width) {
+      if (width) root.style.setProperty('--sc-classic-strip-w', width);
+      else root.style.removeProperty('--sc-classic-strip-w');
+    }
+  }
+
+  // ---------------------------------------------------------------------------
   // Upkeep, coalesced. Songsterr is a single-page app and re-renders often
   // (the playback cursor animates constantly), so DOM changes only schedule
   // one cheap pass at most every 250ms.
@@ -281,6 +355,7 @@
       syncNavToggle();
       syncPaneToggle();
       syncAuthor();
+      syncClassic();
     }, 250);
   }
 

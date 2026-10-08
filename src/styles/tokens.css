@@ -172,3 +172,40 @@ html.sc-enabled {
   --sc-elev:           0 2px 6px rgba(0, 0, 0, 0.25);
   --sc-focus-ring:     0 0 0 2px var(--sc-focus);
 }
+
+/* ---------- Accent colour (popup "Color theme") ----------
+ * html.sc-accent-blue    -> the hand-tuned blue values above (unchanged).
+ * html.sc-accent-green / -red / -custom
+ *                        -> every accent token is derived from one base colour,
+ *                           --sc-accent-base, mixed with the current theme's
+ *                           surface / text, so one formula works for Dark and
+ *                           Light. Custom gets its base as an inline style on
+ *                           <html> from content.js (the user's RGB pick).
+ * html.sc-accent-off     -> no colour at all: accents become neutral greys.
+ * ":not(#sc-specificity)" lifts these above the theme blocks above, which
+ * re-declare the accent tokens at up to (0,3,1).
+ */
+html.sc-enabled.sc-accent-green { --sc-accent-base: #2f9e44; }
+html.sc-enabled.sc-accent-red   { --sc-accent-base: #d64545; }
+
+html.sc-enabled:not(#sc-specificity):is(.sc-accent-green, .sc-accent-red, .sc-accent-custom) {
+  --sc-accent:        var(--sc-accent-base, #3a82e4);
+  --sc-accent-hover:  color-mix(in srgb, var(--sc-accent) 85%, var(--sc-text));
+  --sc-accent-border: color-mix(in srgb, var(--sc-accent) 75%, black);
+  --sc-accent-fill:   color-mix(in srgb, var(--sc-accent) 85%, black);
+  --sc-on-accent:     #ffffff;
+  --sc-selected-bg:   color-mix(in srgb, var(--sc-accent) 28%, var(--sc-surface));
+  --sc-selected-fg:   color-mix(in srgb, var(--sc-accent) 55%, var(--sc-text));
+  --sc-focus:         color-mix(in srgb, var(--sc-accent) 70%, var(--sc-text));
+}
+
+html.sc-enabled:not(#sc-specificity).sc-accent-off {
+  --sc-accent:        var(--sc-text-muted);
+  --sc-accent-hover:  var(--sc-text);
+  --sc-accent-border: var(--sc-border);
+  --sc-accent-fill:   var(--sc-text-muted);
+  --sc-on-accent:     var(--sc-bg);       /* dark-on-light / light-on-dark */
+  --sc-selected-bg:   var(--sc-btn-pressed);
+  --sc-selected-fg:   var(--sc-text);
+  --sc-focus:         var(--sc-text-muted);
+}

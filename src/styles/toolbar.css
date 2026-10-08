@@ -1,7 +1,12 @@
 /*
- * Classic Skin: player toolbar
+ * Classic Skin: player toolbar, "Fusion" layout
  * ==================================
  * Region keys: selectors.js -> toolbar.*
+ *
+ * Every rule here applies only to the Fusion layout (html.sc-layout-fusion):
+ * the pane docked in the bottom-right corner as a segmented strip. The
+ * Classic layout (one full-width bar) lives in classic.css and shares no
+ * toolbar rules with this file, so the two never fight over specificity.
  *
  * DOM (2026-10 build):
  *   div#tab-controls
@@ -22,8 +27,8 @@
  *   - Play stays a rounded square (not a circle); see README "Design decisions".
  *   - Bevel: 1px top highlight + 1px bottom shade; pressed/toggled inverts it.
  *
- * Specificity: every rule starts with "html.sc-enabled #controls", which beats
- * Songsterr's single-class module rules without !important. Icons are recolored
+ * Specificity: every rule starts with "html.sc-enabled.sc-layout-fusion #controls",
+ * which beats Songsterr's single-class module rules without !important. Icons are recolored
  * through `fill` only; their size is untouched (28px sprites stay crisp).
  *
  * Plus/lock badges are recolored at most, never hidden or moved off-screen.
@@ -35,11 +40,11 @@
  * with --controls-panel-right (15px gap from the edge). Zeroing it pins all of
  * them to the screen edge; the site's own JS still computes heights.
  * ------------------------------------------------------------------------- */
-html.sc-enabled {
+html.sc-enabled.sc-layout-fusion {
   --controls-panel-right: 0px;
 }
 
-html.sc-enabled #controls {
+html.sc-enabled.sc-layout-fusion #controls {
   padding-bottom: 0;                 /* was 20px of empty space under the bubble */
   border-radius: 0;
   border-top: 1px solid var(--sc-border);
@@ -49,7 +54,7 @@ html.sc-enabled #controls {
 }
 
 /* toolbar.card: the 20px-radius "floating" backdrop shown while dragging. */
-html.sc-enabled #controls [class*="_controlsCard"]::before {
+html.sc-enabled.sc-layout-fusion #controls [class*="_controlsCard"]::before {
   border-radius: 0;
   background: var(--sc-toolbar-bg);
   box-shadow: 0 0 0 1px var(--sc-border), var(--sc-elev);
@@ -60,12 +65,12 @@ html.sc-enabled #controls [class*="_controlsCard"]::before {
  * Was a separate floating pill 15px above the pane; now a flush title strip
  * sitting directly on the pane (same width, shared border).
  * ------------------------------------------------------------------------- */
-html.sc-enabled [data-controls-top-panel] {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] {
   /* Site places it at (pane height + 15px gap); drop the gap. */
   bottom: calc(var(--controls-top-panel-bottom, 0px) - var(--controls-panel-padding, 15px));
   --controls-top-panel-hight: calc(var(--sc-ctl-h) + 2 * var(--sc-row-pad));
 }
-html.sc-enabled [data-controls-top-panel] > [class*="_controlsTopPanel"] {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] > [class*="_controlsTopPanel"] {
   gap: 0;
   padding: var(--sc-row-pad) 8px;
   border-radius: 0;
@@ -74,18 +79,18 @@ html.sc-enabled [data-controls-top-panel] > [class*="_controlsTopPanel"] {
   background: var(--sc-toolbar-bg);
   box-shadow: inset 0 1px 0 var(--sc-highlight);
 }
-html.sc-enabled [data-controls-top-panel] [class*="_controlsTopItem"] {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] [class*="_controlsTopItem"] {
   width: auto;
   height: var(--sc-ctl-h);
   flex-basis: auto;
   margin-left: -1px;
 }
-html.sc-enabled [data-controls-top-panel] [class*="_controlsTopItem"]:first-child {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] [class*="_controlsTopItem"]:first-child {
   margin-left: 0;
 }
 
 /* Favourite toggle, editor (pencil) and "go to top": same buttons as the row. */
-html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start) {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start) {
   box-sizing: border-box;
   width: var(--sc-ctl-w);
   height: var(--sc-ctl-h);
@@ -95,40 +100,40 @@ html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor,
   box-shadow: var(--sc-bevel);
   transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
 }
-html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start) svg {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start) svg {
   fill: var(--sc-icon);
 }
-html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):hover {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):hover {
   background: var(--sc-btn-bg-hover);
 }
-html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):hover svg {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):hover svg {
   fill: var(--sc-text);
 }
-html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):active {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):active {
   background: var(--sc-btn-pressed);
   box-shadow: var(--sc-bevel-pressed);
 }
 /* Selected: favourited star / editor on. */
-html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]),
-html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]):is(:hover, :active) {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]),
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]):is(:hover, :active) {
   background: var(--sc-selected-bg);
   box-shadow: var(--sc-bevel-pressed);
 }
-html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) svg {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) svg {
   fill: var(--sc-selected-fg);
 }
 /* Strip corners: first and last control of the top row. */
-html.sc-enabled [data-controls-top-panel] [class*="_controlsTopItem"]:first-child :is(button, [role="combobox"]) {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] [class*="_controlsTopItem"]:first-child :is(button, [role="combobox"]) {
   border-top-left-radius: var(--sc-radius);
   border-bottom-left-radius: var(--sc-radius);
 }
-html.sc-enabled [data-controls-top-panel] [class*="_controlsTopItem"]:last-child :is(button, [role="combobox"]) {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] [class*="_controlsTopItem"]:last-child :is(button, [role="combobox"]) {
   border-top-right-radius: var(--sc-radius);
   border-bottom-right-radius: var(--sc-radius);
 }
 
 /* Display-mode select (Tab / Sheet / Chords ...): sunken field look. */
-html.sc-enabled [data-controls-top-panel] #display-mode-button {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #display-mode-button {
   height: var(--sc-ctl-h);
   border: 1px solid var(--sc-border);
   border-radius: 0;
@@ -137,18 +142,18 @@ html.sc-enabled [data-controls-top-panel] #display-mode-button {
   color: var(--sc-text);
   font: var(--sc-font-size) / 1 var(--sc-font);
 }
-html.sc-enabled [data-controls-top-panel] #display-mode-button:hover {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #display-mode-button:hover {
   background: var(--sc-surface);
 }
-html.sc-enabled [data-controls-top-panel] #display-mode-button [class*="_placeholder"],
-html.sc-enabled [data-controls-top-panel] #display-mode-button [class*="_valueText"] {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #display-mode-button [class*="_placeholder"],
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #display-mode-button [class*="_valueText"] {
   color: var(--sc-text);
 }
-html.sc-enabled [data-controls-top-panel] #display-mode-button svg {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #display-mode-button svg {
   fill: var(--sc-icon);
 }
-html.sc-enabled [data-controls-top-panel] #display-mode-button:focus-visible,
-html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):focus-visible {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #display-mode-button:focus-visible,
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#favorite-toggle, #control-editor, #to-tab-start):focus-visible {
   outline: 2px solid var(--sc-focus);
   outline-offset: -2px;
   border-radius: 0;
@@ -157,7 +162,7 @@ html.sc-enabled [data-controls-top-panel] :is(#favorite-toggle, #control-editor,
 /* ---------------------------------------------------------------------------
  * toolbar.row: the strip itself
  * ------------------------------------------------------------------------- */
-html.sc-enabled #controls [class*="_controlsCard"] > div {
+html.sc-enabled.sc-layout-fusion #controls [class*="_controlsCard"] > div {
   gap: var(--sc-group-gap) 0;       /* row gap only; buttons in a row touch */
   padding: var(--sc-row-pad) 8px;
   background: var(--sc-toolbar-bg);
@@ -166,14 +171,14 @@ html.sc-enabled #controls [class*="_controlsCard"] > div {
 
 /* Collapsed: show exactly the first row. The shorter controls would otherwise
    let the top of the second row peek out under the first. */
-html.sc-enabled #controls [class*="_controlsCard"] > div[class*="_controlsCollapsed"] {
+html.sc-enabled.sc-layout-fusion #controls [class*="_controlsCard"] > div[class*="_controlsCollapsed"] {
   max-height: var(--sc-ctl-h);      /* content box: padding is added on top */
   overflow: hidden;
 }
 
 /* Item wrappers (were fixed 50px columns with 15px gaps). */
-html.sc-enabled #controls [class*="_controlsCard"] > div > [id^="c-"],
-html.sc-enabled #controls #mixer-button {
+html.sc-enabled.sc-layout-fusion #controls [class*="_controlsCard"] > div > [id^="c-"],
+html.sc-enabled.sc-layout-fusion #controls #mixer-button {
   width: auto;
   gap: 0;
   margin-left: -1px;                /* share the 1px border with the neighbour */
@@ -182,7 +187,7 @@ html.sc-enabled #controls #mixer-button {
 /* ---------------------------------------------------------------------------
  * toolbar.buttons: rectangular, bevelled, joined
  * ------------------------------------------------------------------------- */
-html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"], [id="control-source"]) {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"]:not([id="control-play"], [id="control-source"]) {
   box-sizing: border-box;
   min-width: var(--sc-ctl-w);
   width: auto;
@@ -197,60 +202,60 @@ html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"]
 }
 
 /* Outer corners of the strip. */
-html.sc-enabled #controls [class*="_controlsCard"] > div > :first-child :is(button, a)[id^="control-"] {
+html.sc-enabled.sc-layout-fusion #controls [class*="_controlsCard"] > div > :first-child :is(button, a)[id^="control-"] {
   border-top-left-radius: var(--sc-radius);
   border-bottom-left-radius: var(--sc-radius);
 }
-html.sc-enabled #controls [class*="_controlsCard"] > div > :last-child :is(button, a)[id^="control-"] {
+html.sc-enabled.sc-layout-fusion #controls [class*="_controlsCard"] > div > :last-child :is(button, a)[id^="control-"] {
   border-top-right-radius: var(--sc-radius);
   border-bottom-right-radius: var(--sc-radius);
 }
 
 /* Icons: recolor only. */
-html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"]) svg {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"]:not([id="control-play"]) svg {
   fill: var(--sc-icon);
   transition: fill var(--sc-ease);
 }
 
 /* Hover: slight lighten. */
-html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"], [id="control-source"]):not(:disabled):hover {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"]:not([id="control-play"], [id="control-source"]):not(:disabled):hover {
   background: var(--sc-btn-bg-hover);
   color: var(--sc-text);
 }
-html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"]):not(:disabled):hover svg {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"]:not([id="control-play"]):not(:disabled):hover svg {
   fill: var(--sc-text);
 }
 
 /* Active (mouse down): inverted bevel, slight darken. */
-html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"], [id="control-source"]):not(:disabled):active {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"]:not([id="control-play"], [id="control-source"]):not(:disabled):active {
   background: var(--sc-btn-pressed);
   box-shadow: var(--sc-bevel-pressed);
 }
-html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"]):not(:disabled):active svg {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"]:not([id="control-play"]):not(:disabled):active svg {
   fill: var(--sc-text);
 }
 
 /* Selected / toggled on (loop on, metronome on, mixer open ...): accent tint
    plus inverted bevel. Same look whether hovered or not. */
-html.sc-enabled #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not([id="control-play"], [id="control-source"]),
-html.sc-enabled #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not([id="control-play"], [id="control-source"]):not(:disabled):is(:hover, :active) {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not([id="control-play"], [id="control-source"]),
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not([id="control-play"], [id="control-source"]):not(:disabled):is(:hover, :active) {
   background: var(--sc-selected-bg);
   box-shadow: var(--sc-bevel-pressed);
   color: var(--sc-selected-fg);
 }
-html.sc-enabled #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not([id="control-play"]) svg,
-html.sc-enabled #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not([id="control-play"]):is(:hover, :active) svg {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not([id="control-play"]) svg,
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not([id="control-play"]):is(:hover, :active) svg {
   fill: var(--sc-selected-fg);
 }
 
 /* Disabled (including Plus-locked features): dim the icon only, so the lock /
    Plus badge stays fully legible. Songsterr's own disabled logic is untouched. */
-html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"]):is(:disabled, [class*="_disabled"]) {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"]:not([id="control-play"]):is(:disabled, [class*="_disabled"]) {
   background: var(--sc-btn-bg);
   box-shadow: var(--sc-bevel);
   color: var(--sc-text-disabled);
 }
-html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"]):is(:disabled, [class*="_disabled"]) svg[class*="_icon"] {
+html.sc-enabled.sc-layout-fusion #controls :is(button, a)[id^="control-"]:not([id="control-play"]):is(:disabled, [class*="_disabled"]) svg[class*="_icon"] {
   fill: var(--sc-text-disabled);
   opacity: 0.8;
 }
@@ -258,9 +263,9 @@ html.sc-enabled #controls :is(button, a)[id^="control-"]:not([id="control-play"]
 /* Plus/lock badge colours come from site variables; point them at the panel
    colours so they stop rendering as white discs. Recolour only: same size,
    same position, always visible. */
-html.sc-enabled #controls,
-html.sc-enabled [data-controls-top-panel],
-html.sc-enabled #controls [id^="control-"] :is([class*="_lock"], [class*="_plus"]) {
+html.sc-enabled.sc-layout-fusion #controls,
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel],
+html.sc-enabled.sc-layout-fusion #controls [id^="control-"] :is([class*="_lock"], [class*="_plus"]) {
   --lock-surface: var(--sc-btn-bottom);
   --lock: var(--sc-icon);
   --plus-surface: var(--sc-btn-bottom);
@@ -269,24 +274,24 @@ html.sc-enabled #controls [id^="control-"] :is([class*="_lock"], [class*="_plus"
 
 /* Small corner badges (lock, Plus, "R" re-pitch, solo/mute indicator):
    squarer, same position. */
-html.sc-enabled #controls [id^="control-"] [class*="_badge"],
-html.sc-enabled #controls [id^="control-"] [class*="_soloMuteIndicator"] {
+html.sc-enabled.sc-layout-fusion #controls [id^="control-"] [class*="_badge"],
+html.sc-enabled.sc-layout-fusion #controls [id^="control-"] [class*="_soloMuteIndicator"] {
   border-radius: 2px;
 }
 
 /* ---------------------------------------------------------------------------
  * toolbar.speedText: "100%" label, was a 10px-radius pill
  * ------------------------------------------------------------------------- */
-html.sc-enabled #controls #control-speed > [class*="_speed"] {
+html.sc-enabled.sc-layout-fusion #controls #control-speed > [class*="_speed"] {
   flex-direction: row;               /* icon + value side by side: fits 32px */
   justify-content: center;
   gap: 4px;
   height: auto;
 }
-html.sc-enabled #controls #control-speed > [class*="_speed"] > svg {
+html.sc-enabled.sc-layout-fusion #controls #control-speed > [class*="_speed"] > svg {
   margin-top: 0;
 }
-html.sc-enabled #controls #control-speed [class*="_textSpeed"] {
+html.sc-enabled.sc-layout-fusion #controls #control-speed [class*="_textSpeed"] {
   width: auto;
   min-width: 3.4em;
   padding: 0 4px;
@@ -297,20 +302,20 @@ html.sc-enabled #controls #control-speed [class*="_textSpeed"] {
   font: 600 var(--sc-font-size-small)/18px var(--sc-font);
   font-variant-numeric: tabular-nums;
 }
-html.sc-enabled #controls #control-speed[aria-pressed="true"] [class*="_textSpeed"] {
+html.sc-enabled.sc-layout-fusion #controls #control-speed[aria-pressed="true"] [class*="_textSpeed"] {
   color: var(--sc-selected-fg);
 }
-html.sc-enabled #controls #control-speed:disabled [class*="_textSpeed"] {
+html.sc-enabled.sc-layout-fusion #controls #control-speed:disabled [class*="_textSpeed"] {
   color: var(--sc-text-disabled);
 }
 
 /* ---------------------------------------------------------------------------
  * toolbar.mixer: its own group, left of the strip
  * ------------------------------------------------------------------------- */
-html.sc-enabled #controls #mixer-button {
+html.sc-enabled.sc-layout-fusion #controls #mixer-button {
   margin-right: var(--sc-group-gap);
 }
-html.sc-enabled #controls #control-mixer {
+html.sc-enabled.sc-layout-fusion #controls #control-mixer {
   border-radius: var(--sc-radius); /* standalone group: two ids out-rank the strip corner rules */
   color: var(--sc-icon);
 }
@@ -320,10 +325,10 @@ html.sc-enabled #controls #control-mixer {
  * Play keeps the accent fill (so it stays the obvious primary action) but is
  * a rounded square, not a bubble. The source toggle joins it as a segment.
  * ------------------------------------------------------------------------- */
-html.sc-enabled #controls #c-play {
+html.sc-enabled.sc-layout-fusion #controls #c-play {
   margin: 0 var(--sc-group-gap);
 }
-html.sc-enabled #controls #item-play-button {
+html.sc-enabled.sc-layout-fusion #controls #item-play-button {
   width: auto;
   height: var(--sc-ctl-h);
   gap: 0;
@@ -331,7 +336,7 @@ html.sc-enabled #controls #item-play-button {
   background: none;
 }
 
-html.sc-enabled #controls #control-play {
+html.sc-enabled.sc-layout-fusion #controls #control-play {
   box-sizing: border-box;
   width: calc(var(--sc-ctl-w) + 18px);
   height: var(--sc-ctl-h);
@@ -341,27 +346,27 @@ html.sc-enabled #controls #control-play {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
 }
-html.sc-enabled #controls #control-play svg {
+html.sc-enabled.sc-layout-fusion #controls #control-play svg {
   fill: var(--sc-on-accent);
 }
-html.sc-enabled #controls #control-play:not(:disabled):hover {
+html.sc-enabled.sc-layout-fusion #controls #control-play:not(:disabled):hover {
   background: linear-gradient(to bottom, color-mix(in srgb, var(--sc-accent-hover) 88%, white), var(--sc-accent-hover));
 }
-html.sc-enabled #controls #control-play:not(:disabled):active,
-html.sc-enabled #controls #control-play[aria-pressed="true"] {
+html.sc-enabled.sc-layout-fusion #controls #control-play:not(:disabled):active,
+html.sc-enabled.sc-layout-fusion #controls #control-play[aria-pressed="true"] {
   background: var(--sc-accent);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
 }
-html.sc-enabled #controls #control-play:disabled {
+html.sc-enabled.sc-layout-fusion #controls #control-play:disabled {
   opacity: 0.45;
 }
 
 /* Joined with the source toggle when present. */
-html.sc-enabled #controls #item-play-button:has(#control-source) #control-play {
+html.sc-enabled.sc-layout-fusion #controls #item-play-button:has(#control-source) #control-play {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
-html.sc-enabled #controls #control-source {
+html.sc-enabled.sc-layout-fusion #controls #control-source {
   box-sizing: border-box;
   height: var(--sc-ctl-h);
   margin-left: -1px;
@@ -372,24 +377,24 @@ html.sc-enabled #controls #control-source {
   color: var(--sc-text-muted);
   font: 600 11px/1 var(--sc-font);
 }
-html.sc-enabled #controls #control-source * {
+html.sc-enabled.sc-layout-fusion #controls #control-source * {
   border-radius: 2px;
 }
 /* Labels: unselected text was the site's --text (dark on our dark panel). */
-html.sc-enabled #controls #control-source [class*="_label"] {
+html.sc-enabled.sc-layout-fusion #controls #control-source [class*="_label"] {
   color: var(--sc-text-muted);
 }
-html.sc-enabled #controls #control-source [class*="_labelChecked"] {
+html.sc-enabled.sc-layout-fusion #controls #control-source [class*="_labelChecked"] {
   color: var(--sc-on-accent);
 }
-html.sc-enabled #controls #control-source [class*="_background"] {
+html.sc-enabled.sc-layout-fusion #controls #control-source [class*="_background"] {
   background-color: var(--sc-accent);
 }
 
 /* ---------------------------------------------------------------------------
  * toolbar.metronomeSettings: the "..." tab above the metronome button
  * ------------------------------------------------------------------------- */
-html.sc-enabled #controls #metronome-settings {
+html.sc-enabled.sc-layout-fusion #controls #metronome-settings {
   height: 12px;
   top: -7px;
   border: 1px solid var(--sc-border);
@@ -397,13 +402,13 @@ html.sc-enabled #controls #metronome-settings {
   background: var(--sc-btn-bg);
   box-shadow: var(--sc-bevel);
 }
-html.sc-enabled #controls #metronome-settings svg {
+html.sc-enabled.sc-layout-fusion #controls #metronome-settings svg {
   fill: var(--sc-icon);
 }
-html.sc-enabled #controls #metronome-settings:hover {
+html.sc-enabled.sc-layout-fusion #controls #metronome-settings:hover {
   background: var(--sc-btn-bg-hover);
 }
-html.sc-enabled #controls #metronome-settings:active {
+html.sc-enabled.sc-layout-fusion #controls #metronome-settings:active {
   background: var(--sc-btn-pressed);
   box-shadow: var(--sc-bevel-pressed);
 }
@@ -411,13 +416,13 @@ html.sc-enabled #controls #metronome-settings:active {
 /* ---------------------------------------------------------------------------
  * toolbar.handle: pill-shaped grabber -> flat 2-segment bar
  * ------------------------------------------------------------------------- */
-html.sc-enabled #controls #controls-panel-handle [class*="_panelHandleBar"]::before,
-html.sc-enabled #controls #controls-panel-handle [class*="_panelHandleBar"]::after {
+html.sc-enabled.sc-layout-fusion #controls #controls-panel-handle [class*="_panelHandleBar"]::before,
+html.sc-enabled.sc-layout-fusion #controls #controls-panel-handle [class*="_panelHandleBar"]::after {
   border-radius: 1px;
   height: 3px;
 }
 /* Slimmer grab strip: 24px -> 12px, with a hairline under it. */
-html.sc-enabled #controls #controls-panel-handle {
+html.sc-enabled.sc-layout-fusion #controls #controls-panel-handle {
   box-sizing: border-box;
   height: 12px;
   padding-top: 4px;
@@ -434,25 +439,25 @@ html.sc-enabled #controls #controls-panel-handle {
  * `translate` is used instead of `transform` because Songsterr writes inline
  * transforms on the pane while dragging; the two compose instead of clashing.
  * ------------------------------------------------------------------------- */
-html.sc-enabled #controls {
+html.sc-enabled.sc-layout-fusion #controls {
   transition: transform 0.3s ease-out, translate 0.2s ease-out, visibility 0s;
 }
-html.sc-enabled.sc-pane-min:has(#sc-pane-toggle) #controls {
+html.sc-enabled.sc-layout-fusion.sc-pane-min:has(#sc-pane-toggle) #controls {
   translate: 0 calc(100% + 2px);
   visibility: hidden;              /* out of the tab order while minimised */
   transition: transform 0.3s ease-out, translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
-html.sc-enabled.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel] {
+html.sc-enabled.sc-layout-fusion.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel] {
   bottom: 0;
   transition: bottom 0.2s ease-out, opacity 0.2s;
 }
 /* Songsterr fades the strip out during playback; while minimised it is the
    only visible control, so keep it. */
-html.sc-enabled.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel][data-hidden="true"] {
+html.sc-enabled.sc-layout-fusion.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel][data-hidden="true"] {
   opacity: 1;
   visibility: visible;
 }
-html.sc-enabled.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel] > [class*="_controlsTopPanel"] {
+html.sc-enabled.sc-layout-fusion.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel] > [class*="_controlsTopPanel"] {
   pointer-events: auto;
 }
 
@@ -460,7 +465,7 @@ html.sc-enabled.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel] > [cl
 #sc-pane-toggle {
   display: none;
 }
-html.sc-enabled [data-controls-top-panel] #sc-pane-toggle {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #sc-pane-toggle {
   box-sizing: border-box;
   display: flex;
   flex: 0 0 auto;
@@ -476,27 +481,27 @@ html.sc-enabled [data-controls-top-panel] #sc-pane-toggle {
   box-shadow: var(--sc-bevel);
   cursor: pointer;
 }
-html.sc-enabled [data-controls-top-panel] #sc-pane-toggle:hover {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #sc-pane-toggle:hover {
   background: var(--sc-btn-bg-hover);
 }
-html.sc-enabled [data-controls-top-panel] #sc-pane-toggle:active {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #sc-pane-toggle:active {
   background: var(--sc-btn-pressed);
   box-shadow: var(--sc-bevel-pressed);
 }
-html.sc-enabled [data-controls-top-panel] #sc-pane-toggle:focus-visible {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #sc-pane-toggle:focus-visible {
   outline: 2px solid var(--sc-focus);
   outline-offset: -2px;
 }
-html.sc-enabled [data-controls-top-panel] #sc-pane-toggle svg {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #sc-pane-toggle svg {
   fill: none;
   stroke: var(--sc-icon);
   stroke-width: 1.6;
   stroke-linecap: square;
   transition: transform 0.2s ease-out;
 }
-html.sc-enabled [data-controls-top-panel] #sc-pane-toggle:hover svg {
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #sc-pane-toggle:hover svg {
   stroke: var(--sc-text);
 }
-html.sc-enabled.sc-pane-min [data-controls-top-panel] #sc-pane-toggle svg {
+html.sc-enabled.sc-layout-fusion.sc-pane-min [data-controls-top-panel] #sc-pane-toggle svg {
   transform: scaleY(-1);           /* chevron points up: "restore" */
 }

@@ -21,6 +21,33 @@
     </fieldset>
 
     <fieldset class="row">
+      <legend>Layout</legend>
+      <div class="seg" role="radiogroup" aria-label="Player layout">
+        <label title="Player docked in the bottom-right corner as a compact strip"><input type="radio" name="layout" value="fusion"><span>Fusion</span></label>
+        <label title="The older Songsterr player: one full-width bar along the bottom"><input type="radio" name="layout" value="classic"><span>Classic</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="row">
+      <legend>Color theme</legend>
+      <div class="seg seg-tight" role="radiogroup" aria-label="Accent colour">
+        <label title="Blue accents (Fusion's default)"><input type="radio" name="accent" value="blue"><span><i class="swatch" style="--swatch: #3a82e4"></i>Blue</span></label>
+        <label title="Green accents (Classic's default, like the old player)"><input type="radio" name="accent" value="green"><span><i class="swatch" style="--swatch: #2f9e44"></i>Green</span></label>
+        <label title="Red accents"><input type="radio" name="accent" value="red"><span><i class="swatch" style="--swatch: #d64545"></i>Red</span></label>
+        <label title="Pick your own colour"><input type="radio" name="accent" value="custom"><span><i class="swatch" id="custom-swatch"></i>Custom</span></label>
+        <label title="No accent colour: neutral greys only"><input type="radio" name="accent" value="off"><span>Off</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="row" id="custom-row" hidden>
+      <legend>Custom</legend>
+      <div class="color-pick">
+        <input type="color" name="accentCustom" aria-label="Custom accent colour">
+        <span id="custom-hex" class="muted"></span>
+      </div>
+    </fieldset>
+
+    <fieldset class="row">
       <legend>Theme</legend>
       <div class="seg" role="radiogroup" aria-label="Theme">
         <label><input type="radio" name="theme" value="dark"><span>Dark</span></label>
@@ -57,7 +84,7 @@
       <legend>Player</legend>
       <div class="seg" role="radiogroup" aria-label="Player controls">
         <label><input type="radio" name="paneMinimized" value="false"><span>Full</span></label>
-        <label title="Only the favourite / display mode / editor strip. Also toggled by the chevron at the end of that strip."><input type="radio" name="paneMinimized" value="true"><span>Minimised</span></label>
+        <label title="Fusion layout only. Keeps just the favourite / display mode / editor strip. Also toggled by the chevron at the end of that strip."><input type="radio" name="paneMinimized" value="true"><span>Minimised</span></label>
       </div>
     </fieldset>
 

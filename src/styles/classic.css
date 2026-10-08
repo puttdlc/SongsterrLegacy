@@ -1,0 +1,614 @@
+/*
+ * Classic Skin: player toolbar, "Classic" layout
+ * ===============================================
+ * Region keys: selectors.js -> classic.*
+ *
+ * The older Songsterr player: one full-width bar along the bottom edge.
+ *
+ *   [ instrument / track name  ^ ] [ > | ORIG. SYNTH ]  SPEED LOOP SOLO MUTE ...   FAVORITE [Tab] EDITOR
+ *     track selector (mixer)        play + source       icon over label            right-hand strip
+ *
+ * Every rule here applies only while html has .sc-layout-classic. The Fusion
+ * layout (toolbar.css) is scoped to .sc-layout-fusion, so the two layouts
+ * share no toolbar rules. Everything else (theme tokens, base colour remap,
+ * nav bar, panels, dialogs) is shared.
+ *
+ * How the bar is built from Songsterr's own DOM (see toolbar.css for the tree):
+ *   - #controls is stretched to 100vw, one row tall, pinned to the bottom.
+ *   - The wrapping row stops wrapping; items are re-ordered with `order`
+ *     (track selector, play, then the rest in Songsterr's own order).
+ *   - The drag handle is hidden: a one-row bar has nothing to fold.
+ *   - Button labels are CSS ::after text (Songsterr's buttons are icon-only).
+ *     Unknown buttons simply get no label.
+ *   - The track selector text comes from data-sc-instrument / data-sc-track,
+ *     set by content.js from the page title.
+ *   - The favourite / display-mode / editor strip ([data-controls-top-panel])
+ *     is moved into the right end of the bar; content.js publishes its width
+ *     as --sc-classic-strip-w so the button row stops short of it.
+ *
+ * Nothing is hidden except the drag handle and our own Fusion minimise
+ * toggle; every Songsterr button stays reachable and keeps its behaviour.
+ */
+
+/* ---------------------------------------------------------------------------
+ * classic.tokens
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic {
+  --sc-classic-h: 58px;               /* bar height, including the 2px base line */
+  --sc-classic-btn-w: 66px;
+  --sc-classic-label: 600 10px / 1 var(--sc-font);
+  /* Play button, source toggle and base line follow the accent colour
+     (popup "Color theme"; green is the old player's look). */
+  --sc-classic-play: var(--sc-accent);
+  --sc-classic-play-hover: var(--sc-accent-hover);
+  --sc-classic-play-border: var(--sc-accent-border);
+  --sc-classic-line: var(--sc-accent);
+
+  /* Popups that hang off the pane sit flush with the right edge. */
+  --controls-panel-right: 0px;
+}
+html.sc-enabled.sc-layout-classic.sc-density-comfortable {
+  --sc-classic-h: 66px;
+  --sc-classic-btn-w: 74px;
+}
+
+/* Page layout: the pane no longer takes a 360px column on the right, so the
+   notation, side panels and nav bar can use the full width. Panels anchored
+   to the nav bar sit on top of nav + player bar.
+   ":not(#sc-specificity)" out-ranks base.css (same trick, see there). */
+html.sc-enabled.sc-layout-classic:not(#sc-specificity) {
+  --controls-panel-width-plus-paddings: 15px;
+  --bottombar-height: calc(var(--sc-nav-h, 32px) + 1px + var(--sc-classic-h));
+}
+
+/* ---------------------------------------------------------------------------
+ * classic.bar: #controls stretched into the full-width bottom bar
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic #controls {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  max-width: none;
+  height: var(--sc-classic-h);
+  max-height: none;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--sc-border);
+  border-bottom: 2px solid var(--sc-classic-line);
+  border-radius: 0;
+  background: var(--sc-toolbar-bg);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+  overflow: visible;                 /* metronome "..." tab and badges stick out */
+  /* Songsterr writes inline translateY offsets while the pane is dragged or
+     folded. The bar has no handle, so pin it; !important is needed to beat
+     the inline style. */
+  transform: none !important;
+}
+
+html.sc-enabled.sc-layout-classic #controls #controls-panel-handle {
+  display: none;
+}
+
+html.sc-enabled.sc-layout-classic #controls [class*="_controlsCard"] {
+  height: 100%;
+}
+html.sc-enabled.sc-layout-classic #controls [class*="_controlsCard"]::before {
+  display: none;                     /* floating-bubble backdrop */
+}
+
+/* classic.row: one non-wrapping row. The right padding leaves room for the
+   strip that sits over the right end of the bar. */
+html.sc-enabled.sc-layout-classic #controls [class*="_controlsCard"] > div {
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  gap: 0;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0 calc(var(--sc-classic-strip-w, 240px) + 8px) 0 12px;
+  overflow: visible;
+  background: transparent;
+  clip-path: none;
+}
+
+/* Item wrappers: full-height slots, no fixed 50px columns. */
+html.sc-enabled.sc-layout-classic #controls [class*="_controlsCard"] > div > *,
+html.sc-enabled.sc-layout-classic #controls #mixer-button {
+  flex: 0 1 auto;
+  justify-content: center;
+  width: auto;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+  gap: 0;
+  order: 3;
+}
+html.sc-enabled.sc-layout-classic #controls #mixer-button { order: 1; flex-shrink: 0; }
+html.sc-enabled.sc-layout-classic #controls #c-play       { order: 2; flex-shrink: 0; }
+html.sc-enabled.sc-layout-classic #controls #c-speed      { flex-shrink: 0; }  /* keep "100%" readable */
+
+/* ---------------------------------------------------------------------------
+ * classic.buttons: flat, icon over an uppercase label
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer),
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor) {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: var(--sc-classic-btn-w);
+  width: auto;
+  height: 100%;
+  padding: 2px 6px 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--sc-text-muted);
+  text-decoration: none;
+  transition: background-color var(--sc-ease), box-shadow var(--sc-ease), color var(--sc-ease);
+}
+
+/* Labels. Set per button through --sc-label; buttons without one get none. */
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer)::after,
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor)::after {
+  content: var(--sc-label, none);
+  display: block;
+  color: inherit;
+  font: var(--sc-classic-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none;
+}
+html.sc-enabled.sc-layout-classic {
+  & #control-speed         { --sc-label: "Speed"; }
+  & #control-loop          { --sc-label: "Loop"; }
+  & #control-solo          { --sc-label: "Solo"; }
+  & #control-mute          { --sc-label: "Mute"; }
+  & #control-countin       { --sc-label: "Count in"; }
+  & #control-metronome,
+  & #control-voice         { --sc-label: "Metronome"; }
+  & #control-export        { --sc-label: "Export"; }
+  & #control-print         { --sc-label: "Print"; }
+  & #control-revision      { --sc-label: "History"; }
+  & #control-settings      { --sc-label: "More"; }
+  & #control-pitchshift    { --sc-label: "Pitch"; }
+  & #control-transpose     { --sc-label: "Transpose"; }
+  & #control-concertpitch  { --sc-label: "Concert"; }
+  & #control-fretboard     { --sc-label: "Fretboard"; }
+  & #control-drumnotation  { --sc-label: "Drums"; }
+  & #control-tabcopy       { --sc-label: "Copy"; }
+  & #control-tutorial      { --sc-label: "Tutorial"; }
+  & #control-undo          { --sc-label: "Undo"; }
+  & #control-redo          { --sc-label: "Redo"; }
+  & #favorite-toggle       { --sc-label: "Favorite"; }
+  & #control-editor        { --sc-label: "Editor"; }
+}
+
+/* Icons: recolour only, size untouched (28px sprites stay crisp). */
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source) svg,
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor) svg {
+  fill: var(--sc-icon);
+  transition: fill var(--sc-ease);
+}
+
+/* Hover */
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer):not(:disabled):hover,
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor):hover {
+  background: var(--sc-row-hover);
+  color: var(--sc-text);
+}
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source):not(:disabled):hover svg,
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor):hover svg {
+  fill: var(--sc-text);
+}
+
+/* Pressed */
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer):not(:disabled):active,
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor):active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+
+/* Toggled on (loop, metronome, solo, favourited, editor ...): accent text
+   and icon plus an accent underline, like the old bar's lit buttons. */
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not(#control-play, #control-source, #control-mixer),
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) {
+  background: var(--sc-selected-bg);
+  box-shadow: inset 0 -2px 0 var(--sc-accent);
+  color: var(--sc-selected-fg);
+}
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not(#control-play, #control-source, #control-mixer) svg,
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) svg {
+  fill: var(--sc-selected-fg);
+}
+
+/* Disabled / Plus-locked: dim icon and label; badges stay legible. */
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer):is(:disabled, [class*="_disabled"]) {
+  background: transparent;
+  box-shadow: none;
+  color: var(--sc-text-disabled);
+}
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play):is(:disabled, [class*="_disabled"]) svg[class*="_icon"] {
+  fill: var(--sc-text-disabled);
+}
+
+html.sc-enabled.sc-layout-classic :is(#controls, [data-controls-top-panel]) :is(button, a, [role="combobox"]):focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+}
+
+/* Plus/lock badges: panel colours, same size and position, always visible. */
+html.sc-enabled.sc-layout-classic #controls,
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] {
+  --lock-surface: var(--sc-toolbar-top);
+  --lock: var(--sc-icon);
+  --plus-surface: var(--sc-toolbar-top);
+  --plus: var(--sc-icon);
+}
+html.sc-enabled.sc-layout-classic #controls [id^="control-"] :is([class*="_badge"], [class*="_soloMuteIndicator"]) {
+  border-radius: 2px;
+}
+/* The buttons are now full bar height with a label underneath, so corner
+   badges would land on the label. Pin them to the icon's corners instead:
+   Plus top-right, lock bottom-right. Same badge, same size. */
+html.sc-enabled.sc-layout-classic #controls [id^="control-"] > [class*="_plus"] {
+  top: 4px;
+  right: calc(50% - 22px);
+}
+html.sc-enabled.sc-layout-classic #controls [id^="control-"] > [class*="_lock"] {
+  top: 20px;
+  bottom: auto;
+  right: calc(50% - 22px);
+}
+/* Speed shows "100%" beside its icon, so its lock goes to the button's corner. */
+html.sc-enabled.sc-layout-classic #controls #c-speed > button#control-speed:has(> [class*="_lock"]) {
+  padding-right: 24px;               /* room for the lock beside "100%" */
+}
+html.sc-enabled.sc-layout-classic #controls #control-speed > [class*="_lock"] {
+  top: 4px;
+  right: 3px;
+}
+
+/* ---------------------------------------------------------------------------
+ * classic.speed: runner icon and "100%" side by side, label underneath
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic #controls #control-speed > [class*="_speed"] {
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  height: 28px;                      /* same as the other icons, so labels line up */
+}
+html.sc-enabled.sc-layout-classic #controls #control-speed > [class*="_speed"] > svg {
+  margin-top: 0;
+}
+html.sc-enabled.sc-layout-classic #controls #control-speed [class*="_textSpeed"] {
+  width: auto;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: 500 var(--sc-font-size) / 1 var(--sc-font);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------------
+ * classic.trackSelector: the mixer button as a wide "instrument / track" box
+ * with an up-chevron segment, opening Songsterr's own track list.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic #controls #mixer-button {
+  align-self: center;
+  height: auto;
+  margin-right: 28px;
+}
+html.sc-enabled.sc-layout-classic #controls #control-mixer {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: clamp(150px, 20vw, 300px);
+  height: calc(var(--sc-classic-h) - 16px);
+  padding: 0 42px 0 12px;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  /* Body + a separate chevron segment (hairline at 34px from the right). */
+  background:
+    linear-gradient(to left, transparent 33px, var(--sc-border) 33px, var(--sc-border) 34px, transparent 34px),
+    var(--sc-surface-raised);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+  color: var(--sc-text);
+  text-align: left;
+  transition: background-color var(--sc-ease);
+}
+html.sc-enabled.sc-layout-classic #controls #control-mixer > * {
+  flex: 0 0 auto;
+}
+/* Two lines: instrument, then track name. */
+html.sc-enabled.sc-layout-classic #controls #control-mixer::before {
+  content: attr(data-sc-instrument) "\A" attr(data-sc-track);
+  order: 2;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: pre;
+  text-overflow: ellipsis;
+  color: var(--sc-text);
+  font: 400 var(--sc-font-size) / 1.35 var(--sc-font);
+}
+/* Up chevron in the right segment: the list opens upwards. */
+html.sc-enabled.sc-layout-classic #controls #control-mixer::after {
+  content: "";
+  position: absolute;
+  top: calc(50% - 2px);
+  right: 13px;
+  width: 7px;
+  height: 7px;
+  border-top: 2px solid var(--sc-icon);
+  border-left: 2px solid var(--sc-icon);
+  transform: rotate(45deg);
+}
+html.sc-enabled.sc-layout-classic #controls #control-mixer:not(:disabled):hover {
+  background:
+    linear-gradient(to left, transparent 33px, var(--sc-border) 33px, var(--sc-border) 34px, transparent 34px),
+    var(--sc-row-hover);
+}
+html.sc-enabled.sc-layout-classic #controls #control-mixer[aria-pressed="true"] {
+  background:
+    linear-gradient(to left, transparent 33px, var(--sc-border) 33px, var(--sc-border) 34px, transparent 34px),
+    var(--sc-selected-bg);
+}
+html.sc-enabled.sc-layout-classic #controls #control-mixer[aria-pressed="true"]::after {
+  top: calc(50% - 6px);
+  transform: rotate(225deg);         /* points down while the list is open */
+}
+html.sc-enabled.sc-layout-classic #controls #control-mixer:disabled {
+  opacity: 0.6;
+}
+
+/* ---------------------------------------------------------------------------
+ * classic.play: big green play button, audio-source toggle joined on the
+ * right with its two options stacked.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic #controls #c-play {
+  align-self: center;
+  height: auto;
+  margin-right: 28px;
+}
+html.sc-enabled.sc-layout-classic #controls #item-play-button {
+  display: flex;
+  width: auto;
+  height: calc(var(--sc-classic-h) - 14px);
+  gap: 0;
+  border-radius: 2px;
+  background: none;
+}
+html.sc-enabled.sc-layout-classic #controls #control-play {
+  box-sizing: border-box;
+  width: 86px;
+  height: 100%;
+  border: 1px solid var(--sc-classic-play-border);
+  border-radius: 2px;
+  background: var(--sc-classic-play);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  transition: background-color var(--sc-ease);
+}
+html.sc-enabled.sc-layout-classic #controls #control-play svg {
+  fill: var(--sc-on-accent);
+}
+html.sc-enabled.sc-layout-classic #controls #control-play:not(:disabled):hover {
+  background: var(--sc-classic-play-hover);
+}
+html.sc-enabled.sc-layout-classic #controls #control-play:not(:disabled):active,
+html.sc-enabled.sc-layout-classic #controls #control-play[aria-pressed="true"] {
+  background: var(--sc-classic-play-border);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+}
+html.sc-enabled.sc-layout-classic #controls #control-play:disabled {
+  opacity: 0.45;
+}
+html.sc-enabled.sc-layout-classic #controls #item-play-button:has(#control-source) #control-play {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+html.sc-enabled.sc-layout-classic #controls #control-source {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 86px;
+  height: 100%;
+  margin: 0 0 0 -1px;
+  padding: 0;
+  border: 1px solid var(--sc-border);
+  border-radius: 0 2px 2px 0;
+  background: var(--sc-surface-raised);
+  box-shadow: none;
+  overflow: hidden;
+}
+html.sc-enabled.sc-layout-classic #controls #control-source > span {
+  position: relative;
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 0;
+  margin: 0;
+  border-radius: 0;
+  color: var(--sc-text-muted);
+  font: 600 10px / 1 var(--sc-font);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+html.sc-enabled.sc-layout-classic #controls #control-source > span + span {
+  border-top: 1px solid var(--sc-border);
+}
+html.sc-enabled.sc-layout-classic #controls #control-source [class*="_background"] {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background-color: transparent;
+  transform: none;
+}
+html.sc-enabled.sc-layout-classic #controls #control-source [class*="_labelChecked"] [class*="_background"] {
+  background-color: var(--sc-classic-play);
+}
+html.sc-enabled.sc-layout-classic #controls #control-source [class*="_text"] {
+  position: relative;                /* above the background fill */
+  color: inherit;
+}
+html.sc-enabled.sc-layout-classic #controls #control-source [class*="_labelChecked"] {
+  color: var(--sc-on-accent);
+}
+html.sc-enabled.sc-layout-classic #controls #control-source:hover > span:not([class*="_labelChecked"]) {
+  color: var(--sc-text);
+  background: var(--sc-row-hover);
+}
+
+/* Songs without the quick toggle get a small source button instead. */
+html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"] {
+  margin-left: -1px;
+  border-radius: 0 2px 2px 0;
+}
+html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"]::before {
+  display: none;
+}
+html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"] > button {
+  min-width: 40px;
+  height: 100%;
+  border: 1px solid var(--sc-border);
+  border-radius: 0 2px 2px 0;
+  background: var(--sc-surface-raised);
+}
+html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"] > button::after {
+  content: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * classic.metronomeSettings: the "..." tab above the metronome button
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic #controls #metronome-settings {
+  top: -9px;
+  height: 12px;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+}
+html.sc-enabled.sc-layout-classic #controls #metronome-settings svg {
+  fill: var(--sc-icon);
+}
+
+/* ---------------------------------------------------------------------------
+ * classic.strip: favourite / display mode / editor at the right end of the
+ * bar, always visible (Songsterr fades it out during playback).
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] {
+  left: auto;
+  right: 0;
+  bottom: 2px;                       /* sit on the base line */
+  width: auto;
+  height: calc(var(--sc-classic-h) - 3px);
+  z-index: calc(var(--zIndexControls, 60) + 1);
+}
+html.sc-enabled.sc-layout-classic [data-controls-top-panel][data-hidden="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] > [class*="_controlsTopPanel"] {
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: auto;
+  max-width: none;
+  height: 100%;
+  padding: 0 8px 0 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: auto;
+}
+/* No `display` here: Songsterr hides some slots (e.g. "to start") on desktop. */
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] [class*="_controlsTopItem"] {
+  align-items: center;
+  width: auto;
+  height: 100%;
+  flex: 0 0 auto;
+  margin: 0;
+}
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] #display-mode-button {
+  height: 30px;
+  margin: 0 8px;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-surface-sunken);
+  box-shadow: inset 0 1px 2px var(--sc-shade);
+  color: var(--sc-text);
+  font: var(--sc-font-size) / 1 var(--sc-font);
+}
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] #display-mode-button :is([class*="_placeholder"], [class*="_valueText"]) {
+  color: var(--sc-text);
+}
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] #display-mode-button svg {
+  fill: var(--sc-icon);
+}
+
+/* ---------------------------------------------------------------------------
+ * classic.nav: the site nav bar and its collapse tab sit on top of the
+ * player bar instead of on the screen edge.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic [class*="_bottomBarWide"] {
+  bottom: var(--sc-classic-h);
+  max-width: calc(100vw - var(--sc-nav-toggle-w));
+}
+html.sc-enabled.sc-layout-classic #sc-nav-toggle:not([hidden]) {
+  bottom: var(--sc-classic-h);
+}
+
+/* ---------------------------------------------------------------------------
+ * classic.narrow: below 1100px the labels go, buttons shrink and the track
+ * selector keeps only its icon and chevron.
+ * ------------------------------------------------------------------------- */
+@media (width < 1100px) {
+  html.sc-enabled.sc-layout-classic {
+    --sc-classic-btn-w: 42px;
+  }
+  html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer)::after,
+  html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor)::after {
+    content: none;
+  }
+  html.sc-enabled.sc-layout-classic #controls :is(#mixer-button, #c-play) {
+    margin-right: 12px;
+  }
+  html.sc-enabled.sc-layout-classic #controls :is(#control-play, #control-source) {
+    width: 60px;
+  }
+  html.sc-enabled.sc-layout-classic #controls #control-mixer {
+    width: auto;
+    padding-right: 42px;
+  }
+  html.sc-enabled.sc-layout-classic #controls #control-mixer::before {
+    content: none;
+  }
+}
+
+@media print {
+  html.sc-enabled.sc-layout-classic #controls {
+    display: none;
+  }
+}

@@ -59,6 +59,20 @@
   color-scheme: light;
 }
 
+/* Accent (same idea as tokens.css): blue keeps the values above; the other
+   choices derive the three accent tokens from --sc-accent-base (set by
+   popup.js), Off falls back to neutral greys. */
+:root[data-accent]:not([data-accent="blue"], [data-accent="off"]) {
+  --sc-selected-bg: color-mix(in srgb, var(--sc-accent-base) 28%, var(--sc-surface));
+  --sc-selected-fg: color-mix(in srgb, var(--sc-accent-base) 55%, var(--sc-text));
+  --sc-focus:       color-mix(in srgb, var(--sc-accent-base) 70%, var(--sc-text));
+}
+:root:root[data-accent="off"] {
+  --sc-selected-bg: var(--sc-btn-pressed);
+  --sc-selected-fg: var(--sc-text);
+  --sc-focus:       var(--sc-text-muted);
+}
+
 :root {
   --sc-bevel:         inset 0 1px 0 var(--sc-highlight), inset 0 -1px 0 var(--sc-shade);
   --sc-bevel-pressed: inset 0 1px 2px var(--sc-shade-strong);
@@ -69,7 +83,7 @@
 html, body { margin: 0; }
 
 body {
-  width: 300px;
+  width: 340px;
   background: var(--sc-bg);
   color: var(--sc-text);
   font: 13px/1.25 var(--sc-font);
@@ -120,6 +134,7 @@ body {
   min-inline-size: 0;
 }
 .row + .row { border-top: 1px solid var(--sc-divider); }
+.row[hidden] { display: none; }
 .row legend {
   float: left;               /* lets legend sit in the grid's first column */
   padding: 0;
@@ -189,6 +204,39 @@ body {
 }
 
 .btn { border-radius: var(--sc-radius); }
+
+/* ---------- Accent picker ---------- */
+.seg-tight span { padding: 0 5px; gap: 4px; }
+.swatch {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+  background: var(--swatch, transparent);
+  box-shadow: 0 0 0 1px var(--sc-border);
+}
+.color-pick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.color-pick input[type="color"] {
+  width: 44px;
+  height: 24px;
+  padding: 1px;
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  background: var(--sc-surface-sunken);
+  cursor: pointer;
+}
+.color-pick input[type="color"]:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: 1px;
+}
+#custom-hex {
+  font: 12px ui-monospace, monospace;
+  text-transform: uppercase;
+}
 
 /* ---------- Diagnostics ---------- */
 .diag-head {

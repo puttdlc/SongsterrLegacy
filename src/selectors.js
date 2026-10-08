@@ -50,6 +50,14 @@
       minimize:  { sel: '#sc-pane-toggle', tier: 'id', note: 'Ours: minimise toggle appended to the top strip; hides the pane, keeps the strip.' }
     },
 
+    classic: {
+      status: 'styled (Classic layout only)',
+      bar:      { sel: 'html.sc-layout-classic #controls', tier: 'id', note: 'Pane stretched to a full-width bottom bar (classic.css). Handle hidden, row unwrapped and re-ordered.' },
+      track:    { sel: 'html.sc-layout-classic #control-mixer[data-sc-instrument]', tier: 'id', note: 'Track selector. data-sc-instrument / data-sc-track are ours, parsed by content.js from the page title "<Song> Tab by <Artist> - <Track> - <Instrument> | ...".' },
+      source:   { sel: 'html.sc-layout-classic #control-source > span', tier: 'id', note: 'Orig. / Synth options, stacked next to play.' },
+      strip:    { sel: 'html.sc-layout-classic [data-controls-top-panel] > [class*="_controlsTopPanel"]', tier: 'data', note: 'Favourite / display mode / editor, moved to the right end of the bar. Width published as --sc-classic-strip-w.' }
+    },
+
     nav: {
       status: 'styled',
       bar:    { sel: '[class*="_bottomBarWide"]', tier: 'stem', note: 'Fixed bottom nav container (was a floating 30px pill). Site hides it <880px, for data-plus="true", and until data-ready="true".' },

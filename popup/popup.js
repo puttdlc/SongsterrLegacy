@@ -9,6 +9,9 @@
 
   const DEFAULTS = {
     enabled: true,
+    layout: 'fusion',
+    accent: 'auto',          // auto = Classic green, Fusion blue (see content.js)
+    accentCustom: '#2f9e44',
     theme: 'dark',
     density: 'compact',
     showAuthor: true,
@@ -25,14 +28,36 @@
     document.documentElement.dataset.theme = resolved;
   }
 
+  function effectiveAccent(settings) {
+    if (settings.accent && settings.accent !== 'auto') return settings.accent;
+    return settings.layout === 'classic' ? 'green' : 'blue';
+  }
+
   function render(settings) {
     for (const [key, value] of Object.entries(settings)) {
-      const input = form.querySelector(`input[name="${key}"][value="${String(value)}"]`);
+      const input = form.querySelector(`input[type="radio"][name="${key}"][value="${String(value)}"]`);
       if (input) input.checked = true;
     }
+    // "auto" has no button of its own: show the colour it currently means.
+    const accent = effectiveAccent(settings);
+    const accentInput = form.querySelector(`input[name="accent"][value="${accent}"]`);
+    if (accentInput) accentInput.checked = true;
+    const custom = /^#[0-9a-f]{6}$/i.test(String(settings.accentCustom)) ? settings.accentCustom : DEFAULTS.accentCustom;
+    form.elements.accentCustom.value = custom;
+    document.getElementById('custom-hex').textContent = custom;
+    document.getElementById('custom-swatch').style.setProperty('--swatch', custom);
+    document.getElementById('custom-row').hidden = accent !== 'custom';
+    document.documentElement.dataset.accent = accent;
+    const base = { green: '#2f9e44', red: '#d64545', custom }[accent];
+    if (base) document.documentElement.style.setProperty('--sc-accent-base', base);
+
     const off = settings.enabled === false;
     for (const input of form.querySelectorAll('input:not([name="enabled"])')) {
       input.disabled = off;
+    }
+    // Minimising only exists in the Fusion layout.
+    for (const input of form.querySelectorAll('input[name="paneMinimized"]')) {
+      input.disabled = off || settings.layout === 'classic';
     }
     applyPopupTheme(settings.theme);
   }
@@ -48,6 +73,13 @@
     const input = event.target;
     if (!(input instanceof HTMLInputElement) || !input.name) return;
     const value = BOOLEAN_KEYS.has(input.name) ? input.value === 'true' : input.value;
+    // Picking a custom colour also switches the accent to Custom.
+    if (input.name === 'accentCustom' && current.accent !== 'custom') {
+      current = { ...current, accent: 'custom', accentCustom: value };
+      render(current);
+      chrome.storage.sync.set({ accent: 'custom', accentCustom: value });
+      return;
+    }
     current = { ...current, [input.name]: value };
     render(current);
     chrome.storage.sync.set({ [input.name]: value });
