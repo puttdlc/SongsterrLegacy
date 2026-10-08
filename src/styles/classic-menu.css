@@ -186,6 +186,14 @@ html.sc-enabled.sc-menu-classic :is(#inbox-popup, #profile-popup) {
   top: calc(var(--sc-menu-h) + 1px);
   bottom: auto;
 }
+/* The inbox sets top/bottom/max-height inline (bottom-docked, sized from its
+   own bottom edge), so only !important moves it under the bar. Its inline
+   `left` already centres it under the Inbox button and is kept. */
+html.sc-enabled.sc-menu-classic #inbox-popup {
+  top: calc(var(--sc-menu-h) + 1px) !important;
+  bottom: auto !important;
+  max-height: calc(100vh - var(--sc-menu-h) - var(--bottombar-height, 0px) - 16px) !important;
+}
 
 /* ---------------------------------------------------------------------------
  * classicMenu.header: push the song title down so it clears the bar.
