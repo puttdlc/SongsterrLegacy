@@ -583,6 +583,22 @@ html.sc-enabled.sc-layout-classic [data-controls-top-panel] #display-mode-button
   fill: var(--sc-icon);
 }
 
+/* classic.stripSpacing: Favorite, the Tab select and Editor get room to
+   breathe (they sat edge to edge), with a hairline separating the strip from
+   the button row. */
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] > [class*="_controlsTopPanel"] {
+  gap: 12px;
+  padding: 0 14px 0 16px;
+  box-shadow: inset 1px 0 0 var(--sc-divider);
+}
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] #display-mode-button {
+  margin: 0;
+}
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor) {
+  min-width: 64px;
+  padding: 2px 10px 0;
+}
+
 /* ---------------------------------------------------------------------------
  * classic.nav: with the Fusion quick menu, the nav bar and its collapse tab
  * sit on top of the player bar instead of on the screen edge. (The Classic
@@ -688,11 +704,13 @@ html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls
   padding-left: 8px;
   padding-right: calc(var(--sc-classic-strip-w, 240px) + 4px);
 }
-html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) [data-controls-top-panel] #display-mode-button {
-  margin: 0 4px;
-}
 html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) [data-controls-top-panel] > [class*="_controlsTopPanel"] {
-  padding: 0 4px 0 6px;
+  gap: 6px;
+  padding: 0 8px 0 10px;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) [data-controls-top-panel] :is(#favorite-toggle, #control-editor) {
+  min-width: 52px;
+  padding: 2px 6px 0;
 }
 html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls #control-mixer::before {
   content: none;
@@ -700,6 +718,9 @@ html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls
 
 html.sc-enabled.sc-layout-classic:is(.sc-classic-tight, .sc-bar-icons) {
   --sc-classic-btn-w: 42px;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-tight, .sc-bar-icons) [data-controls-top-panel] :is(#favorite-toggle, #control-editor) {
+  min-width: 44px;
 }
 html.sc-enabled.sc-layout-classic:is(.sc-classic-tight, .sc-bar-icons) #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer)::after,
 html.sc-enabled.sc-layout-classic:is(.sc-classic-tight, .sc-bar-icons) [data-controls-top-panel] :is(#favorite-toggle, #control-editor)::after {
