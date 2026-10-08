@@ -233,8 +233,9 @@
   // Video panel collapse toggle (selectors.js: video.toggle)
   // Classic and Minimal float Songsterr's synced-video / audio-mix panel over
   // the page (classic.video, minimal.video), where it can cover the tab. This
-  // tab on its left edge slides it off to the right and back; the video keeps
-  // playing. It lives in <body>, outside Songsterr's app root, and is only
+  // tab slides it away and back (Classic: on its top edge, down behind the
+  // player bar; Minimal: on its left edge, off to the right); the video keeps
+  // playing. Its height is published as --sc-video-h for the Classic tab. It lives in <body>, outside Songsterr's app root, and is only
   // shown while the panel is; CSS only hides the panel while the tab is
   // shown, so the panel can never get stuck hidden.
   // ---------------------------------------------------------------------------
@@ -267,8 +268,15 @@
       updateVideoToggle();
     }
     if (videoToggle.parentNode !== document.body) document.body.append(videoToggle);
-    const shown = settings.enabled && settings.layout !== 'fusion' && !!document.querySelector(VIDEO_PANEL);
-    if (videoToggle.hidden === shown) videoToggle.hidden = !shown;
+    const panel = settings.enabled && settings.layout !== 'fusion' ? document.querySelector(VIDEO_PANEL) : null;
+    if (videoToggle.hidden === !!panel) videoToggle.hidden = !panel;
+    // Classic puts the tab on the panel's top edge, so CSS needs its height
+    // (unchanged while it is slid away: translate doesn't affect layout).
+    const height = panel ? `${Math.ceil(panel.getBoundingClientRect().height)}px` : '';
+    if (root.style.getPropertyValue('--sc-video-h') !== height) {
+      if (height) root.style.setProperty('--sc-video-h', height);
+      else root.style.removeProperty('--sc-video-h');
+    }
   }
 
   // ---------------------------------------------------------------------------

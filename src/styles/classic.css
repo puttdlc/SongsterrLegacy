@@ -639,24 +639,37 @@ html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [c
 }
 
 /* classic.videoCollapse: the tab (content.js, #sc-video-toggle) sits on the
-   panel's left edge, near its bottom; collapsed, the panel slides off
-   to the right and the tab moves to the screen edge. The panel only hides
-   while the tab is shown, so it can't get stuck hidden. `translate`, not
-   `transform`, so nothing Songsterr writes clashes with it. */
+   panel's top edge, centred (content.js publishes the panel's height as
+   --sc-video-h); collapsed, the panel slides down behind the player bar and
+   the tab rests on the bar. The panel only hides while the tab is shown, so
+   it can't get stuck hidden. `translate`, not `transform`, so nothing
+   Songsterr writes clashes with it. */
 html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]) {
   transition: translate 0.2s ease-out, visibility 0s;
 }
 html.sc-enabled.sc-layout-classic.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
-  translate: 100% 0;
+  translate: 0 calc(100% + var(--sc-classic-h));
   visibility: hidden;                /* out of the tab order while collapsed */
   transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
 html.sc-enabled.sc-layout-classic #sc-video-toggle:not([hidden]) {
-  right: var(--sc-video-w);
-  bottom: calc(var(--sc-classic-h) + 12px);   /* clear of the revision date badge */
+  right: calc(var(--sc-video-w) / 2 - 24px);
+  bottom: calc(var(--sc-classic-h) + var(--sc-video-h, 0px));
+  width: 48px;
+  height: 16px;
+  border: 1px solid var(--sc-border);
+  border-bottom: 0;
+  border-radius: var(--sc-radius) var(--sc-radius) 0 0;
+  transition: bottom 0.2s ease-out;
 }
 html.sc-enabled.sc-layout-classic.sc-video-collapsed #sc-video-toggle:not([hidden]) {
-  right: 0;
+  bottom: var(--sc-classic-h);
+}
+html.sc-enabled.sc-layout-classic #sc-video-toggle svg {
+  transform: rotate(90deg);          /* chevron points down: "hide" */
+}
+html.sc-enabled.sc-layout-classic.sc-video-collapsed #sc-video-toggle svg {
+  transform: rotate(-90deg);         /* points up: "show" */
 }
 
 /* ---------------------------------------------------------------------------
