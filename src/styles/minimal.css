@@ -1,0 +1,481 @@
+/*
+ * Classic Skin: player toolbar, "Minimal" layout
+ * ===============================================
+ * Region keys: selectors.js -> minimal.*
+ *
+ * The 2023 Songsterr player: a narrow column of round, icon-only buttons
+ * along the right edge, play on top. Favourite / display mode / editor sit
+ * at the top left of the page, the track list opens beside the column.
+ *
+ *   |                                   ( > )  play (+ source toggle)
+ *   |  [*] [Tab v] [E]                  ( o )  track list (mixer)
+ *   |                                   (100%) speed
+ *   |        notation ...               ( ~ )  loop, transpose, solo ...
+ *
+ * Every rule here applies only while html has .sc-layout-minimal (Fusion is
+ * toolbar.css, Classic is classic.css; the three share no toolbar rules).
+ *
+ * Built from Songsterr's own DOM (see toolbar.css for the tree):
+ *   - #controls becomes a full-height column pinned to the right edge.
+ *   - The wrapping row runs top to bottom instead; play goes first, then the
+ *     track list, then the rest in Songsterr's order. It scrolls if the
+ *     editor's extra buttons make it taller than the window.
+ *   - The drag handle is hidden: the column has nothing to fold.
+ *   - --controls-panel-right is the column width, so Songsterr's own popups
+ *     (speed, settings, track list ...) open beside the column, not under it.
+ *
+ * Nothing is hidden except the drag handle; every button stays reachable.
+ */
+
+/* ---------------------------------------------------------------------------
+ * minimal.tokens
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal {
+  --sc-rail-w: 56px;
+  --sc-rail-btn: 44px;
+  --controls-panel-right: var(--sc-rail-w);
+}
+html.sc-enabled.sc-layout-minimal.sc-density-comfortable {
+  --sc-rail-w: 64px;
+  --sc-rail-btn: 50px;
+}
+/* The notation no longer keeps a 360px column free for the pane.
+   ":not(#sc-specificity)" out-ranks base.css (same trick, see there). */
+html.sc-enabled.sc-layout-minimal:not(#sc-specificity) {
+  --controls-panel-width-plus-paddings: calc(var(--sc-rail-w) + 15px);
+}
+
+/* ---------------------------------------------------------------------------
+ * minimal.rail: #controls as a full-height column on the right edge
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal #controls {
+  top: var(--sc-top-inset, 0px);
+  bottom: var(--sc-bottom-inset, 0px);
+  left: auto;
+  right: 0;
+  width: var(--sc-rail-w);
+  max-width: none;
+  height: auto;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  border-left: 1px solid var(--sc-border);
+  border-radius: 0;
+  background: var(--sc-toolbar-bg);
+  box-shadow: none;
+  overflow: visible;
+  /* Songsterr writes inline translateY offsets while the pane is dragged or
+     folded. The column has no handle, so pin it; !important is needed to
+     beat the inline style. */
+  transform: none !important;
+}
+html.sc-enabled.sc-layout-minimal #controls #controls-panel-handle {
+  display: none;
+}
+html.sc-enabled.sc-layout-minimal #controls [class*="_controlsCard"] {
+  height: 100%;
+}
+html.sc-enabled.sc-layout-minimal #controls [class*="_controlsCard"]::before {
+  display: none;                     /* floating-bubble backdrop */
+}
+
+/* minimal.row: one column, top to bottom. */
+html.sc-enabled.sc-layout-minimal #controls [class*="_controlsCard"] > div {
+  box-sizing: border-box;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 10px 0;
+  overflow: hidden auto;
+  scrollbar-width: none;
+  background: transparent;
+  clip-path: none;
+}
+html.sc-enabled.sc-layout-minimal #controls [class*="_controlsCard"] > div > * {
+  flex: 0 0 auto;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  margin: 0;
+  gap: 0;
+  order: 3;
+}
+html.sc-enabled.sc-layout-minimal #controls #c-play       { order: 1; margin-bottom: 6px; }
+html.sc-enabled.sc-layout-minimal #controls #mixer-button { order: 2; }
+
+/* ---------------------------------------------------------------------------
+ * minimal.buttons: round, icon only (the title attribute stays the tooltip)
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source),
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle, #control-editor) {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: var(--sc-rail-btn);
+  min-width: 0;
+  height: var(--sc-rail-btn);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  box-shadow: none;
+  color: var(--sc-text-muted);
+  text-decoration: none;
+  transition: background-color var(--sc-ease), color var(--sc-ease);
+}
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source) svg,
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle, #control-editor) svg {
+  fill: var(--sc-icon);
+  transition: fill var(--sc-ease);
+}
+
+/* Hover (not while toggled on: that keeps its accent fill) */
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source):not(:disabled, [aria-pressed="true"]):hover,
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle, #control-editor):hover {
+  background: var(--sc-row-hover);
+  color: var(--sc-text);
+}
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source):not(:disabled, [aria-pressed="true"]):hover svg,
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle, #control-editor):hover svg {
+  fill: var(--sc-text);
+}
+
+/* Pressed, and toggled on (loop, solo, track list open, favourited ...):
+   a filled accent circle with a white icon, like the 2023 player. */
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source):not(:disabled):active,
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not(#control-source),
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) {
+  background: var(--sc-accent);
+  color: var(--sc-on-accent);
+}
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source):not(:disabled):active svg,
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not(#control-source) svg,
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) svg {
+  fill: var(--sc-on-accent);
+}
+
+/* Disabled / Plus-locked: dim icon; badges stay legible. */
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source):is(:disabled, [class*="_disabled"]) {
+  background: transparent;
+  color: var(--sc-text-disabled);
+}
+html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:is(:disabled, [class*="_disabled"]) svg[class*="_icon"] {
+  fill: var(--sc-text-disabled);
+}
+
+html.sc-enabled.sc-layout-minimal :is(#controls, [data-controls-top-panel]) :is(button, a, [role="combobox"]):focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+}
+
+/* Plus/lock badges: panel colours, Songsterr's size and corner position. */
+html.sc-enabled.sc-layout-minimal #controls,
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] {
+  --lock-surface: var(--sc-toolbar-bg);
+  --lock: var(--sc-icon);
+  --plus-surface: var(--sc-toolbar-bg);
+  --plus: var(--sc-icon);
+}
+
+/* ---------------------------------------------------------------------------
+ * minimal.play: accent-coloured play icon in an accent ring, the source
+ * toggle (ORIG. / SYNTH) stacked underneath.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal #controls #item-play-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+}
+html.sc-enabled.sc-layout-minimal #controls #control-play {
+  box-shadow: inset 0 0 0 2px var(--sc-accent);
+}
+html.sc-enabled.sc-layout-minimal #controls #control-play svg {
+  fill: var(--sc-accent);
+}
+
+html.sc-enabled.sc-layout-minimal #controls #control-source {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: var(--sc-rail-btn);
+  min-width: 0;
+  height: 34px;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-surface-raised);
+  box-shadow: none;
+  overflow: hidden;
+}
+html.sc-enabled.sc-layout-minimal #controls #control-source > span {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  justify-content: center;
+  width: auto;
+  min-height: 0;
+  margin: 0;
+  border-radius: 0;
+  color: var(--sc-text-muted);
+  font: 600 8px / 1 var(--sc-font);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+html.sc-enabled.sc-layout-minimal #controls #control-source > span + span {
+  border-top: 1px solid var(--sc-border);
+}
+html.sc-enabled.sc-layout-minimal #controls #control-source [class*="_background"] {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background-color: transparent;
+  transform: none;
+}
+html.sc-enabled.sc-layout-minimal #controls #control-source [class*="_labelChecked"] [class*="_background"] {
+  background-color: var(--sc-accent);
+}
+html.sc-enabled.sc-layout-minimal #controls #control-source [class*="_text"] {
+  position: relative;                /* above the background fill */
+  color: inherit;
+}
+html.sc-enabled.sc-layout-minimal #controls #control-source [class*="_labelChecked"] {
+  color: var(--sc-on-accent);
+}
+
+/* Songs without the quick toggle get a small source button instead. */
+html.sc-enabled.sc-layout-minimal #controls #item-play-button [class*="_sourceWrapper"]::before {
+  display: none;
+}
+html.sc-enabled.sc-layout-minimal #controls #item-play-button [class*="_sourceWrapper"] > button {
+  width: var(--sc-rail-btn);
+  min-width: 0;
+  height: 22px;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-surface-raised);
+}
+html.sc-enabled.sc-layout-minimal #controls #item-play-button [class*="_sourceWrapper"] > button::after {
+  content: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * minimal.speed: "100%" under the runner icon
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal #controls #control-speed > [class*="_speed"] {
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0;
+}
+html.sc-enabled.sc-layout-minimal #controls #control-speed > [class*="_speed"] > svg {
+  width: 22px;
+  height: 22px;
+  margin-top: 0;
+}
+/* "100%" spans the bottom of the circle, so the lock goes to the top corner. */
+html.sc-enabled.sc-layout-minimal #controls #control-speed > [class*="_lock"] {
+  top: 0;
+  bottom: auto;
+}
+html.sc-enabled.sc-layout-minimal #controls #control-speed [class*="_textSpeed"] {
+  width: auto;
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: 600 9px / 1 var(--sc-font);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------------------
+ * minimal.metronomeSettings: the "..." tab sits on the metronome button's
+ * left edge (above it would cover the button before it in the column).
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal #controls #metronome-settings {
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: auto;
+  height: 12px;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-btn-bg);
+}
+html.sc-enabled.sc-layout-minimal #controls #metronome-settings svg {
+  fill: var(--sc-icon);
+}
+
+/* ---------------------------------------------------------------------------
+ * minimal.strip: favourite / display mode / editor at the top left of the
+ * page, always visible (Songsterr fades it out during playback).
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] {
+  top: calc(var(--sc-top-inset, 0px) + 10px);
+  bottom: auto;
+  left: calc(var(--sc-left-inset, 0px) + 12px);
+  right: auto;
+  width: auto;
+  height: auto;
+}
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel][data-hidden="true"] {
+  opacity: 1;
+  visibility: visible;
+}
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] > [class*="_controlsTopPanel"] {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  max-width: none;
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  pointer-events: auto;
+}
+/* No `display` here: Songsterr hides some slots (e.g. "to start") on desktop. */
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] [class*="_controlsTopItem"] {
+  align-items: center;
+  width: auto;
+  height: auto;
+  flex: 0 0 auto;
+  margin: 0;
+}
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle, #control-editor) {
+  width: 36px;
+  height: 36px;
+}
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] #display-mode-button {
+  height: 30px;
+  margin: 0;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-surface-sunken);
+  box-shadow: none;
+  color: var(--sc-text);
+  font: var(--sc-font-size) / 1 var(--sc-font);
+}
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] #display-mode-button :is([class*="_placeholder"], [class*="_valueText"]) {
+  color: var(--sc-text);
+}
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] #display-mode-button svg {
+  fill: var(--sc-icon);
+}
+
+/* ---------------------------------------------------------------------------
+ * minimal.nav: with the Fusion quick menu (bottom-left dock), the nav bar
+ * may now run up to the column instead of stopping at a 360px pane.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal.sc-menu-fusion [class*="_bottomBarWide"] {
+  max-width: calc(100vw - var(--sc-nav-toggle-w) - var(--sc-rail-w));
+}
+
+/* ---------------------------------------------------------------------------
+ * minimal.video: the synced-video / audio-mix panel Songsterr puts inside the
+ * pane floats beside the column, top aligned, at the Fusion pane's width.
+ * Hidden panels (_panelHidden) are left alone.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
+  position: fixed;
+  top: var(--sc-top-inset, 0px);
+  right: var(--sc-rail-w);
+  box-sizing: border-box;
+  width: min(var(--controls-panel-width, 360px), calc(100vw - var(--sc-rail-w)));
+  max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
+  padding-top: 12px;
+  overflow: auto;
+  border-bottom: 1px solid var(--sc-border);
+  border-left: 1px solid var(--sc-border);
+  background: var(--sc-toolbar-bg);
+  box-shadow: var(--sc-elev);
+}
+
+/* ---------------------------------------------------------------------------
+ * minimal.mixer: the track list opens beside the column, from the top, like
+ * the 2023 dropdown. The settings dialog ("More") sits beside it at the
+ * bottom.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal #default-mixer {
+  top: var(--sc-top-inset, 0px);
+  bottom: auto;
+  left: auto;
+  right: var(--sc-rail-w);
+  max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
+  border-top: 0;
+  border-bottom: 1px solid var(--sc-border);
+}
+html.sc-enabled.sc-layout-minimal #settings-popup {
+  right: var(--sc-rail-w);
+  bottom: var(--sc-bottom-inset, 0px);
+  max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
+}
+
+/* minimal.anchoredPopups: Songsterr opens a button's popup (Plus upsells for
+   speed, loop, print ... and similar) in a fixed wrapper whose bottom sits
+   just above the button: inline --anchor-bottom = window height - button
+   top + 8px. Made for a pane at the bottom; in the column, buttons near the
+   top pushed those popups off the top of the screen.
+   Here the wrapper spans the column's height and stacks a spacer (::before,
+   as tall as the distance down to the button) above the popup, so the popup
+   starts level with its button. The spacer may shrink, so a popup that
+   would run off the bottom is pushed up just enough to fit. The wrapper
+   itself lets clicks through; only the popup takes them. */
+html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] > * > [class*="_root"] {
+  top: var(--sc-top-inset, 0px);
+  bottom: var(--sc-bottom-inset, 0px);
+  left: auto;
+  right: var(--sc-rail-w);
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] > * > [class*="_root"]::before {
+  content: "";
+  flex: 0 1 auto;
+  height: max(0px, calc(100vh - var(--anchor-bottom, 100vh) + 8px - var(--sc-top-inset, 0px)));
+}
+html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] > * > [class*="_root"] > * {
+  flex: 0 0 auto;
+  max-height: 100%;
+  overflow: auto;
+  pointer-events: auto;
+}
+
+/* minimal.popupMotion: the player's popups (speed, loop, track list,
+   settings ...) share Songsterr's slide-up entrance, made for a pane at the
+   bottom. Beside the column they slide in from it and back into it. */
+html.sc-enabled.sc-layout-minimal #tab-controls [class*="_enter"]:not([class*="_enterActive"]),
+html.sc-enabled.sc-layout-minimal #tab-controls [class*="_exitActive"] {
+  transform: translateX(20px);
+}
+
+@media print {
+  html.sc-enabled.sc-layout-minimal #controls {
+    display: none;
+  }
+}

@@ -21,8 +21,8 @@
 
   const DEFAULTS = Object.freeze({
     enabled: true,
-    layout: 'classic',      // Controls: classic | fusion
-    navLayout: 'classic',   // Quick menu: classic (top right) | fusion (bottom-left dock)
+    layout: 'classic',      // Controls: classic | fusion | minimal
+    navLayout: 'classic',   // Quick menu: classic (top bar) | fusion (bottom-left dock) | minimal (left sidebar)
     classicBar: 'spread',   // Classic controls: spread (labels, equal spacing) | icons (packed, no labels)
     accent: 'auto',         // auto | blue | green | red | custom | off
     accentCustom: '#2f9e44', // #rrggbb, used when accent = custom
@@ -34,8 +34,8 @@
     keepOpen: true          // Fusion: undo Songsterr folding the player on its own
   });
   const VALID = {
-    layout: ['fusion', 'classic'],
-    navLayout: ['fusion', 'classic'],
+    layout: ['fusion', 'classic', 'minimal'],
+    navLayout: ['fusion', 'classic', 'minimal'],
     classicBar: ['spread', 'icons'],
     accent: ['auto', 'blue', 'green', 'red', 'custom', 'off'],
     theme: ['dark', 'light', 'auto'],
@@ -66,7 +66,7 @@
   }
 
   /** "auto" (never picked in the popup) = each layout's own look: Classic
-   *  green like the old player, Fusion blue. */
+   *  green like the old player, Fusion and Minimal blue. */
   function accentFor(s) {
     if (s.accent !== 'auto') return s.accent;
     return s.layout === 'classic' ? 'green' : 'blue';
@@ -88,7 +88,7 @@
     if (s.showAuthor) list.push('sc-show-author');
     // Collapsing only exists for the Fusion quick menu (bottom-left dock).
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
-    // Minimising only exists in Fusion; Classic is a single fixed bar.
+    // Minimising only exists in Fusion; Classic and Minimal are fixed bars.
     if (s.paneMinimized && s.layout === 'fusion') list.push('sc-pane-min');
     if (s.layout === 'classic') list.push(`sc-bar-${s.classicBar}`, ...CLASSIC_LEVELS[classicLevel]);
     return list;

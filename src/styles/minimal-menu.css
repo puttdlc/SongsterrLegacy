@@ -1,0 +1,265 @@
+/*
+ * Classic Skin: site nav, "Minimal" quick menu
+ * =============================================
+ * Region keys: selectors.js -> minimalMenu.*
+ *
+ * The 2023 Songsterr sidebar: a 90px column down the left edge, logo on top,
+ * each entry an icon over a small label, in clusters:
+ *
+ *   [logo]
+ *   Search / Favorites  ·  New tab / For teachers  ·  Plus / Help  ·  Inbox / Account
+ *
+ * Songsterr still keeps a 90px margin on both sides of the header and the
+ * notation, so the sidebar fits without moving the page.
+ *
+ * Every rule applies only while html has .sc-menu-minimal (Fusion quick menu:
+ * header.css, Classic: classic-menu.css).
+ *
+ * DOM (see header.css): nav#tablist holds the groups _bottomBarLeft (Plus),
+ * _bottomBarCenter (Search ... For teachers, and Help when logged out) and
+ * _bottomBarRight (account, inbox, help). They are flattened with
+ * `display: contents`; every item is ordered by its own id, so the order
+ * doesn't depend on which group Songsterr puts it in.
+ *
+ * Songsterr's own visibility rules are kept: the bar still hides below 880px,
+ * for data-plus="true" and until data-ready="true". We never set `display`
+ * on the bar or on the labels.
+ */
+
+html.sc-enabled.sc-menu-minimal {
+  --sc-side-w: 90px;
+  --sc-side-logo-h: 54px;
+  --sc-left-inset: var(--sc-side-w);   /* what other layouts keep clear of */
+}
+/* Songsterr hides the bar (narrow windows, data-plus, until data-ready);
+   then nothing needs to keep clear of it. */
+html.sc-enabled.sc-menu-minimal:has([class*="_bottomBarWide"]:is([data-plus="true"], [data-ready="false"])) {
+  --sc-left-inset: 0px;
+}
+@media (width < 880px) {
+  html.sc-enabled.sc-menu-minimal {
+    --sc-left-inset: 0px;
+  }
+}
+
+/* Nothing is docked at the bottom for the nav any more: panels anchored to
+   the bottom bar reach the screen edge (or the Classic player bar, see
+   classic.css, which keeps its own value). */
+html.sc-enabled.sc-menu-minimal:not(.sc-layout-classic):not(#sc-specificity) {
+  --bottombar-height: 0px;
+}
+
+/* ---------------------------------------------------------------------------
+ * minimalMenu.bar: full-height column on the left edge
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-minimal [class*="_bottomBarWide"] {
+  top: 0;
+  bottom: var(--sc-bottom-inset, 0px);
+  left: 0;
+  right: auto;
+  width: var(--sc-side-w);
+  max-width: none;
+  height: auto;
+  margin: 0;
+  border: 0;
+  border-right: 1px solid var(--sc-border);
+  border-radius: 0;
+  background: var(--sc-toolbar-bg);
+  box-shadow: none;
+  transform: none;
+  font-family: var(--sc-font);
+  outline-offset: -2px;
+}
+
+html.sc-enabled.sc-menu-minimal #tablist {
+  box-sizing: border-box;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  width: 100%;
+  height: 100%;
+  padding: calc(var(--sc-side-logo-h) + 8px) 0 8px;
+  overflow: hidden auto;
+  scrollbar-width: none;
+}
+html.sc-enabled.sc-menu-minimal #tablist > div {
+  display: contents;
+}
+/* Each group's children are the items (_itemWrapper > a#menu-<name>; Help
+   is nested deeper, in _helpMenu). */
+html.sc-enabled.sc-menu-minimal #tablist > div > * {
+  flex: 0 0 auto;
+  width: 100%;
+  height: auto;
+  order: 9;
+}
+
+/* Order, by item: Search, Favorites | New tab, For teachers | Plus, Help |
+   Inbox, Account / Sign in. Unknown items go last. */
+html.sc-enabled.sc-menu-minimal #tablist > div {
+  & > :has(#menu-search)      { order: 1; }
+  & > :has(#menu-favorites)   { order: 2; }
+  & > :has(#menu-mytabs)      { order: 2; }
+  & > :has(#menu-newtab)      { order: 3; }
+  & > :has(#menu-teacherPlan) { order: 4; }
+  & > :has(#menu-plus)        { order: 5; }
+  & > :has(#menu-help)        { order: 6; }
+  & > :has(#menu-inbox)       { order: 7; }
+  & > :has(#menu-account, #menu-signin) { order: 8; }
+}
+/* Cluster gaps, before New tab, Plus and Inbox (before Account / Sign in
+   when there's no inbox, e.g. logged out). */
+html.sc-enabled.sc-menu-minimal #tablist {
+  & > div > :has(#menu-newtab, #menu-plus, #menu-inbox),
+  &:not(:has(#menu-inbox)) > div > :has(#menu-account, #menu-signin) {
+    margin-top: clamp(10px, 5vh, 48px);
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * minimalMenu.items: icon over a small label, full width of the column
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"] {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  width: 100%;
+  min-width: 0;
+  height: auto;
+  padding: 9px 6px;
+  border-radius: 0;
+  color: var(--sc-text-muted);
+  text-align: center;
+  transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
+}
+html.sc-enabled.sc-menu-minimal #tablist [class*="_icon"] {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  fill: var(--sc-icon);
+  transition: fill var(--sc-ease);
+}
+html.sc-enabled.sc-menu-minimal #tablist [class*="_text"] {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--sc-text-muted);
+  font: 500 11px / 1.3 var(--sc-font);
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+
+/* Hover / pressed */
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"]:hover {
+  background: var(--sc-row-hover);
+}
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"]:active {
+  background: var(--sc-btn-pressed);
+}
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"]:is(:hover, :active) [class*="_icon"] {
+  background: none;
+  fill: var(--sc-text);
+}
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"]:is(:hover, :active) [class*="_text"] {
+  color: var(--sc-text);
+}
+
+/* Songsterr Plus: always in the accent colour. */
+html.sc-enabled.sc-menu-minimal #tablist #menu-plus [class*="_icon"] {
+  fill: var(--sc-selected-fg);
+}
+html.sc-enabled.sc-menu-minimal #tablist #menu-plus [class*="_text"] {
+  color: var(--sc-selected-fg);
+}
+
+/* Current page: accent label + icon and an accent bar on the left edge. */
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"][aria-active="true"] {
+  background: var(--sc-selected-bg);
+  box-shadow: inset 3px 0 0 var(--sc-accent);
+}
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"][aria-active="true"] [class*="_icon"] {
+  background: none;
+  fill: var(--sc-selected-fg);
+}
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"][aria-active="true"] [class*="_text"] {
+  color: var(--sc-selected-fg);
+}
+
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"]:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: -2px;
+}
+
+/* Plan badge / inbox count keep Songsterr's corner position; only squarer. */
+html.sc-enabled.sc-menu-minimal #tablist :is([class*="_badge"], [class*="Badge"]) {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * minimalMenu.collapse: the Fusion collapse tab has no job here.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-minimal #sc-nav-toggle {
+  display: none;
+}
+
+/* ---------------------------------------------------------------------------
+ * minimalMenu.logo: Songsterr's logo becomes the top of the sidebar. Same
+ * logo, only its container's position and the link's padding change.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-minimal [class*="_logoContainer"]:has(> #logo) {
+  top: 0;
+  left: 0;
+  width: var(--sc-side-w);
+  box-shadow: none;
+  z-index: calc(var(--zIndexSidebar, 111) + 1);
+}
+html.sc-enabled.sc-menu-minimal #logo {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--sc-side-w);
+  height: var(--sc-side-logo-h);
+  padding: 0 8px;
+  border-radius: 0;
+}
+html.sc-enabled.sc-menu-minimal #logo svg {
+  width: 100%;
+  height: auto;
+  padding: 0;
+}
+
+/* ---------------------------------------------------------------------------
+ * minimalMenu.popups: the menu's own popups open beside the sidebar.
+ * Inbox and account popups can only be checked logged in.
+ * The inbox sets left/top/bottom inline (centred over its button, bottom-
+ * docked), so only !important moves it; its inline bottom and max-height
+ * are kept.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-minimal #inbox-popup {
+  left: calc(var(--sc-side-w) + 1px) !important;
+}
+/* Help and the account menu are absolute on their items, so the sidebar's
+   scrolling (#tablist, overflow: auto) would clip them at its edge, and they
+   open upward, centred on the item. Fixed, beside the sidebar and
+   bottom-aligned, they are never clipped; their max-height keeps them
+   inside the window. */
+html.sc-enabled.sc-menu-minimal :is(#help-menu:not([class*="_detached"]), #profile-popup-desktop) {
+  position: fixed;
+  top: auto;
+  bottom: calc(var(--sc-bottom-inset, 0px) + 8px);
+  left: calc(var(--sc-side-w) + 8px);
+  right: auto;
+  max-height: calc(100vh - var(--sc-bottom-inset, 0px) - 16px);
+}
+
+/* minimalMenu.popupMotion: the menu's popups share Songsterr's slide-up
+   entrance, made for a bar at the bottom. Beside the sidebar they slide in
+   from it and back into it. */
+html.sc-enabled.sc-menu-minimal [class*="_bottomBarWide"] [class*="_enter"]:not([class*="_enterActive"]),
+html.sc-enabled.sc-menu-minimal [class*="_bottomBarWide"] [class*="_exitActive"] {
+  transform: translateX(-20px);
+}

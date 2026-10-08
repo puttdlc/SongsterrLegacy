@@ -59,6 +59,20 @@
       strip:    { sel: 'html.sc-layout-classic [data-controls-top-panel] > [class*="_controlsTopPanel"]', tier: 'data', note: 'Favourite / display mode / editor, moved to the right end of the bar. Width published as --sc-classic-strip-w.' }
     },
 
+    minimal: {
+      status: 'styled (Minimal layout only)',
+      rail:   { sel: 'html.sc-layout-minimal #controls', tier: 'id', note: 'Pane as a full-height column on the right edge (minimal.css). Handle hidden, row turned into a column, play first.' },
+      source: { sel: 'html.sc-layout-minimal #control-source > span', tier: 'id', note: 'Orig. / Synth options, stacked under play.' },
+      strip:  { sel: 'html.sc-layout-minimal [data-controls-top-panel] > [class*="_controlsTopPanel"]', tier: 'data', note: 'Favourite / display mode / editor, moved to the top left of the page.' }
+    },
+
+    minimalMenu: {
+      status: 'styled (Minimal quick menu only)',
+      bar:    { sel: 'html.sc-menu-minimal [class*="_bottomBarWide"]', tier: 'stem', note: 'Nav bar as a 90px sidebar on the left edge (minimal-menu.css). Items re-ordered by id with `order`.' },
+      help:   { sel: '#tablist [class*="_helpMenu"] #menu-help', tier: 'stem', note: 'Help is nested one level deeper than the other items (_helpMenu > div > a).' },
+      logo:   { sel: '[class*="_logoContainer"] > #logo', tier: 'id', note: 'Songsterr logo, moved to the top of the sidebar.' }
+    },
+
     classicMenu: {
       status: 'styled (Classic quick menu only)',
       bar:    { sel: 'html.sc-menu-classic [class*="_bottomBarWide"]', tier: 'stem', note: 'Nav bar docked top-right (classic-menu.css). #tablist switched to row; _bottomBarRight reversed for the old order.' },

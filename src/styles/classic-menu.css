@@ -29,6 +29,7 @@
 
 html.sc-enabled.sc-menu-classic {
   --sc-menu-h: 54px;
+  --sc-top-inset: calc(var(--sc-menu-h) + 1px);   /* Minimal controls start below the bar */
 }
 html.sc-enabled.sc-menu-classic.sc-density-comfortable {
   --sc-menu-h: 60px;
@@ -198,6 +199,23 @@ html.sc-enabled.sc-menu-classic #inbox-popup {
   top: calc(var(--sc-menu-h) + 1px) !important;
   bottom: auto !important;
   max-height: calc(100vh - var(--sc-menu-h) - var(--bottombar-height, 0px) - 16px) !important;
+}
+
+/* Help (#help-menu): absolute on the Help item and opens upward
+   (bottom: 100%), off the top of the screen. Open it downward; its inline
+   --help-menu-shift still keeps it inside the window sideways. The
+   "detached" variant (opened with Ctrl+K) is fixed at the bottom and fine. */
+html.sc-enabled.sc-menu-classic #help-menu:not([class*="_detached"]) {
+  top: calc(100% + var(--bottombar-popup-offset, 4px));
+  bottom: auto;
+  max-height: calc(100vh - var(--sc-menu-h) - var(--bottombar-height, 0px) - 15px);
+}
+
+/* classicMenu.popupMotion: the menu's popups (Help, Inbox, Account) share
+   Songsterr's slide-up entrance, made for a bar at the bottom. From the top
+   bar they slide down instead; the exit (back up) is Songsterr's own. */
+html.sc-enabled.sc-menu-classic [class*="_bottomBarWide"] [class*="_enter"]:not([class*="_enterActive"]) {
+  transform: translateY(-20px);
 }
 
 /* ---------------------------------------------------------------------------

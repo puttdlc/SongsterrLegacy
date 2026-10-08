@@ -46,6 +46,7 @@ html.sc-enabled.sc-layout-classic {
 
   /* Popups that hang off the pane sit flush with the right edge. */
   --controls-panel-right: 0px;
+  --sc-bottom-inset: var(--sc-classic-h);   /* Minimal sidebar stops above the bar */
 }
 html.sc-enabled.sc-layout-classic.sc-density-comfortable {
   --sc-classic-h: 66px;
@@ -640,7 +641,7 @@ html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [c
  * settings dialog ("More") stays right but sits on the bar, not over it.
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-layout-classic #default-mixer {
-  left: 0;
+  left: var(--sc-left-inset, 0px);    /* beside the Minimal sidebar */
   right: auto;
   bottom: var(--sc-classic-h);
   max-height: calc(100vh - var(--sc-classic-h));

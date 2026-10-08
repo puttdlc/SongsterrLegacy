@@ -34,10 +34,10 @@ Click the toolbar icon to open the settings popup:
 | Setting | Options | Notes |
 |---|---|---|
 | Reskin | On / Off | Off removes every style instantly, no reload. |
-| Controls | Classic (default) / Fusion | How the player controls are laid out. See "Layouts" below. |
+| Controls | Fusion / Classic (default) / Minimal | How the player controls are laid out. See "Layouts" below. |
 | Bar buttons | Spread (default) / Icons | Classic controls only. **Spread**: a label under every icon, buttons spaced equally across the bar. **Icons**: icons only, packed to the left. |
-| Quick menu | Classic (default) / Fusion | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |
-| Color theme | Blue / Green / Red / Custom / Off | Accent colour for both layouts: play button, toggled buttons, selections, focus ring, Classic's base line. Until you pick one, Fusion uses Blue and Classic uses Green. **Custom** shows a colour picker; **Off** uses neutral greys only. |
+| Quick menu | Fusion / Classic (default) / Minimal | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |
+| Color theme | Blue / Green / Red / Custom / Off | Accent colour for every layout: play button, toggled buttons, selections, focus ring, Classic's base line. Until you pick one, Fusion and Minimal use Blue and Classic uses Green. **Custom** shows a colour picker; **Off** uses neutral greys only. |
 | Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
 | Author | Show / Hide | "Last edited by <name>" under the song title (see below). |
@@ -53,8 +53,8 @@ panel is open, so a 0 is not automatically a problem. See below.
 
 ## Layouts
 
-Controls and Quick menu each have their own Fusion / Classic switch, so any
-mix works.
+Controls and Quick menu each have their own Fusion / Classic / Minimal
+switch, so any mix works.
 
 ### Quick menu
 
@@ -66,6 +66,12 @@ mix works.
   tab / For teachers grouped in the middle, Help on its own, and Inbox /
   Account at the right edge (`classic-menu.css`). The song title moves down to
   clear the bar, and side panels open below it. It can't be collapsed.
+- **Minimal**: the 2023 Songsterr sidebar, a 90px column down the left edge
+  with the logo on top and each icon above a small label, in clusters: Search /
+  My tabs, New tab / For teachers, Songsterr Plus / Help, then Inbox / Account
+  at the bottom (`minimal-menu.css`). Songsterr still keeps a 90px margin
+  beside the page, so nothing has to move to make room. The inbox and account
+  menu open beside the sidebar.
 
 ### Controls
 
@@ -81,6 +87,13 @@ mix works.
   the right end. A line in the accent colour runs along the bottom. The track
   list (mixer) opens on the left, straight above the track selector. With the
   Fusion quick menu, the nav bar sits on top of the bar.
+- **Minimal**: the 2023 Songsterr player, a narrow column of round icon-only
+  buttons down the right edge (`minimal.css`): play with the Orig. / Synth
+  toggle under it, the track list button, then the rest in Songsterr's order.
+  Toggled buttons (loop, solo, the open track list ...) fill with the accent
+  colour. Favourite, the Tab/Sheet select and Editor sit at the top left of
+  the page. The track list, settings and other popups open beside the column.
+  If the buttons don't fit (the editor adds about ten), the column scrolls.
 
 How Classic is built:
 
@@ -291,10 +304,12 @@ src/
     base.css        site-wide: radius/shadow flattening, colour remap, focus
     toolbar.css     player pane, dock, top row   (done; Fusion layout)
     classic.css     full-width bottom bar        (done; Classic layout)
+    minimal.css     right-hand button column     (done; Minimal layout)
     tracklist.css   track list / mixer           (done)
     menus.css       side panels, dialogs, menus  (done; promos planned)
     header.css      bottom nav dock + author     (done; Fusion quick menu)
     classic-menu.css top-right menu               (done; Classic quick menu)
+    minimal-menu.css left sidebar                 (done; Minimal quick menu)
 popup/              settings popup (same bevel/segmented look)
 icons/              original 16/32/48/128 icon
 ```

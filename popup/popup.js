@@ -12,7 +12,7 @@
     layout: 'classic',
     navLayout: 'classic',
     classicBar: 'spread',
-    accent: 'auto',          // auto = Classic green, Fusion blue (see content.js)
+    accent: 'auto',          // auto = Classic green, Fusion / Minimal blue (see content.js)
     accentCustom: '#2f9e44',
     theme: 'dark',
     density: 'compact',
@@ -61,7 +61,7 @@
     }
     // Collapsing the nav bar only exists in the Fusion quick menu.
     for (const input of form.querySelectorAll('input[name="navCollapsed"]')) {
-      input.disabled = off || settings.navLayout === 'classic';
+      input.disabled = off || settings.navLayout !== 'fusion';
     }
     // Bar buttons style only exists in the Classic layout.
     for (const input of form.querySelectorAll('input[name="classicBar"]')) {
@@ -72,7 +72,7 @@
       input.disabled = off || settings.layout !== 'fusion';
     }
     for (const input of form.querySelectorAll('input[name="paneMinimized"]')) {
-      input.disabled = off || settings.layout === 'classic';
+      input.disabled = off || settings.layout !== 'fusion';
     }
     applyPopupTheme(settings.theme);
   }

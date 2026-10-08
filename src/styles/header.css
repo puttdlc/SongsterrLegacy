@@ -272,3 +272,12 @@ html.sc-enabled.sc-menu-fusion #tablist [class*="_icon"] > :is([class*="_planBad
 html.sc-enabled #logo {
   border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * nav.popups: the account menu hangs 20px left of the Account item, which is
+ * the first item of the dock here, so it poked off the left edge. Align it
+ * with the item instead; it still opens upward, as the bar is at the bottom.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-fusion #profile-popup-desktop {
+  left: 0;
+}
