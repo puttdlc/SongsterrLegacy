@@ -32,7 +32,7 @@
     showAuthor: true,
     navCollapsed: false,
     paneMinimized: false,
-    videoCollapsed: false,  // Classic / Minimal: synced-video panel slid off to the right
+    videoCollapsed: false,  // Classic / Legacy: synced-video panel slid off to the right
     keepOpen: true          // Fusion: undo Songsterr folding the player on its own
   });
   const VALID = {
@@ -68,7 +68,7 @@
   }
 
   /** "auto" (never picked in the popup) = each layout's own look: Classic
-   *  green like the old player, Fusion and Minimal blue. */
+   *  green like the old player, Fusion and Legacy blue. */
   function accentFor(s) {
     if (s.accent !== 'auto') return s.accent;
     return s.layout === 'classic' ? 'green' : 'blue';
@@ -90,7 +90,7 @@
     if (s.showAuthor) list.push('sc-show-author');
     // Collapsing only exists for the Fusion quick menu (bottom-left dock).
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
-    // Minimising only exists in Fusion; Classic and Minimal are fixed bars.
+    // Minimising only exists in Fusion; Classic and Legacy are fixed bars.
     if (s.paneMinimized && s.layout === 'fusion') list.push('sc-pane-min');
     // Fusion keeps the video panel inside its pane (minimised with it).
     if (s.videoCollapsed && s.layout !== 'fusion') list.push('sc-video-collapsed');
@@ -231,10 +231,10 @@
 
   // ---------------------------------------------------------------------------
   // Video panel collapse toggle (selectors.js: video.toggle)
-  // Classic and Minimal float Songsterr's synced-video / audio-mix panel over
+  // Classic and Legacy float Songsterr's synced-video / audio-mix panel over
   // the page (classic.video, minimal.video), where it can cover the tab. This
   // tab slides it away and back (Classic: on its top edge, down behind the
-  // player bar; Minimal: on its left edge, off to the right); the video keeps
+  // player bar; Legacy: on its left edge, off to the right); the video keeps
   // playing. Its height is published as --sc-video-h for the Classic tab. It lives in <body>, outside Songsterr's app root, and is only
   // shown while the panel is; CSS only hides the panel while the tab is
   // shown, so the panel can never get stuck hidden.

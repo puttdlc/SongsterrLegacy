@@ -29,7 +29,7 @@
 
 html.sc-enabled.sc-menu-classic {
   --sc-menu-h: 54px;
-  --sc-top-inset: calc(var(--sc-menu-h) + 1px);   /* Minimal controls start below the bar */
+  --sc-top-inset: calc(var(--sc-menu-h) + 1px);   /* Legacy controls start below the bar */
 }
 html.sc-enabled.sc-menu-classic.sc-density-comfortable {
   --sc-menu-h: 60px;

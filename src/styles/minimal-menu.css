@@ -1,9 +1,9 @@
 /*
- * Classic Skin: site nav, "Minimal" quick menu
+ * Classic Skin: site nav, "Legacy" quick menu
  * =============================================
  * Region keys: selectors.js -> minimalMenu.*
  *
- * The 2023 Songsterr sidebar: a 90px column down the left edge, logo on top,
+ * The 2018-era Songsterr sidebar: a 90px column down the left edge, logo on top,
  * each entry an icon over a small label, in clusters:
  *
  *   [logo]
@@ -52,7 +52,7 @@ html.sc-enabled.sc-menu-minimal:not(.sc-layout-classic):not(#sc-specificity) {
 /* minimalMenu.page: Songsterr keeps the header and the tab 90px from each
    side (--app-tab-horizontal-margin), exactly the sidebar's width, so the
    tab touched it. Both sides get the same gap instead, measured from the
-   sidebar and from whatever is on the right (the Minimal button column, or
+   sidebar and from whatever is on the right (the Legacy button column, or
    nothing). 34px is the gap the column leaves inside Songsterr's 90px.
    Below 880px Songsterr hides the sidebar and drops its margins itself. */
 html.sc-enabled.sc-menu-minimal {

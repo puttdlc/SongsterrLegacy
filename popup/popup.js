@@ -12,7 +12,7 @@
     layout: 'classic',
     navLayout: 'classic',
     classicBar: 'spread',
-    accent: 'auto',          // auto = Classic green, Fusion / Minimal blue (see content.js)
+    accent: 'auto',          // auto = Classic green, Fusion / Legacy blue (see content.js)
     accentCustom: '#2f9e44',
     theme: 'dark',
     density: 'compact',
@@ -75,7 +75,7 @@
     for (const input of form.querySelectorAll('input[name="paneMinimized"]')) {
       input.disabled = off || settings.layout !== 'fusion';
     }
-    // The floating video panel only exists in Classic and Minimal.
+    // The floating video panel only exists in Classic and Legacy.
     for (const input of form.querySelectorAll('input[name="videoCollapsed"]')) {
       input.disabled = off || settings.layout === 'fusion';
     }

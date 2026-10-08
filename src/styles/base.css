@@ -201,7 +201,7 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"], [role="menu"], [role="l
 
 /* ---------------------------------------------------------------------------
  * video.toggle: our collapse tab on the left edge of the floating video panel
- * (Classic and Minimal; content.js). Hidden by default and while the panel
+ * (Classic and Legacy; content.js). Hidden by default and while the panel
  * isn't shown; classic.css and minimal.css place it.
  * ------------------------------------------------------------------------- */
 #sc-video-toggle {

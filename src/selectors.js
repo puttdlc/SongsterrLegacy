@@ -60,14 +60,14 @@
     },
 
     minimal: {
-      status: 'styled (Minimal layout only)',
+      status: 'styled (Legacy layout only)',
       rail:   { sel: 'html.sc-layout-minimal #controls', tier: 'id', note: 'Pane as a full-height column on the right edge (minimal.css). Handle hidden, row turned into a column, play first.' },
       source: { sel: 'html.sc-layout-minimal #control-source > span', tier: 'id', note: 'Orig. / Synth options, stacked under play.' },
       strip:  { sel: 'html.sc-layout-minimal [data-controls-top-panel] > [class*="_controlsTopPanel"]', tier: 'data', note: 'Favourite / display mode / editor, moved to the top left of the page.' }
     },
 
     minimalMenu: {
-      status: 'styled (Minimal quick menu only)',
+      status: 'styled (Legacy quick menu only)',
       bar:    { sel: 'html.sc-menu-minimal [class*="_bottomBarWide"]', tier: 'stem', note: 'Nav bar as a 90px sidebar on the left edge (minimal-menu.css). Items re-ordered by id with `order`.' },
       help:   { sel: '#tablist [class*="_helpMenu"] #menu-help', tier: 'stem', note: 'Help is nested one level deeper than the other items (_helpMenu > div > a).' },
       logo:   { sel: '[class*="_logoContainer"] > #logo', tier: 'id', note: 'Songsterr logo, moved to the top of the sidebar.' }
@@ -88,7 +88,7 @@
     },
 
     video: {
-      status: 'styled (Classic and Minimal layouts)',
+      status: 'styled (Classic and Legacy layouts)',
       panel:  { sel: '#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"]))', tier: 'stem', note: 'Synced-video / audio-mix panel (unclassed wrapper in #controls), floated over the page by classic.css / minimal.css. Only for some songs and users.' },
       toggle: { sel: '#sc-video-toggle', tier: 'id', note: "Ours: collapse tab appended to <body> by content.js, shown while the panel is." }
     },

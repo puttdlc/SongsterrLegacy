@@ -1,9 +1,9 @@
 /*
- * Classic Skin: player toolbar, "Minimal" layout
+ * Classic Skin: player toolbar, "Legacy" layout
  * ===============================================
  * Region keys: selectors.js -> minimal.*
  *
- * The 2023 Songsterr player: a narrow column of round, icon-only buttons
+ * The 2018-era Songsterr player: a narrow column of round, icon-only buttons
  * along the right edge, play on top. Favourite / display mode / editor sit
  * at the top left of the page, the track list opens beside the column.
  *
@@ -154,7 +154,7 @@ html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle
 }
 
 /* Pressed, and toggled on (loop, solo, track list open, favourited ...):
-   a filled accent circle with a white icon, like the 2023 player. */
+   a filled accent circle with a white icon, like the 2018-era player. */
 html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source):not(:disabled):active,
 html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not(#control-source),
 html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) {
@@ -424,13 +424,20 @@ html.sc-enabled.sc-layout-minimal {
    panel's left edge, level with its top; collapsed, the panel slides off to
    the right (past the column) and the tab moves next to the column. The
    panel only hides while the tab is shown, so it can't get stuck hidden. */
+/* The panel is a child of the column, so it paints over the column's
+   background (and under its buttons) while it slides. clip-path cuts it off
+   at the column's left edge instead: the right inset grows exactly as fast
+   as the panel moves right (same timing), so nothing shows over the column.
+   The other sides leave room for the shadow. */
 html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]) {
-  transition: translate 0.2s ease-out, visibility 0s;
+  clip-path: inset(-24px 0 -24px -24px);
+  transition: translate 0.2s ease-out, clip-path 0.2s ease-out, visibility 0s;
 }
 html.sc-enabled.sc-layout-minimal.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
   translate: calc(100% + var(--sc-rail-w)) 0;
+  clip-path: inset(-24px calc(100% + var(--sc-rail-w)) -24px -24px);
   visibility: hidden;                /* out of the tab order while collapsed */
-  transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
+  transition: translate 0.2s ease-out, clip-path 0.2s ease-out, visibility 0s linear 0.2s;
 }
 html.sc-enabled.sc-layout-minimal #sc-video-toggle:not([hidden]) {
   top: calc(var(--sc-top-inset, 0px) + 12px);
@@ -442,7 +449,7 @@ html.sc-enabled.sc-layout-minimal.sc-video-collapsed #sc-video-toggle:not([hidde
 
 /* ---------------------------------------------------------------------------
  * minimal.mixer: the track list opens beside the column, from the top, like
- * the 2023 dropdown. The settings dialog ("More") sits beside it at the
+ * the 2018-era dropdown. The settings dialog ("More") sits beside it at the
  * bottom.
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-layout-minimal #default-mixer {
