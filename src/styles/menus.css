@@ -181,8 +181,12 @@ html.sc-enabled [role="dialog"] [class*="_popupHeader"] {
   border-bottom: 1px solid var(--sc-border);
   box-shadow: inset 0 1px 0 var(--sc-highlight);
 }
+/* Songsterr gives the title a 36px min-height; centre the text in it. */
 html.sc-enabled [role="dialog"] [class*="_popupHeaderTitle"] {
-  font: 600 var(--sc-font-size) / 1 var(--sc-font);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 600 15px / 1 var(--sc-font);
 }
 html.sc-enabled [role="dialog"] [class*="_popupCloseButton"] {
   top: 50%;

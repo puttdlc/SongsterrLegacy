@@ -25,6 +25,7 @@ html.sc-enabled #default-mixer {
 /* Header block: tighter rows. */
 html.sc-enabled #default-mixer [class*="_mixerHeaderContainer"] {
   gap: 4px;
+  padding-top: 6px;
   padding-bottom: 6px;
   border-bottom: 1px solid var(--sc-divider);
 }
