@@ -3,20 +3,24 @@
  * =============================================
  * Region keys: selectors.js -> classicMenu.*
  *
- * The older Songsterr header menu: the nav bar docked to the top-right
- * corner, each entry an icon over an uppercase label, in the old order
- *   SONGSTERR PLUS · SEARCH · MY TABS · NEW TAB · FOR TEACHERS · HELP · INBOX · ACCOUNT
- * The logo stays where Songsterr puts it.
+ * The older Songsterr header menu: a full-width bar along the top edge,
+ * each entry an icon over an uppercase label, spread out in clusters:
+ *
+ *   [logo]  PLUS  ·····  SEARCH  MY TABS  NEW TAB  FOR TEACHERS  ·····  HELP  ·····  INBOX  ACCOUNT
+ *
+ * The logo stays where Songsterr puts it; the bar leaves room for it.
  *
  * Every rule applies only while html has .sc-menu-classic. The Fusion quick
  * menu (bottom-left dock, icon beside label, collapse tab) is in header.css,
  * scoped to .sc-menu-fusion, so the two share no nav rules.
  *
- * DOM (see header.css): nav#tablist is a row-reverse flex of three groups,
+ * DOM (see header.css): nav#tablist holds three groups, in DOM order
  *   _bottomBarLeft (Plus) | _bottomBarCenter (Search ... For teachers) |
  *   _bottomBarRight (account, inbox, help)
- * Switching #tablist to a plain row and reversing only the right group gives
- * the old order without moving any element.
+ * The groups are flattened with `display: contents`, so every item is a flex
+ * child of #tablist. `order` reverses the right group (help, inbox, account)
+ * and three `margin-left: auto` gaps split the free space evenly between the
+ * clusters. No element is moved.
  *
  * Songsterr's own visibility rules are kept: the bar still hides below 880px,
  * for data-plus="true" and until data-ready="true". We never set `display`
@@ -38,41 +42,52 @@ html.sc-enabled.sc-menu-classic.sc-layout-fusion:not(#sc-specificity) {
 }
 
 /* ---------------------------------------------------------------------------
- * classicMenu.bar: docked to the top-right corner
+ * classicMenu.bar: full width along the top edge
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-menu-classic [class*="_bottomBarWide"] {
+  --sc-menu-logo-room: 240px;        /* Songsterr's logo is 212px wide */
   top: 0;
   bottom: auto;
-  left: auto;
+  left: 0;
   right: 0;
   width: auto;
-  max-width: calc(100vw - 230px);    /* never runs into the logo */
+  max-width: none;
   margin: 0;
   border-radius: 0;
-  border-bottom: 1px solid var(--sc-border);
-  border-left: 1px solid var(--sc-border);
+  border: 0;
+  border-bottom: 1px solid var(--sc-divider);
   background: var(--sc-toolbar-bg);
-  box-shadow: inset 0 1px 0 var(--sc-highlight), var(--sc-elev);
+  box-shadow: none;
   font-family: var(--sc-font);
 }
 
 html.sc-enabled.sc-menu-classic #tablist {
   flex-direction: row;
-  justify-content: flex-end;
+  justify-content: flex-start;
   align-items: stretch;
   height: var(--sc-menu-h);
-  padding: 0 4px;
+  padding: 0 clamp(8px, 2vw, 40px) 0 var(--sc-menu-logo-room);
 }
 html.sc-enabled.sc-menu-classic #tablist > div {
-  flex: 0 0 auto;
-  column-gap: 0;
-  height: 100%;
-}
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] {
-  flex-direction: row-reverse;       /* help, inbox, account */
+  display: contents;
 }
 html.sc-enabled.sc-menu-classic #tablist [class*="_itemWrapper"] {
+  flex: 0 0 auto;
   height: 100%;
+  order: 0;
+}
+
+/* Right group reversed: help, inbox, account (DOM: account, inbox, help). */
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(1) { order: 1; }
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(2) { order: 2; }
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(3) { order: 3; }
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(4) { order: 4; }
+
+/* Cluster gaps: before Search, before Help, before Inbox. */
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarCenter"] > :first-child,
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(1),
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(2) {
+  margin-left: auto;
 }
 
 /* ---------------------------------------------------------------------------
@@ -85,7 +100,7 @@ html.sc-enabled.sc-menu-classic #tablist a[id^="menu-"] {
   gap: 4px;
   min-width: 0;
   height: 100%;
-  padding: 2px 14px 0;
+  padding: 2px clamp(10px, 1.6vw, 24px) 0;
   color: var(--sc-text-muted);
   transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
 }
@@ -177,4 +192,14 @@ html.sc-enabled.sc-menu-classic :is(#inbox-popup, #profile-popup) {
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-menu-classic #header {
   padding-top: calc(var(--sc-menu-h) - 20px);
+}
+
+/* ---------------------------------------------------------------------------
+ * classicMenu.logo: Songsterr's logo sits on the bar's left end (it hung
+ * just below the bar otherwise). Same logo, only its container's offset and
+ * stacking change.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-classic [class*="_logoContainer"]:has(> #logo) {
+  top: calc((var(--sc-menu-h) - 43px) / 2);
+  z-index: calc(var(--zIndexSidebar, 111) + 1);
 }

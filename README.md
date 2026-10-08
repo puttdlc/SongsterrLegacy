@@ -34,8 +34,8 @@ Click the toolbar icon to open the settings popup:
 | Setting | Options | Notes |
 |---|---|---|
 | Reskin | On / Off | Off removes every style instantly, no reload. |
-| Controls | Fusion (default) / Classic | How the player controls are laid out. See "Layouts" below. |
-| Quick menu | Fusion (default) / Classic | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |
+| Controls | Classic (default) / Fusion | How the player controls are laid out. See "Layouts" below. |
+| Quick menu | Classic (default) / Fusion | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |
 | Color theme | Blue / Green / Red / Custom / Off | Accent colour for both layouts: play button, toggled buttons, selections, focus ring, Classic's base line. Until you pick one, Fusion uses Blue and Classic uses Green. **Custom** shows a colour picker; **Off** uses neutral greys only. |
 | Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
@@ -56,20 +56,21 @@ mix works.
 
 ### Quick menu
 
-- **Fusion** (default): the menu docked bottom-left, icon beside label, with a
+- **Fusion**: the menu docked bottom-left, icon beside label, with a
   collapse tab (`header.css`).
-- **Classic**: the older Songsterr header menu, docked top-right with each
-  icon above an uppercase label, in the old order: Songsterr Plus, Search,
-  My tabs, New tab, For teachers, Help, Inbox, Account (`classic-menu.css`). The
-  logo stays where it is. The song title moves down to clear the bar, and side
-  panels open below it. It can't be collapsed.
+- **Classic** (default): the older Songsterr header menu, a full-width bar
+  along the top with each icon above an uppercase label, spread out the old
+  way: the logo on the left end, then Songsterr Plus, Search / My tabs / New
+  tab / For teachers grouped in the middle, Help on its own, and Inbox /
+  Account at the right edge (`classic-menu.css`). The song title moves down to
+  clear the bar, and side panels open below it. It can't be collapsed.
 
 ### Controls
 
-- **Fusion** (default): the player pane docked in the bottom-right corner as
+- **Fusion**: the player pane docked in the bottom-right corner as
   a compact segmented strip, with the favourite / display-mode / editor row on
   top (`toolbar.css`). This is the layout described under "Regions" below.
-- **Classic**: the older Songsterr player, one full-width bar along the bottom
+- **Classic** (default): the older Songsterr player, one full-width bar along the bottom
   edge (`classic.css`). From left to right: a track selector showing the
   instrument and track name with an up chevron (opens Songsterr's track list),
   a big green play button with the Orig. / Synth toggle stacked beside it, then
@@ -92,8 +93,11 @@ How Classic is built:
   buttons stop before it.
 - The bar is one row, so the drag handle and the Player Minimised level are
   turned off in Classic.
-- Below 1100px wide the labels and the track name are dropped so everything
-  still fits on one row.
+- When the buttons don't fit on one row (windows under 1100px wide, or the
+  tab editor, which adds about ten buttons), the labels and the track name are
+  dropped. `content.js` detects the overflow and adds `sc-classic-tight`. If
+  even that doesn't fit, `sc-classic-tighter` uses icon-width buttons and lets
+  the row scroll sideways. Buttons never overlap.
 
 ## How it works
 

@@ -20,8 +20,8 @@
 
   const DEFAULTS = Object.freeze({
     enabled: true,
-    layout: 'fusion',       // Controls: fusion | classic
-    navLayout: 'fusion',    // Quick menu: fusion (bottom-left dock) | classic (top right)
+    layout: 'classic',      // Controls: classic | fusion
+    navLayout: 'classic',   // Quick menu: classic (top right) | fusion (bottom-left dock)
     accent: 'auto',         // auto | blue | green | red | custom | off
     accentCustom: '#2f9e44', // #rrggbb, used when accent = custom
     theme: 'dark',          // dark | light | auto
@@ -85,6 +85,7 @@
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
     // Minimising only exists in Fusion; Classic is a single fixed bar.
     if (s.paneMinimized && s.layout === 'fusion') list.push('sc-pane-min');
+    if (s.layout === 'classic') list.push(...CLASSIC_LEVELS[classicLevel]);
     return list;
   }
 
@@ -316,6 +317,45 @@
   // ---------------------------------------------------------------------------
   const TRACK_ATTRS = ['data-sc-instrument', 'data-sc-track'];
 
+  // Compact levels for when the buttons don't fit on one row (classic.css,
+  // classic.compact). The row's items never shrink, so overflow means the
+  // last item's right edge passes the row's content edge (its right padding
+  // is reserved for the favourite / display-mode / editor strip). scrollWidth
+  // can't be used: overflow into that padding doesn't count. Hysteresis: going back a level needs the row
+  // to have room for the width it needed at that level, or fewer buttons
+  // (e.g. the editor was closed); otherwise it would flip back and forth.
+  const CLASSIC_LEVELS = [[], ['sc-classic-tight'], ['sc-classic-tight', 'sc-classic-tighter']];
+  const ROW = '#controls [class*="_controlsCard"] > div';
+  let classicLevel = 0;
+  const levelNeed = [];   // levelNeed[n] = row width needed at level n (when it overflowed)
+  const levelItems = [];  // levelItems[n] = item count at that time
+
+  function fitClassicRow(classic) {
+    let level = classicLevel;
+    const row = classic ? document.querySelector(ROW) : null;
+    if (!row) {
+      level = 0;
+    } else {
+      const items = row.childElementCount;
+      const limit = row.getBoundingClientRect().right - parseFloat(getComputedStyle(row).paddingRight);
+      let right = -Infinity;
+      for (const child of row.children) right = Math.max(right, child.getBoundingClientRect().right);
+      const overflow = right > limit + 1;
+      if (overflow && level < CLASSIC_LEVELS.length - 1) {
+        levelNeed[level] = row.clientWidth + (right - limit);
+        levelItems[level] = items;
+        level += 1;
+      } else if (!overflow && level > 0) {
+        const prev = level - 1;
+        if (items < levelItems[prev] || row.clientWidth >= levelNeed[prev]) level = prev;
+      }
+    }
+    if (level === classicLevel) return;
+    classicLevel = level;
+    wanted = classesFor(settings);
+    syncClasses();
+  }
+
   function trackFromHeader() {
     const parts = document.querySelectorAll('#header [class*="_trackForPrint"] > [class*="_trackForPrintPart"]');
     if (parts.length < 2) return null;
@@ -336,6 +376,7 @@
 
   function syncClassic() {
     const classic = settings.enabled && settings.layout === 'classic';
+    fitClassicRow(classic);
     const mixer = document.getElementById('control-mixer');
     if (mixer) {
       const info = classic ? (trackFromHeader() || trackFromTitle()) : null;
