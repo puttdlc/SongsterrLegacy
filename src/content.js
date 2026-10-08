@@ -22,6 +22,7 @@
     enabled: true,
     layout: 'classic',      // Controls: classic | fusion
     navLayout: 'classic',   // Quick menu: classic (top right) | fusion (bottom-left dock)
+    classicBar: 'spread',   // Classic controls: spread (labels, equal spacing) | icons (packed, no labels)
     accent: 'auto',         // auto | blue | green | red | custom | off
     accentCustom: '#2f9e44', // #rrggbb, used when accent = custom
     theme: 'dark',          // dark | light | auto
@@ -33,6 +34,7 @@
   const VALID = {
     layout: ['fusion', 'classic'],
     navLayout: ['fusion', 'classic'],
+    classicBar: ['spread', 'icons'],
     accent: ['auto', 'blue', 'green', 'red', 'custom', 'off'],
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
@@ -53,6 +55,7 @@
     for (const key of BOOLEANS) s[key] = typeof s[key] === 'boolean' ? s[key] : DEFAULTS[key];
     if (!VALID.layout.includes(s.layout)) s.layout = DEFAULTS.layout;
     if (!VALID.navLayout.includes(s.navLayout)) s.navLayout = DEFAULTS.navLayout;
+    if (!VALID.classicBar.includes(s.classicBar)) s.classicBar = DEFAULTS.classicBar;
     if (!VALID.accent.includes(s.accent)) s.accent = DEFAULTS.accent;
     if (!/^#[0-9a-f]{6}$/i.test(String(s.accentCustom))) s.accentCustom = DEFAULTS.accentCustom;
     if (!VALID.theme.includes(s.theme)) s.theme = DEFAULTS.theme;
@@ -85,7 +88,7 @@
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
     // Minimising only exists in Fusion; Classic is a single fixed bar.
     if (s.paneMinimized && s.layout === 'fusion') list.push('sc-pane-min');
-    if (s.layout === 'classic') list.push(...CLASSIC_LEVELS[classicLevel]);
+    if (s.layout === 'classic') list.push(`sc-bar-${s.classicBar}`, ...CLASSIC_LEVELS[classicLevel]);
     return list;
   }
 
@@ -324,7 +327,12 @@
   // can't be used: overflow into that padding doesn't count. Hysteresis: going back a level needs the row
   // to have room for the width it needed at that level, or fewer buttons
   // (e.g. the editor was closed); otherwise it would flip back and forth.
-  const CLASSIC_LEVELS = [[], ['sc-classic-tight'], ['sc-classic-tight', 'sc-classic-tighter']];
+  const CLASSIC_LEVELS = [
+    [],
+    ['sc-classic-small'],
+    ['sc-classic-small', 'sc-classic-tight'],
+    ['sc-classic-small', 'sc-classic-tight', 'sc-classic-tighter']
+  ];
   const ROW = '#controls [class*="_controlsCard"] > div';
   let classicLevel = 0;
   const levelNeed = [];   // levelNeed[n] = row width needed at level n (when it overflowed)

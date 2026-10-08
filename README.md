@@ -35,6 +35,7 @@ Click the toolbar icon to open the settings popup:
 |---|---|---|
 | Reskin | On / Off | Off removes every style instantly, no reload. |
 | Controls | Classic (default) / Fusion | How the player controls are laid out. See "Layouts" below. |
+| Bar buttons | Spread (default) / Icons | Classic controls only. **Spread**: a label under every icon, buttons spaced equally across the bar. **Icons**: icons only, packed to the left. |
 | Quick menu | Classic (default) / Fusion | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |
 | Color theme | Blue / Green / Red / Custom / Off | Accent colour for both layouts: play button, toggled buttons, selections, focus ring, Classic's base line. Until you pick one, Fusion uses Blue and Classic uses Green. **Custom** shows a colour picker; **Off** uses neutral greys only. |
 | Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
@@ -93,11 +94,12 @@ How Classic is built:
   buttons stop before it.
 - The bar is one row, so the drag handle and the Player Minimised level are
   turned off in Classic.
-- When the buttons don't fit on one row (windows under 1100px wide, or the
-  tab editor, which adds about ten buttons), the labels and the track name are
-  dropped. `content.js` detects the overflow and adds `sc-classic-tight`. If
-  even that doesn't fit, `sc-classic-tighter` uses icon-width buttons and lets
-  the row scroll sideways. Buttons never overlap.
+- `content.js` measures whether the buttons fit (nothing depends on window
+  width alone). If they don't, it steps down one level at a time:
+  `sc-classic-small` (smaller labels, track selector shows only its icon,
+  narrower play), then `sc-classic-tight` (no labels), then `sc-classic-tighter`
+  (narrower still, and the row scrolls sideways). Buttons never overlap. The tab
+  editor adds about ten buttons, so it usually ends up at `tight`.
 
 ## How it works
 

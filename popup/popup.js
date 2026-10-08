@@ -11,6 +11,7 @@
     enabled: true,
     layout: 'classic',
     navLayout: 'classic',
+    classicBar: 'spread',
     accent: 'auto',          // auto = Classic green, Fusion blue (see content.js)
     accentCustom: '#2f9e44',
     theme: 'dark',
@@ -22,6 +23,7 @@
   const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized']);
 
   const form = document.getElementById('settings');
+  document.getElementById('version').textContent = `V${chrome.runtime.getManifest().version}`;
   const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
   function applyPopupTheme(theme) {
@@ -59,6 +61,10 @@
     // Collapsing the nav bar only exists in the Fusion quick menu.
     for (const input of form.querySelectorAll('input[name="navCollapsed"]')) {
       input.disabled = off || settings.navLayout === 'classic';
+    }
+    // Bar buttons style only exists in the Classic layout.
+    for (const input of form.querySelectorAll('input[name="classicBar"]')) {
+      input.disabled = off || settings.layout !== 'classic';
     }
     // Minimising only exists in the Fusion layout.
     for (const input of form.querySelectorAll('input[name="paneMinimized"]')) {

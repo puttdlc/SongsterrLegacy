@@ -9,6 +9,7 @@
   <header class="titlebar">
     <img src="../icons/icon32.png" width="16" height="16" alt="">
     <h1>Classic Skin</h1>
+    <span id="version" class="version muted"></span>
   </header>
 
   <form id="settings" class="panel" autocomplete="off">
@@ -25,6 +26,14 @@
       <div class="seg" role="radiogroup" aria-label="Player controls layout">
         <label title="Player docked in the bottom-right corner as a compact strip"><input type="radio" name="layout" value="fusion"><span>Fusion</span></label>
         <label title="The older Songsterr player: one full-width bar along the bottom"><input type="radio" name="layout" value="classic"><span>Classic</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="row">
+      <legend>Bar buttons</legend>
+      <div class="seg" role="radiogroup" aria-label="Classic bar buttons">
+        <label title="Classic controls: a label under every icon, buttons spaced equally across the bar"><input type="radio" name="classicBar" value="spread"><span>Spread</span></label>
+        <label title="Classic controls: icons only, packed to the left"><input type="radio" name="classicBar" value="icons"><span>Icons</span></label>
       </div>
     </fieldset>
 

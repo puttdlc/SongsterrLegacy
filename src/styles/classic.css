@@ -120,7 +120,8 @@ html.sc-enabled.sc-layout-classic #controls [class*="_controlsCard"] > div {
 
 /* Item wrappers: full-height slots, no fixed 50px columns. They never
    shrink (shrinking made labels overlap); when the row doesn't fit,
-   content.js switches to the compact levels in classic.compact instead. */
+   content.js switches to the compact levels in classic.compact instead.
+   In the Spread style they grow to share the free space (classic.spread). */
 html.sc-enabled.sc-layout-classic #controls [class*="_controlsCard"] > div > *,
 html.sc-enabled.sc-layout-classic #controls #mixer-button {
   flex: 0 0 auto;
@@ -193,6 +194,14 @@ html.sc-enabled.sc-layout-classic {
   & #control-tutorial      { --sc-label: "Tutorial"; }
   & #control-undo          { --sc-label: "Undo"; }
   & #control-redo          { --sc-label: "Redo"; }
+  & #control-detectchords  { --sc-label: "Chords"; }
+  & #control-regenerate    { --sc-label: "AI tab"; }
+  & #control-reset         { --sc-label: "Reset"; }
+  & #control-redistribute  { --sc-label: "Reflow"; }
+  & #control-fixbroken     { --sc-label: "Fix bars"; }
+  & #control-autosync      { --sc-label: "Sync"; }
+  & #control-import        { --sc-label: "Import"; }
+  & #control-submitrevision { --sc-label: "Publish"; }
   & #favorite-toggle       { --sc-label: "Favorite"; }
   & #control-editor        { --sc-label: "Editor"; }
 }
@@ -628,55 +637,72 @@ html.sc-enabled.sc-layout-classic #settings-popup {
 }
 
 /* ---------------------------------------------------------------------------
- * classic.compact: when the buttons don't fit on one row, the labels go,
- * buttons shrink and the track selector keeps only its icon and chevron.
- * Two triggers, same rules:
- *   - windows narrower than 1100px (media query, applies from first paint),
- *   - .sc-classic-tight, set by content.js when the row actually overflows
- *     (e.g. the tab editor adds ~10 buttons).
- * .sc-classic-tighter is the last resort: icon-width buttons, and the row
- * scrolls sideways rather than letting buttons overlap.
+ * classic.spread: popup "Bar buttons: Spread" (default). Every button after
+ * play gets an equal share of the free space, so the row fills the bar up to
+ * the right-hand strip; the whole slot is the button (hover/click area).
+ * "Icons" (.sc-bar-icons) keeps them packed to the left without labels.
  * ------------------------------------------------------------------------- */
-@media (width < 1100px) {
-  html.sc-enabled.sc-layout-classic {
-    --sc-classic-btn-w: 42px;
-  }
-  html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer)::after,
-  html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor)::after {
-    content: none;
-  }
-  html.sc-enabled.sc-layout-classic #controls :is(#mixer-button, #c-play) {
-    margin-right: 12px;
-  }
-  html.sc-enabled.sc-layout-classic #controls :is(#control-play, #control-source) {
-    width: 60px;
-  }
-  html.sc-enabled.sc-layout-classic #controls #control-mixer {
-    width: auto;
-    padding-right: 42px;
-  }
-  html.sc-enabled.sc-layout-classic #controls #control-mixer::before {
-    content: none;
-  }
+html.sc-enabled.sc-layout-classic.sc-bar-spread #controls [class*="_controlsCard"] > div > :not(#mixer-button, #c-play) {
+  flex-grow: 1;
+  align-items: stretch;
 }
-html.sc-enabled.sc-layout-classic.sc-classic-tight {
-  --sc-classic-btn-w: 42px;
+html.sc-enabled.sc-layout-classic.sc-bar-spread #controls [class*="_controlsCard"] > div > :not(#mixer-button, #c-play) > :is(button, a)[id^="control-"] {
+  width: 100%;
 }
-html.sc-enabled.sc-layout-classic.sc-classic-tight #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer)::after,
-html.sc-enabled.sc-layout-classic.sc-classic-tight [data-controls-top-panel] :is(#favorite-toggle, #control-editor)::after {
+
+/* ---------------------------------------------------------------------------
+ * classic.compact: steps content.js takes, one at a time, only while the
+ * buttons don't fit on one row (it measures, never guesses from the window
+ * width):
+ *   .sc-classic-small    smaller labels; track selector icon only; narrower play
+ *   .sc-classic-tight    no labels, icon-width buttons
+ *   .sc-classic-tighter  even narrower, and the row scrolls sideways rather
+ *                        than letting buttons overlap
+ * The "Icons" bar style (.sc-bar-icons) is small + tight permanently.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) {
+  --sc-classic-btn-w: 0px;
+  --sc-classic-label: 600 9px / 1 var(--sc-font);
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer) {
+  padding: 2px 3px 0;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer)::after,
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) [data-controls-top-panel] :is(#favorite-toggle, #control-editor)::after {
+  letter-spacing: 0.02em;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls :is(#mixer-button, #c-play) {
+  margin-right: 8px;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls :is(#control-play, #control-source) {
+  width: 52px;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls #control-mixer {
+  width: auto;
+  padding: 0 40px 0 8px;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls #control-speed [class*="_textSpeed"] {
+  font-size: 11px;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls [class*="_controlsCard"] > div {
+  padding-left: 8px;
+  padding-right: calc(var(--sc-classic-strip-w, 240px) + 4px);
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) [data-controls-top-panel] #display-mode-button {
+  margin: 0 4px;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) [data-controls-top-panel] > [class*="_controlsTopPanel"] {
+  padding: 0 4px 0 6px;
+}
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls #control-mixer::before {
   content: none;
 }
-html.sc-enabled.sc-layout-classic.sc-classic-tight #controls :is(#mixer-button, #c-play) {
-  margin-right: 12px;
+
+html.sc-enabled.sc-layout-classic:is(.sc-classic-tight, .sc-bar-icons) {
+  --sc-classic-btn-w: 42px;
 }
-html.sc-enabled.sc-layout-classic.sc-classic-tight #controls :is(#control-play, #control-source) {
-  width: 60px;
-}
-html.sc-enabled.sc-layout-classic.sc-classic-tight #controls #control-mixer {
-  width: auto;
-  padding-right: 42px;
-}
-html.sc-enabled.sc-layout-classic.sc-classic-tight #controls #control-mixer::before {
+html.sc-enabled.sc-layout-classic:is(.sc-classic-tight, .sc-bar-icons) #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer)::after,
+html.sc-enabled.sc-layout-classic:is(.sc-classic-tight, .sc-bar-icons) [data-controls-top-panel] :is(#favorite-toggle, #control-editor)::after {
   content: none;
 }
 
