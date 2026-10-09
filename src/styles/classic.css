@@ -706,13 +706,20 @@ html.sc-enabled.sc-layout-classic #settings-popup {
 }
 
 /* ---------------------------------------------------------------------------
- * classic.popups: a button's popup opens over that button instead of at the
- * bar's right end. content.js marks it data-sc-anchored and sets --sc-pop-x
- * (centred over the button, inside the window); vertically it keeps
- * Songsterr's placement, just above the bar. !important beats Songsterr's
- * own right/left rules on the various popup kinds. The transpose panel sat
- * on the screen edge, over the bar; it now sits on the bar too.
+ * classic.popups: a button's popup opens above that button instead of at
+ * the bar's right end. content.js marks every toolbar popup data-sc-pop:
+ * it stands on the bar (some, like the Plus speed / download panels, reached
+ * the screen's bottom edge and covered the bar, so their button couldn't be
+ * clicked again to close them). One opened by a click is also marked
+ * data-sc-anchored with --sc-pop-x (centred over the button, inside the
+ * window). !important beats Songsterr's own rules on the various popup
+ * kinds; the upsells' inline --anchor-bottom only ever put them a few
+ * pixels higher. The transpose panel is the same case as the Plus panels.
  * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic #tab-controls [class*="_popupsLayer"] [data-sc-pop] {
+  bottom: var(--sc-classic-h) !important;
+  max-height: calc(100vh - var(--sc-classic-h)) !important;
+}
 html.sc-enabled.sc-layout-classic #tab-controls [class*="_popupsLayer"] [data-sc-anchored] {
   left: var(--sc-pop-x) !important;
   right: auto !important;

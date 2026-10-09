@@ -329,10 +329,12 @@
   // Classic popups over their button (classic.css, classic.popups)
   // Songsterr opens a toolbar button's popup (speed, download, transpose,
   // settings, Plus upsells ...) at the pane's right edge, which in the
-  // full-width bar is far from the button. A popup that appears within a
-  // moment of a click on a bar button is marked data-sc-anchored and given
-  // --sc-pop-x (inline, on that element): centred over the button, kept
-  // inside the window. Like the Legacy popups this runs from the
+  // full-width bar is far from the button, and some (the Plus panels:
+  // speed, download ...) reach the screen's bottom edge, over the bar. Every
+  // popup is marked data-sc-pop (CSS stands it on the bar), and one that
+  // appears within a moment of a click on a bar button is also marked
+  // data-sc-anchored and given --sc-pop-x (inline, on that element): centred
+  // over the button, kept inside the window. Like the Legacy popups this runs from the
   // MutationObserver, before the popup is painted. Popups opened with a
   // keyboard shortcut keep Songsterr's own placement.
   // ---------------------------------------------------------------------------
@@ -355,10 +357,12 @@
     if (!layer || !layer.firstElementChild) return;
     const fresh = lastControl && lastControl.isConnected && Date.now() - lastControlAt < ANCHOR_WINDOW_MS;
     for (const el of layer.querySelectorAll(':scope > *, :scope > * > *')) {
-      if (el.id === 'default-mixer' || el.hasAttribute('data-sc-anchored')) continue;   // mixer: classic.mixer
-      if (!fresh || getComputedStyle(el).position !== 'fixed') continue;
+      if (el.id === 'default-mixer' || el.hasAttribute('data-sc-pop')) continue;   // mixer: classic.mixer
+      if (getComputedStyle(el).position !== 'fixed') continue;
       const width = el.offsetWidth;
-      if (!width || width > window.innerWidth * 0.9) continue;                           // full-screen overlays
+      if (!width || width > window.innerWidth * 0.9) continue;                      // full-screen overlays
+      el.setAttribute('data-sc-pop', '');   // sits on the bar (classic.popups)
+      if (!fresh) continue;
       const b = lastControl.getBoundingClientRect();
       const x = Math.max(POPUP_MARGIN, Math.min(b.left + b.width / 2 - width / 2, window.innerWidth - width - POPUP_MARGIN));
       el.style.setProperty('--sc-pop-x', `${Math.round(x)}px`);
