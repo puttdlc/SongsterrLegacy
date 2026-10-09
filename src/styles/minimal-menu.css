@@ -102,8 +102,10 @@ html.sc-enabled.sc-menu-minimal #tablist > div {
   display: contents;
 }
 /* Each group's children are the items (_itemWrapper > a#menu-<name>; Help
-   is nested deeper, in _helpMenu). */
-html.sc-enabled.sc-menu-minimal #tablist > div > * {
+   is nested deeper, in _helpMenu). Only children holding a menu link count:
+   the inbox popup is a direct child too (rendered right after its item),
+   and width: 100% stretched it across the screen. */
+html.sc-enabled.sc-menu-minimal #tablist > div > :has(a[id^="menu-"]) {
   flex: 0 0 auto;
   width: 100%;
   height: auto;
@@ -151,14 +153,14 @@ html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"] {
   text-align: center;
   transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
 }
-html.sc-enabled.sc-menu-minimal #tablist [class*="_icon"] {
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"] [class*="_icon"] {
   padding: 0;
   border-radius: 0;
   background: none;
   fill: var(--sc-icon);
   transition: fill var(--sc-ease);
 }
-html.sc-enabled.sc-menu-minimal #tablist [class*="_text"] {
+html.sc-enabled.sc-menu-minimal #tablist a[id^="menu-"] [class*="_text"] {
   max-width: 100%;
   overflow: hidden;
   color: var(--sc-text-muted);
@@ -249,27 +251,34 @@ html.sc-enabled.sc-menu-minimal #logo svg {
 }
 
 /* ---------------------------------------------------------------------------
- * minimalMenu.popups: the menu's own popups open beside the sidebar.
- * Inbox and account popups can only be checked logged in.
- * The inbox sets left/top/bottom inline (centred over its button, bottom-
- * docked), so only !important moves it; its inline bottom and max-height
- * are kept.
+ * minimalMenu.popups: Help, Inbox and Account open beside the sidebar, level
+ * with their button. They are fixed (the sidebar scrolls, which would clip
+ * popups positioned inside it), so CSS can't know where the button is:
+ * content.js publishes each popup's top as --sc-pop-menu-<name> (the
+ * button's top, pushed up just enough to keep the popup on screen), before
+ * the popup is first painted. max-height keeps a long inbox on screen too.
+ * The inbox sets left/top/bottom/max-height inline (centred over its button,
+ * bottom-docked), so only !important moves it.
+ * Inbox and Account only exist logged in.
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-menu-minimal #inbox-popup {
-  left: calc(var(--sc-side-w) + 1px) !important;
-}
-/* Help and the account menu are absolute on their items, so the sidebar's
-   scrolling (#tablist, overflow: auto) would clip them at its edge, and they
-   open upward, centred on the item. Fixed, beside the sidebar and
-   bottom-aligned, they are never clipped; their max-height keeps them
-   inside the window. */
 html.sc-enabled.sc-menu-minimal :is(#help-menu:not([class*="_detached"]), #profile-popup-desktop) {
   position: fixed;
-  top: auto;
-  bottom: calc(var(--sc-bottom-inset, 0px) + 8px);
+  bottom: auto;
   left: calc(var(--sc-side-w) + 8px);
   right: auto;
   max-height: calc(100vh - var(--sc-bottom-inset, 0px) - 16px);
+}
+html.sc-enabled.sc-menu-minimal #help-menu:not([class*="_detached"]) {
+  top: var(--sc-pop-menu-help, 8px);
+}
+html.sc-enabled.sc-menu-minimal #profile-popup-desktop {
+  top: var(--sc-pop-menu-account, 8px);
+}
+html.sc-enabled.sc-menu-minimal #inbox-popup {
+  top: var(--sc-pop-menu-inbox, 8px) !important;
+  bottom: auto !important;
+  left: calc(var(--sc-side-w) + 8px) !important;
+  max-height: calc(100vh - var(--sc-bottom-inset, 0px) - 16px) !important;
 }
 
 /* minimalMenu.popupMotion: the menu's popups share Songsterr's slide-up

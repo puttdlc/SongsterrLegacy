@@ -282,6 +282,35 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Legacy sidebar popups (minimal-menu.css, minimalMenu.popups)
+  // Help, Inbox and Account open beside the sidebar, level with their button:
+  // each popup's top is published as --sc-pop-<button id> on <html>, pushed up
+  // just enough that the popup stays on screen. Runs straight from the
+  // MutationObserver (a microtask, before the new popup is painted), not from
+  // the 250ms upkeep, so a popup never shows in the wrong place first.
+  // ---------------------------------------------------------------------------
+  const MENU_POPUPS = [
+    ['help-menu', 'menu-help'],
+    ['inbox-popup', 'menu-inbox'],
+    ['profile-popup-desktop', 'menu-account']
+  ];
+  const POPUP_MARGIN = 8;
+
+  function placeMenuPopups() {
+    if (!settings.enabled || settings.navLayout !== 'minimal') return;
+    for (const [popupId, buttonId] of MENU_POPUPS) {
+      const popup = document.getElementById(popupId);
+      const button = popup && document.getElementById(buttonId);
+      if (!button) continue;
+      const bottomInset = parseFloat(getComputedStyle(root).getPropertyValue('--sc-bottom-inset')) || 0;
+      const lowest = window.innerHeight - bottomInset - POPUP_MARGIN - popup.offsetHeight;
+      const top = `${Math.round(Math.max(POPUP_MARGIN, Math.min(button.getBoundingClientRect().top, lowest)))}px`;
+      const name = `--sc-pop-${buttonId}`;
+      if (root.style.getPropertyValue(name) !== top) root.style.setProperty(name, top);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
   // Author (selectors.js: header.author). Data sources, no requests made:
   //   - <script id="state"> embedded in the first page load (meta.current.author)
   //   - "sc-classic:meta" events from page-meta.js, which reads the site's own
@@ -578,14 +607,20 @@
   } catch (_) { /* extension context gone (e.g. reloaded); keep last classes */ }
 
   // 3. Safety net + upkeep triggers.
-  new MutationObserver(schedule).observe(root, {
+  new MutationObserver(() => {
+    placeMenuPopups();
+    schedule();
+  }).observe(root, {
     attributes: true,
     attributeFilter: ['class', 'data-ready', 'data-plus'],
     childList: true,
     subtree: true
   });
   window.addEventListener('popstate', schedule);
-  window.addEventListener('resize', schedule);
+  window.addEventListener('resize', () => {
+    placeMenuPopups();
+    schedule();
+  });
   document.addEventListener('DOMContentLoaded', schedule);
   schedule();
 
