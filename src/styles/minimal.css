@@ -401,19 +401,32 @@ html.sc-enabled.sc-layout-minimal.sc-menu-fusion [class*="_bottomBarWide"] {
  * pane floats beside the column, top aligned, at the Fusion pane's width.
  * Hidden panels (_panelHidden) are left alone.
  * ------------------------------------------------------------------------- */
+/* The wrapper is a still, see-through frame beside the column that clips
+   what leaves it (overflow: hidden) and lets clicks through; 24px of
+   padding on the left and bottom leave room for the panel's shadow. The
+   panel inside carries the background, border and scrolling. */
 html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
   position: fixed;
   top: var(--sc-top-inset, 0px);
   right: var(--sc-rail-w);
   box-sizing: border-box;
-  width: var(--sc-video-w);
+  width: calc(var(--sc-video-w) + 24px);
   max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
+  padding: 0 0 24px 24px;
+  overflow: hidden;
+  pointer-events: none;
+}
+html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+  box-sizing: border-box;
+  max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px) - 24px);
   padding-top: 12px;
   overflow: auto;
   border-bottom: 1px solid var(--sc-border);
   border-left: 1px solid var(--sc-border);
   background: var(--sc-toolbar-bg);
   box-shadow: var(--sc-elev);
+  pointer-events: auto;
+  transition: translate 0.2s ease-out, visibility 0s;
 }
 
 html.sc-enabled.sc-layout-minimal {
@@ -422,22 +435,15 @@ html.sc-enabled.sc-layout-minimal {
 
 /* minimal.videoCollapse: the tab (content.js, #sc-video-toggle) sits on the
    panel's left edge, level with its top; collapsed, the panel slides off to
-   the right (past the column) and the tab moves next to the column. The
-   panel only hides while the tab is shown, so it can't get stuck hidden. */
-/* The panel is a child of the column, so it paints over the column's
-   background (and under its buttons) while it slides. clip-path cuts it off
-   at the column's left edge instead: the right inset grows exactly as fast
-   as the panel moves right (same timing), so nothing shows over the column.
-   The other sides leave room for the shadow. */
-html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]) {
-  clip-path: inset(-24px 0 -24px -24px);
-  transition: translate 0.2s ease-out, clip-path 0.2s ease-out, visibility 0s;
-}
-html.sc-enabled.sc-layout-minimal.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
-  translate: calc(100% + var(--sc-rail-w)) 0;
-  clip-path: inset(-24px calc(100% + var(--sc-rail-w)) -24px -24px);
+   the right, behind the column, and the tab moves next to the column. The
+   panel only hides while the tab is shown, so it can't get stuck hidden.
+   Only the panel moves; the wrapper's own edge (the column's left edge)
+   clips it, so it never shows over the column (see classic.videoCollapse
+   for why this isn't an animated clip-path). */
+html.sc-enabled.sc-layout-minimal.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+  translate: 100% 0;
   visibility: hidden;                /* out of the tab order while collapsed */
-  transition: translate 0.2s ease-out, clip-path 0.2s ease-out, visibility 0s linear 0.2s;
+  transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
 html.sc-enabled.sc-layout-minimal #sc-video-toggle:not([hidden]) {
   top: calc(var(--sc-top-inset, 0px) + 12px);

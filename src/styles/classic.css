@@ -623,19 +623,32 @@ html.sc-enabled.sc-layout-classic.sc-menu-fusion #sc-nav-toggle:not([hidden]) {
 html.sc-enabled.sc-layout-classic {
   --sc-video-w: min(var(--controls-panel-width, 360px), 100vw - 16px);
 }
+/* The wrapper is a still, see-through frame over the bar's right end that
+   clips what leaves it (overflow: hidden) and lets clicks through; 24px of
+   padding on the top and left leave room for the panel's shadow. The panel
+   inside carries the background, border and scrolling. */
 html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
   position: fixed;
   right: 0;
   bottom: var(--sc-classic-h);
   box-sizing: border-box;
-  width: var(--sc-video-w);
+  width: calc(var(--sc-video-w) + 24px);
   max-height: calc(100vh - var(--sc-classic-h));
+  padding: 24px 0 0 24px;
+  overflow: hidden;
+  pointer-events: none;
+}
+html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+  box-sizing: border-box;
+  max-height: calc(100vh - var(--sc-classic-h) - 24px);
   padding-top: 12px;
   overflow: auto;
   border-top: 1px solid var(--sc-border);
   border-left: 1px solid var(--sc-border);
   background: var(--sc-toolbar-bg);
   box-shadow: inset 0 1px 0 var(--sc-highlight), var(--sc-elev);
+  pointer-events: auto;
+  transition: translate 0.2s ease-out, visibility 0s;
 }
 
 /* classic.videoCollapse: the tab (content.js, #sc-video-toggle) sits on the
@@ -643,21 +656,16 @@ html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [c
    --sc-video-h); collapsed, the panel slides down behind the player bar and
    the tab rests on the bar. The panel only hides while the tab is shown, so
    it can't get stuck hidden. `translate`, not `transform`, so nothing
-   Songsterr writes clashes with it. */
-/* The panel is a child of the bar, so it paints over the bar's background
-   (and under its buttons) while it slides. clip-path cuts it off at the
-   bar's top edge instead: the bottom inset grows exactly as fast as the
-   panel moves down (same timing), so nothing shows over the bar. The other
-   sides leave room for the shadow. */
-html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]) {
-  clip-path: inset(-24px -24px 0 -24px);
-  transition: translate 0.2s ease-out, clip-path 0.2s ease-out, visibility 0s;
-}
-html.sc-enabled.sc-layout-classic.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
-  translate: 0 calc(100% + var(--sc-classic-h));
-  clip-path: inset(-24px -24px calc(100% + var(--sc-classic-h)) -24px);
+   Songsterr writes clashes with it.
+   Only the panel moves; the wrapper's own edge (the bar's top) clips it, so
+   it never shows over the bar. (An animated clip-path did this first, but
+   it runs on the main thread while translate runs on the compositor; while
+   a video plays the clip lagged and the panel showed over the bar when
+   collapsing. One moving part can't drift.) */
+html.sc-enabled.sc-layout-classic.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+  translate: 0 100%;
   visibility: hidden;                /* out of the tab order while collapsed */
-  transition: translate 0.2s ease-out, clip-path 0.2s ease-out, visibility 0s linear 0.2s;
+  transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
 html.sc-enabled.sc-layout-classic #sc-video-toggle:not([hidden]) {
   right: calc(var(--sc-video-w) / 2 - 24px);

@@ -270,9 +270,11 @@
     if (videoToggle.parentNode !== document.body) document.body.append(videoToggle);
     const panel = settings.enabled && settings.layout !== 'fusion' ? document.querySelector(VIDEO_PANEL) : null;
     if (videoToggle.hidden === !!panel) videoToggle.hidden = !panel;
-    // Classic puts the tab on the panel's top edge, so CSS needs its height
-    // (unchanged while it is slid away: translate doesn't affect layout).
-    const height = panel ? `${Math.ceil(panel.getBoundingClientRect().height)}px` : '';
+    // Classic puts the tab on the panel's top edge, so CSS needs its height.
+    // Measure the panel itself: the wrapper around it has extra room for the
+    // shadow. Not affected while slid away (translate doesn't change layout).
+    const inner = panel && panel.querySelector(':scope > [class*="_panel"]');
+    const height = inner ? `${Math.ceil(inner.getBoundingClientRect().height)}px` : '';
     if (root.style.getPropertyValue('--sc-video-h') !== height) {
       if (height) root.style.setProperty('--sc-video-h', height);
       else root.style.removeProperty('--sc-video-h');
