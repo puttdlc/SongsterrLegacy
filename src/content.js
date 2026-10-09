@@ -282,31 +282,87 @@
   }
 
   // ---------------------------------------------------------------------------
-  // Legacy sidebar popups (minimal-menu.css, minimalMenu.popups)
-  // Help, Inbox and Account open beside the sidebar, level with their button:
-  // each popup's top is published as --sc-pop-<button id> on <html>, pushed up
+  // Legacy popups beside the sidebar and the button column
+  // (minimal-menu.css minimalMenu.popups, minimal.css minimal.mixer)
+  // Help, Inbox and Account (left sidebar) and the track list, transpose and
+  // settings windows (right column) open level with their button: each
+  // popup's top is published as --sc-pop-<button id> on <html>, pushed up
   // just enough that the popup stays on screen. Runs straight from the
   // MutationObserver (a microtask, before the new popup is painted), not from
   // the 250ms upkeep, so a popup never shows in the wrong place first.
+  // The column's other popups (speed, loop, print ...) are aligned in CSS
+  // (minimal.anchoredPopups), from Songsterr's own --anchor-bottom.
   // ---------------------------------------------------------------------------
-  const MENU_POPUPS = [
-    ['help-menu', 'menu-help'],
-    ['inbox-popup', 'menu-inbox'],
-    ['profile-popup-desktop', 'menu-account']
+  const LEGACY_POPUPS = [
+    // [popup selector, button id, which setting must be "minimal"]
+    ['#help-menu:not([class*="_detached"])', 'menu-help', 'navLayout'],
+    ['#inbox-popup', 'menu-inbox', 'navLayout'],
+    ['#profile-popup-desktop', 'menu-account', 'navLayout'],
+    ['#default-mixer', 'control-mixer', 'layout'],
+    ['[class*="_transposeNotation"]', 'control-transpose', 'layout'],
+    ['#settings-popup', 'control-settings', 'layout']
   ];
   const POPUP_MARGIN = 8;
 
-  function placeMenuPopups() {
-    if (!settings.enabled || settings.navLayout !== 'minimal') return;
-    for (const [popupId, buttonId] of MENU_POPUPS) {
-      const popup = document.getElementById(popupId);
+  function insetPx(name) {
+    return parseFloat(getComputedStyle(root).getPropertyValue(name)) || 0;
+  }
+
+  function placeLegacyPopups() {
+    if (!settings.enabled) return;
+    for (const [selector, buttonId, key] of LEGACY_POPUPS) {
+      if (settings[key] !== 'minimal') continue;
+      const popup = document.querySelector(selector);
       const button = popup && document.getElementById(buttonId);
       if (!button) continue;
-      const bottomInset = parseFloat(getComputedStyle(root).getPropertyValue('--sc-bottom-inset')) || 0;
-      const lowest = window.innerHeight - bottomInset - POPUP_MARGIN - popup.offsetHeight;
-      const top = `${Math.round(Math.max(POPUP_MARGIN, Math.min(button.getBoundingClientRect().top, lowest)))}px`;
+      // The sidebar spans the window (minus the Classic player bar); the
+      // column starts below the Classic menu bar.
+      const highest = key === 'layout' ? insetPx('--sc-top-inset') : POPUP_MARGIN;
+      const lowest = window.innerHeight - insetPx('--sc-bottom-inset') - POPUP_MARGIN - popup.offsetHeight;
+      const top = `${Math.round(Math.max(highest, Math.min(button.getBoundingClientRect().top, lowest)))}px`;
       const name = `--sc-pop-${buttonId}`;
       if (root.style.getPropertyValue(name) !== top) root.style.setProperty(name, top);
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Classic popups over their button (classic.css, classic.popups)
+  // Songsterr opens a toolbar button's popup (speed, download, transpose,
+  // settings, Plus upsells ...) at the pane's right edge, which in the
+  // full-width bar is far from the button. A popup that appears within a
+  // moment of a click on a bar button is marked data-sc-anchored and given
+  // --sc-pop-x (inline, on that element): centred over the button, kept
+  // inside the window. Like the Legacy popups this runs from the
+  // MutationObserver, before the popup is painted. Popups opened with a
+  // keyboard shortcut keep Songsterr's own placement.
+  // ---------------------------------------------------------------------------
+  const ANCHOR_WINDOW_MS = 1500;
+  let lastControl = null;
+  let lastControlAt = 0;
+
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof Element ? event.target : null;
+    const button = target && target.closest('#controls [id^="control-"]');
+    if (button) {
+      lastControl = button;
+      lastControlAt = Date.now();
+    }
+  }, true);
+
+  function placeClassicPopups() {
+    if (!settings.enabled || settings.layout !== 'classic') return;
+    const layer = document.querySelector('#tab-controls [class*="_popupsLayer"]');
+    if (!layer || !layer.firstElementChild) return;
+    const fresh = lastControl && lastControl.isConnected && Date.now() - lastControlAt < ANCHOR_WINDOW_MS;
+    for (const el of layer.querySelectorAll(':scope > *, :scope > * > *')) {
+      if (el.id === 'default-mixer' || el.hasAttribute('data-sc-anchored')) continue;   // mixer: classic.mixer
+      if (!fresh || getComputedStyle(el).position !== 'fixed') continue;
+      const width = el.offsetWidth;
+      if (!width || width > window.innerWidth * 0.9) continue;                           // full-screen overlays
+      const b = lastControl.getBoundingClientRect();
+      const x = Math.max(POPUP_MARGIN, Math.min(b.left + b.width / 2 - width / 2, window.innerWidth - width - POPUP_MARGIN));
+      el.style.setProperty('--sc-pop-x', `${Math.round(x)}px`);
+      el.setAttribute('data-sc-anchored', '');
     }
   }
 
@@ -608,7 +664,8 @@
 
   // 3. Safety net + upkeep triggers.
   new MutationObserver(() => {
-    placeMenuPopups();
+    placeLegacyPopups();
+    placeClassicPopups();
     schedule();
   }).observe(root, {
     attributes: true,
@@ -618,7 +675,8 @@
   });
   window.addEventListener('popstate', schedule);
   window.addEventListener('resize', () => {
-    placeMenuPopups();
+    placeLegacyPopups();
+    placeClassicPopups();
     schedule();
   });
   document.addEventListener('DOMContentLoaded', schedule);

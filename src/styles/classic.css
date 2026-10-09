@@ -706,6 +706,23 @@ html.sc-enabled.sc-layout-classic #settings-popup {
 }
 
 /* ---------------------------------------------------------------------------
+ * classic.popups: a button's popup opens over that button instead of at the
+ * bar's right end. content.js marks it data-sc-anchored and sets --sc-pop-x
+ * (centred over the button, inside the window); vertically it keeps
+ * Songsterr's placement, just above the bar. !important beats Songsterr's
+ * own right/left rules on the various popup kinds. The transpose panel sat
+ * on the screen edge, over the bar; it now sits on the bar too.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic #tab-controls [class*="_popupsLayer"] [data-sc-anchored] {
+  left: var(--sc-pop-x) !important;
+  right: auto !important;
+}
+html.sc-enabled.sc-layout-classic #tab-controls [class*="_transposeNotation"] {
+  bottom: var(--sc-classic-h);
+  max-height: calc(100vh - var(--sc-classic-h));
+}
+
+/* ---------------------------------------------------------------------------
  * classic.spread: popup "Bar buttons: Spread" (default). Every button after
  * play gets an equal share of the free space, so the row fills the bar up to
  * the right-hand strip; the whole slot is the button (hover/click area).

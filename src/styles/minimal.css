@@ -454,22 +454,32 @@ html.sc-enabled.sc-layout-minimal.sc-video-collapsed #sc-video-toggle:not([hidde
 }
 
 /* ---------------------------------------------------------------------------
- * minimal.mixer: the track list opens beside the column, from the top, like
- * the 2018-era dropdown. The settings dialog ("More") sits beside it at the
- * bottom.
+ * minimal.mixer: the track list, the transpose panel and the settings dialog
+ * ("More") open beside the column, level with their button, like the
+ * 2018-era dropdowns. They are fixed, so content.js publishes each one's top
+ * as --sc-pop-<button id> (the button's top, pushed up just enough to stay
+ * on screen) before it is first painted; the fallbacks are Songsterr's own
+ * placement.
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-layout-minimal #default-mixer {
-  top: var(--sc-top-inset, 0px);
+  top: var(--sc-pop-control-mixer, var(--sc-top-inset, 0px));
   bottom: auto;
   left: auto;
   right: var(--sc-rail-w);
   max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
-  border-top: 0;
+  border-top: 1px solid var(--sc-border);
   border-bottom: 1px solid var(--sc-border);
 }
 html.sc-enabled.sc-layout-minimal #settings-popup {
+  top: var(--sc-pop-control-settings, auto);
   right: var(--sc-rail-w);
-  bottom: var(--sc-bottom-inset, 0px);
+  bottom: auto;
+  max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
+  border-bottom: 1px solid var(--sc-border);
+}
+html.sc-enabled.sc-layout-minimal #tab-controls [class*="_transposeNotation"] {
+  top: var(--sc-pop-control-transpose, auto);
+  bottom: auto;
   max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
 }
 
