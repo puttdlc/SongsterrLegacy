@@ -584,6 +584,12 @@ html.sc-enabled.sc-layout-classic [data-controls-top-panel] #display-mode-button
   fill: var(--sc-icon);
 }
 
+/* Moderator delete / recover (#deletion, #recovery): Songsterr sizes them to
+   its own 44px panel, so they sat at the top of the taller strip. Centre them. */
+html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#deletion, #recovery) {
+  height: 100%;
+}
+
 /* classic.stripSpacing: Favorite, the Tab select and Editor get room to
    breathe (they sat edge to edge), with a hairline separating the strip from
    the button row. */

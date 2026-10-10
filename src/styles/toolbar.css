@@ -132,6 +132,21 @@ html.sc-enabled.sc-layout-fusion [data-controls-top-panel] [class*="_controlsTop
   border-bottom-right-radius: var(--sc-radius);
 }
 
+/* Moderator delete / recover (#deletion, #recovery): Songsterr sizes them to
+   its own 44px panel, taller than the strip. Same size as the buttons beside them. */
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#deletion, #recovery) {
+  width: var(--sc-ctl-w);
+  height: var(--sc-ctl-h);
+  margin-left: -1px;
+}
+html.sc-enabled.sc-layout-fusion [data-controls-top-panel] :is(#deletion, #recovery) > button {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 1px solid var(--sc-border);
+  border-radius: 0;
+}
+
 /* Display-mode select (Tab / Sheet / Chords ...): sunken field look. */
 html.sc-enabled.sc-layout-fusion [data-controls-top-panel] #display-mode-button {
   height: var(--sc-ctl-h);
