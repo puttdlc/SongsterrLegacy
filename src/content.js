@@ -287,9 +287,10 @@
   // Help, Inbox and Account (left sidebar) and the track list, transpose and
   // settings windows (right column) open level with their button: each
   // popup's top is published as --sc-pop-<button id> on <html>, pushed up
-  // just enough that the popup stays on screen. Runs straight from the
-  // MutationObserver (a microtask, before the new popup is painted), not from
-  // the 250ms upkeep, so a popup never shows in the wrong place first.
+  // just enough that the popup stays on screen. Runs in the next animation
+  // frame after a DOM change (placePopups: before the new popup is painted,
+  // and once per frame however many changes came in), not from the 250ms
+  // upkeep, so a popup never shows in the wrong place first.
   // The column's other popups (speed, loop, print ...) are aligned in CSS
   // (minimal.anchoredPopups), from Songsterr's own --anchor-bottom.
   // ---------------------------------------------------------------------------
@@ -334,8 +335,8 @@
   // popup is marked data-sc-pop (CSS stands it on the bar), and one that
   // appears within a moment of a click on a bar button is also marked
   // data-sc-anchored and given --sc-pop-x (inline, on that element): centred
-  // over the button, kept inside the window. Like the Legacy popups this runs from the
-  // MutationObserver, before the popup is painted. Popups opened with a
+  // over the button, kept inside the window. Like the Legacy popups this runs
+  // from placePopups, before the popup is painted. Popups opened with a
   // keyboard shortcut keep Songsterr's own placement.
   // ---------------------------------------------------------------------------
   const ANCHOR_WINDOW_MS = 1500;
@@ -370,6 +371,18 @@
     }
   }
 
+  // Both placements read layout, so DOM changes (constant during playback)
+  // are coalesced to one pass per frame. Animation frames run before paint.
+  let placeFrame = 0;
+  function placePopups() {
+    if (placeFrame) return;
+    placeFrame = requestAnimationFrame(() => {
+      placeFrame = 0;
+      placeLegacyPopups();
+      placeClassicPopups();
+    });
+  }
+
   // ---------------------------------------------------------------------------
   // Author (selectors.js: header.author). Data sources, no requests made:
   //   - <script id="state"> embedded in the first page load (meta.current.author)
@@ -395,11 +408,18 @@
     if (stateRead) return;
     const el = document.getElementById('state');
     if (!el) return;
-    stateRead = true;
+    // While the page is loading, the script may still be half written: try
+    // again on the next pass instead of giving up.
+    const loading = document.readyState === 'loading';
+    const text = el.textContent;
+    if (!text && loading) return;
     try {
-      const current = JSON.parse(el.textContent || '{}')?.meta?.current;
+      const current = JSON.parse(text || '{}')?.meta?.current;
+      stateRead = true;
       if (current) rememberAuthor(current.songId, current.author);
-    } catch (_) { /* malformed or changed format: no author shown */ }
+    } catch (_) {
+      if (!loading) stateRead = true;   /* malformed or changed format: no author shown */
+    }
   }
 
   document.addEventListener('sc-classic:meta', (event) => {
@@ -668,8 +688,7 @@
 
   // 3. Safety net + upkeep triggers.
   new MutationObserver(() => {
-    placeLegacyPopups();
-    placeClassicPopups();
+    placePopups();
     schedule();
   }).observe(root, {
     attributes: true,
@@ -679,8 +698,7 @@
   });
   window.addEventListener('popstate', schedule);
   window.addEventListener('resize', () => {
-    placeLegacyPopups();
-    placeClassicPopups();
+    placePopups();
     schedule();
   });
   document.addEventListener('DOMContentLoaded', schedule);

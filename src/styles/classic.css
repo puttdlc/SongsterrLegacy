@@ -214,13 +214,13 @@ html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle
   transition: fill var(--sc-ease);
 }
 
-/* Hover */
-html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer):not(:disabled):hover,
+/* Hover (not while toggled on: that keeps its accent colours) */
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source, #control-mixer):not(:disabled, [aria-pressed="true"]):hover,
 html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor):hover {
   background: var(--sc-row-hover);
   color: var(--sc-text);
 }
-html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source):not(:disabled):hover svg,
+html.sc-enabled.sc-layout-classic #controls :is(button, a)[id^="control-"]:not(#control-play, #control-source):not(:disabled, [aria-pressed="true"]):hover svg,
 html.sc-enabled.sc-layout-classic [data-controls-top-panel] :is(#favorite-toggle, #control-editor):hover svg {
   fill: var(--sc-text);
 }
@@ -373,7 +373,7 @@ html.sc-enabled.sc-layout-classic #controls #control-mixer::after {
   border-left: 2px solid var(--sc-icon);
   transform: rotate(45deg);
 }
-html.sc-enabled.sc-layout-classic #controls #control-mixer:not(:disabled):hover {
+html.sc-enabled.sc-layout-classic #controls #control-mixer:not(:disabled, [aria-pressed="true"]):hover {
   background:
     linear-gradient(to left, transparent 33px, var(--sc-border) 33px, var(--sc-border) 34px, transparent 34px),
     var(--sc-row-hover);

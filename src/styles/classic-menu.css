@@ -38,7 +38,7 @@ html.sc-enabled.sc-menu-classic.sc-density-comfortable {
 /* Nothing is docked at the bottom for the nav any more: panels anchored to
    the bottom bar reach the screen edge (or the Classic player bar, see
    classic.css, which out-ranks this). */
-html.sc-enabled.sc-menu-classic.sc-layout-fusion:not(#sc-specificity) {
+html.sc-enabled.sc-menu-classic:not(.sc-layout-classic):not(#sc-specificity) {
   --bottombar-height: 0px;
 }
 
@@ -78,16 +78,22 @@ html.sc-enabled.sc-menu-classic #tablist [class*="_itemWrapper"] {
   order: 0;
 }
 
-/* Right group reversed: help, inbox, account (DOM: account, inbox, help). */
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(1) { order: 1; }
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(2) { order: 2; }
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(3) { order: 3; }
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(4) { order: 4; }
+/* Right group reversed: help, inbox, account (DOM: account, inbox, help).
+   Matched by the link each child holds, not by position: the open inbox
+   popup is a child of this group too (right after its item) and shifted
+   every index. Logged out, Help has its own group and Sign in is alone here. */
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] {
+  & > :has(a[id^="menu-"])  { order: 4; }   /* unknown items go last */
+  & > :has(#menu-help)      { order: 1; }
+  & > :has(#menu-inbox)     { order: 2; }
+  & > :has(#menu-account)   { order: 3; }
+  & > :has(#menu-signin)    { order: 3; }
+}
 
-/* Cluster gaps: before Search, before Help, before Inbox. */
+/* Cluster gaps: before Search, before Help, before Inbox (logged out: before
+   Help and before Sign in). */
 html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarCenter"] > :first-child,
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(1),
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :nth-last-child(2) {
+html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :is(:has(#menu-help), :has(#menu-inbox), :has(#menu-signin)) {
   margin-left: auto;
 }
 

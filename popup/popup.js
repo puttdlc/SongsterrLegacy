@@ -105,6 +105,18 @@
     chrome.storage.sync.set({ [input.name]: value });
   });
 
+  // While the accent is "auto", the colour it stands for is shown checked, and
+  // clicking a checked radio fires no change event. Treat that click as
+  // picking the colour, so it stays when the layout changes.
+  form.addEventListener('click', (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLInputElement) || input.name !== 'accent') return;
+    if (current.accent !== 'auto' || input.value !== effectiveAccent(current)) return;
+    current = { ...current, accent: input.value };
+    render(current);
+    chrome.storage.sync.set({ accent: input.value });
+  });
+
   darkQuery.addEventListener('change', () => applyPopupTheme(current.theme));
 
   // Reflect changes made elsewhere (e.g. the nav collapse tab on the page).

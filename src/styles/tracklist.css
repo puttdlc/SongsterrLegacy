@@ -104,7 +104,7 @@ html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > :last-child bu
 html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > button:last-child {
   border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
 }
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:not(:disabled):hover {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:not(:disabled, [aria-pressed="true"]):hover {
   background: var(--sc-btn-bg-hover);
 }
 html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:not(:disabled):active {

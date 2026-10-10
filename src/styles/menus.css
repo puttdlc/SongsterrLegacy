@@ -19,14 +19,15 @@
 
 /* ---------------------------------------------------------------------------
  * panels.main: the big floating cards become a full-height window (top edge
- * down to the nav bar), always centred horizontally on screen. On windows
- * narrower than the panel it shrinks to the viewport width.
+ * down to the nav bar), centred horizontally on screen. It never goes left of
+ * --sc-left-inset (the Legacy sidebar), and on windows too narrow for it, it
+ * shrinks to the space that is left.
  * ------------------------------------------------------------------------- */
 html.sc-enabled main[id^="panel-"][class*="_mainPanel"] {
   top: 0;
-  left: max(0px, (100vw - var(--panel-width, 846px)) / 2);
+  left: max(var(--sc-left-inset, 0px), (100vw - var(--panel-width, 846px)) / 2);
   bottom: var(--bottombar-height);
-  max-width: 100vw;
+  max-width: calc(100vw - var(--sc-left-inset, 0px));
   border-radius: 0;
   border-left: 1px solid var(--sc-border);
   border-right: 1px solid var(--sc-border);
