@@ -40,6 +40,7 @@ Click the toolbar icon to open the settings popup:
 | Color theme | Blue / Green / Red / Custom / Off | Accent colour for every layout: play button, toggled buttons, selections, focus ring, Classic's base line. Until you pick one, Fusion and Legacy use Blue and Classic uses Green. **Custom** shows a colour picker; **Off** uses neutral greys only. |
 | Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
+| Animation | On (default) / Off | **Off** makes windows, menus and buttons open and change instantly instead of sliding and fading. The tab itself and the playback cursor are not affected, nor is Fusion's player fold, which Songsterr animates in script. |
 | Author | Show / Hide | "Last edited by <name>" under the song title (see below). |
 | Nav bar | Shown / Collapsed | Fusion quick menu only. Same as the chevron tab at the bottom-left of the page. |
 | Stay open | On (default) / Off | Fusion only. Songsterr folds its player panel back to one row whenever you click a button in it, press play, or switch Tab/Sheet/Chords. With **On**, once you open it, it stays open until you close it yourself (handle or drag). |

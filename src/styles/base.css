@@ -200,6 +200,25 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"], [role="menu"], [role="l
 }
 
 /* ---------------------------------------------------------------------------
+ * motion.off: the "Animations: Off" setting (sc-no-motion, all layouts).
+ * Every transition and animation outside the notation (#tablature: notes and
+ * playback cursor, see selectors.js) finishes at once. Durations become
+ * 0.01ms, not `none`, so transitionend / animationend still fire: Songsterr
+ * waits for them (onTransitionEnd) before it unmounts closing popups.
+ * !important because Songsterr also sets transitions inline (the pane).
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-no-motion :not(#tablature, #tablature *),
+html.sc-enabled.sc-no-motion :not(#tablature, #tablature *)::before,
+html.sc-enabled.sc-no-motion :not(#tablature, #tablature *)::after {
+  transition-duration: 0.01ms !important;
+  transition-delay: 0s !important;
+  animation-duration: 0.01ms !important;
+  animation-delay: 0s !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+/* ---------------------------------------------------------------------------
  * video.toggle: our collapse tab on the left edge of the floating video panel
  * (Classic and Legacy; content.js). Hidden by default and while the panel
  * isn't shown; classic.css and minimal.css place it.
