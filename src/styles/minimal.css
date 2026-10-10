@@ -376,6 +376,13 @@ html.sc-enabled.sc-layout-minimal [data-controls-top-panel] > [class*="_controls
 html.sc-enabled.sc-layout-minimal [data-controls-top-panel] > [class*="_controlsTopPanel"] > [class*="_controlsTopItemToStart"] {
   order: 2;
 }
+/* Round, the size of the star and pencil beside them. */
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#deletion, #recovery),
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#deletion, #recovery) > button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
 html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle, #control-editor) {
   width: 36px;
   height: 36px;
