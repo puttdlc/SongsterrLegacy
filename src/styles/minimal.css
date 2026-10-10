@@ -367,6 +367,15 @@ html.sc-enabled.sc-layout-minimal [data-controls-top-panel] [class*="_controlsTo
   flex: 0 0 auto;
   margin: 0;
 }
+/* Moderator delete / recover (#deletion, #recovery) only show while editing.
+ * Songsterr puts them before the editor toggle, so in this left-aligned row
+ * the toggle moved right and the trash took its place: move them after it. */
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] > [class*="_controlsTopPanel"] > :is(#deletion, #recovery) {
+  order: 1;
+}
+html.sc-enabled.sc-layout-minimal [data-controls-top-panel] > [class*="_controlsTopPanel"] > [class*="_controlsTopItemToStart"] {
+  order: 2;
+}
 html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle, #control-editor) {
   width: 36px;
   height: 36px;
