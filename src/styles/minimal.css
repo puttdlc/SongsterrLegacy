@@ -158,7 +158,8 @@ html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle
 html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source):not(:disabled):active,
 html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not(#control-source),
 html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) {
-  background: var(--sc-accent);
+  background: var(--sc-accent-bg);
+  box-shadow: inset 0 0 0 1px var(--sc-accent-edge);
   color: var(--sc-on-accent);
 }
 html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source):not(:disabled):active svg,
@@ -255,7 +256,7 @@ html.sc-enabled.sc-layout-minimal #controls #control-source [class*="_background
   transform: none;
 }
 html.sc-enabled.sc-layout-minimal #controls #control-source [class*="_labelChecked"] [class*="_background"] {
-  background-color: var(--sc-accent);
+  background-color: var(--sc-accent-bg);
 }
 html.sc-enabled.sc-layout-minimal #controls #control-source [class*="_text"] {
   position: relative;                /* above the background fill */

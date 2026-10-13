@@ -142,7 +142,7 @@ html.sc-enabled :is(
 
   /* switches */
   --switch-background: var(--sc-surface-sunken);
-  --switch-background-active: var(--sc-accent-fill);
+  --switch-background-active: var(--sc-switch-on, var(--sc-accent-fill));
   --switch-round: var(--sc-btn-top);
 
   /* mixer + settings sections */

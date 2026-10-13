@@ -39,8 +39,8 @@ html.sc-enabled.sc-layout-classic {
   --sc-classic-label: 600 10px / 1 var(--sc-font);
   /* Play button, source toggle and base line follow the accent colour
      (popup "Color theme"; green is the old player's look). */
-  --sc-classic-play: var(--sc-accent);
-  --sc-classic-play-hover: var(--sc-accent-hover);
+  --sc-classic-play: var(--sc-accent-bg);
+  --sc-classic-play-hover: var(--sc-accent-bg-hover);
   --sc-classic-play-border: var(--sc-accent-border);
   --sc-classic-line: var(--sc-accent);
 
