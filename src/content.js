@@ -237,9 +237,10 @@
   // the page (classic.video, minimal.video), where it can cover the tab. This
   // tab slides it away and back (Classic: on its top edge, down behind the
   // player bar; Legacy: on its left edge, off to the right); the video keeps
-  // playing. Its height is published as --sc-video-h for the Classic tab. It lives in <body>, outside Songsterr's app root, and is only
-  // shown while the panel is; CSS only hides the panel while the tab is
-  // shown, so the panel can never get stuck hidden.
+  // playing. Its height is published as --sc-video-h for the Classic tab. It lives in <body>, outside Songsterr's app root. CSS shows it
+  // while the panel is open and only hides the panel while it is in the page
+  // (base.css video.toggle), so the two change together and the panel can
+  // never get stuck hidden.
   // ---------------------------------------------------------------------------
   const VIDEO_PANEL = '#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"]))';
   let videoToggle = null;
@@ -248,7 +249,6 @@
     const btn = document.createElement('button');
     btn.id = 'sc-video-toggle';
     btn.type = 'button';
-    btn.hidden = true;
     btn.append(chevron('M2 1 6.5 6 2 11', 8, 12));
     btn.addEventListener('click', () => save({ videoCollapsed: !settings.videoCollapsed }));
     return btn;
@@ -271,7 +271,6 @@
     }
     if (videoToggle.parentNode !== document.body) document.body.append(videoToggle);
     const panel = settings.enabled && settings.layout !== 'fusion' ? document.querySelector(VIDEO_PANEL) : null;
-    if (videoToggle.hidden === !!panel) videoToggle.hidden = !panel;
     // Classic puts the tab on the panel's top edge, so CSS needs its height.
     // Measure the panel itself: the wrapper around it has extra room for the
     // shadow. Not affected while slid away (translate doesn't change layout).
@@ -375,10 +374,8 @@
 
   // Both placements read layout, so DOM changes (constant during playback)
   // are coalesced to one pass per frame. Animation frames run before paint.
-  // The video tab is synced here too: the collapsed panel only hides while
-  // the tab is shown, so when Songsterr un-hides the panel (Synth -> Orig.)
-  // the tab must show in that same frame, or the panel pops out until the
-  // 250ms upkeep catches up.
+  // The video panel's height is published here too, so the Classic tab sits
+  // on a newly opened panel's edge in its first frame, not 250ms later.
   let placeFrame = 0;
   function placePopups() {
     if (placeFrame) return;

@@ -220,13 +220,16 @@ html.sc-enabled.sc-no-motion :not(#tablature, #tablature *)::after {
 
 /* ---------------------------------------------------------------------------
  * video.toggle: our collapse tab on the left edge of the floating video panel
- * (Classic and Legacy; content.js). Hidden by default and while the panel
- * isn't shown; classic.css and minimal.css place it.
+ * (Classic and Legacy; content.js). Shown only while the panel is open, decided
+ * in CSS (:has on <html>) rather than by content.js, so the tab and the
+ * collapsed panel always appear in the same style pass: switching Synth ->
+ * Orig. opens the panel, and a tab that showed a frame later let the panel
+ * show and slide away. classic.css and minimal.css place it.
  * ------------------------------------------------------------------------- */
 #sc-video-toggle {
   display: none;
 }
-html.sc-enabled:is(.sc-layout-classic, .sc-layout-minimal) #sc-video-toggle:not([hidden]) {
+html.sc-enabled:is(.sc-layout-classic, .sc-layout-minimal):where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
   position: fixed;
   z-index: calc(var(--zIndexControls, 73) + 2);
   box-sizing: border-box;

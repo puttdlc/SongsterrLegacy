@@ -660,20 +660,21 @@ html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [c
 /* classic.videoCollapse: the tab (content.js, #sc-video-toggle) sits on the
    panel's top edge, centred (content.js publishes the panel's height as
    --sc-video-h); collapsed, the panel slides down behind the player bar and
-   the tab rests on the bar. The panel only hides while the tab is shown, so
-   it can't get stuck hidden. `translate`, not `transform`, so nothing
+   the tab rests on the bar. The panel only hides while the tab is in the
+   page, and the tab shows whenever the panel is open (base.css), so it
+   can't get stuck hidden. `translate`, not `transform`, so nothing
    Songsterr writes clashes with it.
    Only the panel moves; the wrapper's own edge (the bar's top) clips it, so
    it never shows over the bar. (An animated clip-path did this first, but
    it runs on the main thread while translate runs on the compositor; while
    a video plays the clip lagged and the panel showed over the bar when
    collapsing. One moving part can't drift.) */
-html.sc-enabled.sc-layout-classic.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+html.sc-enabled.sc-layout-classic.sc-video-collapsed:has(#sc-video-toggle) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
   translate: 0 100%;
   visibility: hidden;                /* out of the tab order while collapsed */
   transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
-html.sc-enabled.sc-layout-classic #sc-video-toggle:not([hidden]) {
+html.sc-enabled.sc-layout-classic:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
   right: calc(var(--sc-video-w) / 2 - 24px);
   bottom: calc(var(--sc-classic-h) + var(--sc-video-h, 0px));
   width: 48px;
@@ -683,7 +684,7 @@ html.sc-enabled.sc-layout-classic #sc-video-toggle:not([hidden]) {
   border-radius: var(--sc-radius) var(--sc-radius) 0 0;
   transition: bottom 0.2s ease-out;
 }
-html.sc-enabled.sc-layout-classic.sc-video-collapsed #sc-video-toggle:not([hidden]) {
+html.sc-enabled.sc-layout-classic.sc-video-collapsed:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
   bottom: var(--sc-classic-h);
 }
 html.sc-enabled.sc-layout-classic #sc-video-toggle svg {

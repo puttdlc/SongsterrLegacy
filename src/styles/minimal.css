@@ -458,20 +458,21 @@ html.sc-enabled.sc-layout-minimal {
 /* minimal.videoCollapse: the tab (content.js, #sc-video-toggle) sits on the
    panel's left edge, level with its top; collapsed, the panel slides off to
    the right, behind the column, and the tab moves next to the column. The
-   panel only hides while the tab is shown, so it can't get stuck hidden.
+   panel only hides while the tab is in the page, and the tab shows whenever
+   the panel is open (base.css), so it can't get stuck hidden.
    Only the panel moves; the wrapper's own edge (the column's left edge)
    clips it, so it never shows over the column (see classic.videoCollapse
    for why this isn't an animated clip-path). */
-html.sc-enabled.sc-layout-minimal.sc-video-collapsed:has(#sc-video-toggle:not([hidden])) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+html.sc-enabled.sc-layout-minimal.sc-video-collapsed:has(#sc-video-toggle) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
   translate: 100% 0;
   visibility: hidden;                /* out of the tab order while collapsed */
   transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
-html.sc-enabled.sc-layout-minimal #sc-video-toggle:not([hidden]) {
+html.sc-enabled.sc-layout-minimal:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
   top: calc(var(--sc-top-inset, 0px) + 12px);
   right: calc(var(--sc-rail-w) + var(--sc-video-w));
 }
-html.sc-enabled.sc-layout-minimal.sc-video-collapsed #sc-video-toggle:not([hidden]) {
+html.sc-enabled.sc-layout-minimal.sc-video-collapsed:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
   right: var(--sc-rail-w);
 }
 
