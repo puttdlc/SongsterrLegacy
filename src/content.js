@@ -375,6 +375,10 @@
 
   // Both placements read layout, so DOM changes (constant during playback)
   // are coalesced to one pass per frame. Animation frames run before paint.
+  // The video tab is synced here too: the collapsed panel only hides while
+  // the tab is shown, so when Songsterr un-hides the panel (Synth -> Orig.)
+  // the tab must show in that same frame, or the panel pops out until the
+  // 250ms upkeep catches up.
   let placeFrame = 0;
   function placePopups() {
     if (placeFrame) return;
@@ -382,6 +386,7 @@
       placeFrame = 0;
       placeLegacyPopups();
       placeClassicPopups();
+      syncVideoToggle();
     });
   }
 
