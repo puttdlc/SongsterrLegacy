@@ -639,7 +639,7 @@ html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [c
   bottom: var(--sc-classic-h);
   box-sizing: border-box;
   width: calc(var(--sc-video-w) + 24px);
-  max-height: calc(100vh - var(--sc-classic-h));
+  max-height: calc(100vh - var(--sc-classic-h) - var(--sc-top-inset, 0px));
   padding: 24px 0 0 24px;
   overflow: hidden;
   pointer-events: none;
@@ -697,18 +697,20 @@ html.sc-enabled.sc-layout-classic.sc-video-collapsed #sc-video-toggle svg {
  * classic.mixer: the track list opens on the left, straight above the track
  * selector that opens it, instead of over the right end of the bar. The
  * settings dialog ("More") stays right but sits on the bar, not over it.
+ * Every window standing on the bar stops below the Classic quick menu bar
+ * (--sc-top-inset); a long track list ran under it.
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-layout-classic #default-mixer {
   left: var(--sc-left-inset, 0px);    /* beside the Legacy sidebar */
   right: auto;
   bottom: var(--sc-classic-h);
-  max-height: calc(100vh - var(--sc-classic-h));
+  max-height: calc(100vh - var(--sc-classic-h) - var(--sc-top-inset, 0px));
   border-left: 0;
   border-right: 1px solid var(--sc-border);
 }
 html.sc-enabled.sc-layout-classic #settings-popup {
   bottom: var(--sc-classic-h);
-  max-height: calc(100vh - var(--sc-classic-h));
+  max-height: calc(100vh - var(--sc-classic-h) - var(--sc-top-inset, 0px));
 }
 
 /* ---------------------------------------------------------------------------
@@ -724,7 +726,7 @@ html.sc-enabled.sc-layout-classic #settings-popup {
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-layout-classic #tab-controls [class*="_popupsLayer"] [data-sc-pop] {
   bottom: var(--sc-classic-h) !important;
-  max-height: calc(100vh - var(--sc-classic-h)) !important;
+  max-height: calc(100vh - var(--sc-classic-h) - var(--sc-top-inset, 0px)) !important;
 }
 html.sc-enabled.sc-layout-classic #tab-controls [class*="_popupsLayer"] [data-sc-anchored] {
   left: var(--sc-pop-x) !important;
@@ -732,7 +734,7 @@ html.sc-enabled.sc-layout-classic #tab-controls [class*="_popupsLayer"] [data-sc
 }
 html.sc-enabled.sc-layout-classic #tab-controls [class*="_transposeNotation"] {
   bottom: var(--sc-classic-h);
-  max-height: calc(100vh - var(--sc-classic-h));
+  max-height: calc(100vh - var(--sc-classic-h) - var(--sc-top-inset, 0px));
 }
 
 /* ---------------------------------------------------------------------------

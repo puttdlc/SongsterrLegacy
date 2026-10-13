@@ -232,6 +232,24 @@ html.sc-enabled.sc-menu-classic #header {
 }
 
 /* ---------------------------------------------------------------------------
+ * classicMenu.multitrack: during playback Songsterr scrolls a multitrack
+ * line group (div[data-line-unit-index] around the group svg) so its box
+ * top meets the window top (scrollBy(rect.top), no top offset), and the bar
+ * covered the first track. The box gets the bar's height as padding, and an
+ * equal negative margin keeps the layout where it was, so the scroll leaves
+ * the staves below the bar. The padding overlaps the group above, so it
+ * lets clicks through.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-menu-classic div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-group"]) {
+  padding-top: var(--sc-top-inset, 0px);
+  margin-top: calc(-1 * var(--sc-top-inset, 0px));
+  pointer-events: none;
+}
+html.sc-enabled.sc-menu-classic div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-group"]) > * {
+  pointer-events: auto;
+}
+
+/* ---------------------------------------------------------------------------
  * classicMenu.logo: Songsterr's logo sits on the bar's left end (it hung
  * just below the bar otherwise). Same logo, only its container's offset and
  * stacking change.
