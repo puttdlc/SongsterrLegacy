@@ -340,6 +340,11 @@ html.sc-enabled.sc-layout-minimal [data-controls-top-panel] {
   width: auto;
   height: auto;
 }
+/* Multitrack groups scroll to below the strip (base.css multitrack.clear):
+   its 10px offset, the 36px buttons and a 6px gap. */
+html.sc-enabled.sc-layout-minimal {
+  --sc-tab-top-clear: calc(var(--sc-top-inset, 0px) + 52px);
+}
 html.sc-enabled.sc-layout-minimal [data-controls-top-panel][data-hidden="true"] {
   opacity: 1;
   visibility: visible;

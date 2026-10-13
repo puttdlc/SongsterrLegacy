@@ -270,3 +270,26 @@ html.sc-enabled.sc-video-collapsed #sc-video-toggle svg {
   transform: scaleX(-1);             /* chevron points left: "show" */
 }
 
+
+/* ---------------------------------------------------------------------------
+ * multitrack.clear: during playback Songsterr scrolls a multitrack line group
+ * (div[data-line-unit-index] around the group svg) so its box top meets the
+ * window top (scrollBy(rect.top), no top offset). Anything pinned to the top
+ * then covered the first track: the Classic quick menu bar, and Legacy's
+ * favourite / display mode / editor strip, which stays visible while
+ * Songsterr would fade it out. Layouts add what they pin to
+ * --sc-tab-top-clear. The box gets that as padding, and an equal negative
+ * margin keeps the layout where it was, so the scroll leaves the staves
+ * below. The padding overlaps the group above, so it lets clicks through.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled {
+  --sc-tab-top-clear: var(--sc-top-inset, 0px);
+}
+html.sc-enabled div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-group"]) {
+  padding-top: var(--sc-tab-top-clear, 0px);
+  margin-top: calc(-1 * var(--sc-tab-top-clear, 0px));
+  pointer-events: none;
+}
+html.sc-enabled div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-group"]) > * {
+  pointer-events: auto;
+}
