@@ -825,6 +825,12 @@ html.sc-enabled.sc-layout-classic.sc-classic-tighter #controls [class*="_control
   scrollbar-width: thin;
   scrollbar-color: var(--sc-divider) transparent;
 }
+/* A scrolling row clips what sticks out of it, and the metronome "..." tab
+   sits 9px above its button (classic.metronomeSettings). Labels are gone at
+   this level, so there is room for it inside the button's top edge. */
+html.sc-enabled.sc-layout-classic.sc-classic-tighter #controls #metronome-settings {
+  top: 2px;
+}
 
 @media print {
   html.sc-enabled.sc-layout-classic #controls {

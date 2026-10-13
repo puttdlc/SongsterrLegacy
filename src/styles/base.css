@@ -288,7 +288,16 @@ html.sc-enabled.sc-video-collapsed #sc-video-toggle svg {
  * children are placed from the padding box, so padding moved them up away
  * from their popovers, which Songsterr places in #tablature. The border
  * overlaps the group above, so it lets clicks through.
+ * The editor scrolls to one track's line instead of the group; page-scroll.js
+ * leaves the same room above it. It reads --sc-tab-top-clear from <html>,
+ * so the property is registered as a <length>: the calc() then reaches it
+ * as a number of pixels (0px while the reskin is off).
  * ------------------------------------------------------------------------- */
+@property --sc-tab-top-clear {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 0px;
+}
 html.sc-enabled {
   --sc-tab-top-clear: var(--sc-top-inset, 0px);
 }

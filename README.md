@@ -154,7 +154,9 @@ title, without making any request of its own:
   (a small script running in the page's own JS world) watches the site's own
   `/api/meta/{songId}` responses and reads the author from a clone of the
   response. It never changes the request or what the site receives, and
-  forwards only the song id, revision id and author name.
+  forwards only the song id, revision id, whether it is the current version,
+  and the author name. Authors are remembered per revision, so opening an old
+  revision or a diff never leaves its author on the current tab.
 
 It is shown as "Last edited by **name**" (the author of the revision you are
 viewing, which on the latest version is the most recent editor). The name links
@@ -302,6 +304,7 @@ manifest.json
 src/
   content.js        settings -> <html> classes, nav collapse tab, author attribute, diagnostics
   page-meta.js      page-world, read-only observer of the site's /api/meta responses (author)
+  page-scroll.js    page-world, keeps the editor's scroll target below the top bar / Legacy strip
   selectors.js      selector map, the single place to fix after site updates
   styles/
     tokens.css      CSS variables for Dark / Light / Auto + density

@@ -339,11 +339,14 @@
   // data-sc-anchored and given --sc-pop-x (inline, on that element): centred
   // over the button, kept inside the window. Like the Legacy popups this runs
   // from placePopups, before the popup is painted. Popups opened with a
-  // keyboard shortcut keep Songsterr's own placement.
+  // keyboard shortcut keep Songsterr's own placement. An anchored popup
+  // remembers its button and is centred again on every pass, so it follows
+  // when the window is resized or the bar re-flows while it is open.
   // ---------------------------------------------------------------------------
   const ANCHOR_WINDOW_MS = 1500;
   let lastControl = null;
   let lastControlAt = 0;
+  const anchors = new WeakMap();   // popup element -> id of the button it opened from
 
   document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
@@ -360,17 +363,28 @@
     if (!layer || !layer.firstElementChild) return;
     const fresh = lastControl && lastControl.isConnected && Date.now() - lastControlAt < ANCHOR_WINDOW_MS;
     for (const el of layer.querySelectorAll(':scope > *, :scope > * > *')) {
-      if (el.id === 'default-mixer' || el.hasAttribute('data-sc-pop')) continue;   // mixer: classic.mixer
-      if (getComputedStyle(el).position !== 'fixed') continue;
-      const width = el.offsetWidth;
-      if (!width || width > window.innerWidth * 0.9) continue;                      // full-screen overlays
-      el.setAttribute('data-sc-pop', '');   // sits on the bar (classic.popups)
-      if (!fresh) continue;
-      const b = lastControl.getBoundingClientRect();
-      const x = Math.max(POPUP_MARGIN, Math.min(b.left + b.width / 2 - width / 2, window.innerWidth - width - POPUP_MARGIN));
-      el.style.setProperty('--sc-pop-x', `${Math.round(x)}px`);
-      el.setAttribute('data-sc-anchored', '');
+      if (el.id === 'default-mixer') continue;   // mixer: classic.mixer
+      if (!el.hasAttribute('data-sc-pop')) {
+        if (getComputedStyle(el).position !== 'fixed') continue;
+        const width = el.offsetWidth;
+        if (!width || width > window.innerWidth * 0.9) continue;                    // full-screen overlays
+        el.setAttribute('data-sc-pop', '');   // sits on the bar (classic.popups)
+        if (!fresh || !lastControl.id) continue;
+        anchors.set(el, lastControl.id);
+        el.setAttribute('data-sc-anchored', '');
+      }
+      const buttonId = anchors.get(el);
+      const button = buttonId && document.getElementById(buttonId);
+      if (button) anchorOver(el, button);
     }
+  }
+
+  function anchorOver(el, button) {
+    const width = el.offsetWidth;
+    if (!width) return;
+    const b = button.getBoundingClientRect();
+    const x = `${Math.round(Math.max(POPUP_MARGIN, Math.min(b.left + b.width / 2 - width / 2, window.innerWidth - width - POPUP_MARGIN)))}px`;
+    if (el.style.getPropertyValue('--sc-pop-x') !== x) el.style.setProperty('--sc-pop-x', x);
   }
 
   // Both placements read layout, so DOM changes (constant during playback)
@@ -397,16 +411,23 @@
   // site's children, so Songsterr's renderer keeps its own nodes in order).
   // The link goes to the author's public profile, /user/<profileName>, the
   // same URL Songsterr uses in its revision list.
+  // Authors are kept per revision ("r<id>") and, for the current version of
+  // a song, per song ("s<id>"). Keyed by song alone, opening an old revision
+  // (or a diff) put its author on the current tab until Songsterr happened
+  // to download the current version's details again.
   // ---------------------------------------------------------------------------
-  const authors = new Map(); // songId -> { name, profileName }
+  const authors = new Map(); // "s<songId>" (current version) | "r<revisionId>" -> { name, profileName }
   let stateRead = false;
   let authorEl = null;
 
-  function rememberAuthor(songId, author) {
-    if (songId == null || !author) return;
+  function rememberAuthor({ songId, revisionId, latest }, author) {
+    if (!author) return;
     const name = String(author.name || author.profileName || '').trim().slice(0, 80);
     const profileName = String(author.profileName || '').trim().slice(0, 80);
-    if (name) authors.set(String(songId), { name, profileName });
+    if (!name) return;
+    const info = { name, profileName };
+    if (revisionId != null) authors.set(`r${revisionId}`, info);
+    if (latest && songId != null) authors.set(`s${songId}`, info);
   }
 
   function readEmbeddedState() {
@@ -421,7 +442,12 @@
     try {
       const current = JSON.parse(text || '{}')?.meta?.current;
       stateRead = true;
-      if (current) rememberAuthor(current.songId, current.author);
+      // The page was loaded for this URL: the current version unless the URL
+      // names a revision.
+      if (current) {
+        const page = pageFromUrl();
+        rememberAuthor({ songId: current.songId, revisionId: current.revisionId, latest: !page?.revisionId }, current.author);
+      }
     } catch (_) {
       if (!loading) stateRead = true;   /* malformed or changed format: no author shown */
     }
@@ -430,17 +456,17 @@
   document.addEventListener('sc-classic:meta', (event) => {
     try {
       const data = JSON.parse(event.detail);
-      rememberAuthor(data.songId, data.author);
+      rememberAuthor({ songId: data.songId, revisionId: data.revisionId, latest: data.latest === true }, data.author);
       schedule();
     } catch (_) { /* ignore */ }
   });
 
-  function songIdFromUrl() {
+  function pageFromUrl() {
     // /a/wsa/metallica-enter-sandman-tab-s19, ...-s19t2, ...-sheet-s19,
     // ...-s84335t4/r93259 (a specific revision)
-    const m = location.pathname.match(/-s(\d+)(?:t\d+)?(?:\/r\d+)?\/?$/);
+    const m = location.pathname.match(/-s(\d+)(?:t\d+)?(?:\/r(\d+))?\/?$/);
     if (!m || /-chords-s\d+/.test(location.pathname)) return null;
-    return m[1];
+    return { songId: m[1], revisionId: m[2] || null };
   }
 
   function buildAuthor() {
@@ -455,8 +481,8 @@
   function syncAuthor() {
     readEmbeddedState();
     const header = document.getElementById('header');
-    const id = songIdFromUrl();
-    const info = id ? authors.get(id) : undefined;
+    const page = pageFromUrl();
+    const info = page ? authors.get(page.revisionId ? `r${page.revisionId}` : `s${page.songId}`) : undefined;
     if (!header || !info || !settings.enabled || !settings.showAuthor) {
       if (authorEl && authorEl.isConnected) authorEl.remove();
       return;

@@ -16,7 +16,8 @@
  * toolbar.css, Classic is classic.css; the three share no toolbar rules).
  *
  * Built from Songsterr's own DOM (see toolbar.css for the tree):
- *   - #controls becomes a full-height column pinned to the right edge.
+ *   - #controls becomes an empty strip on the bottom edge; its card is the
+ *     full-height column pinned to the right edge (minimal.rail says why).
  *   - The wrapping row runs top to bottom instead; play goes first, then the
  *     track list, then the rest in Songsterr's order. It scrolls if the
  *     editor's extra buttons make it taller than the window.
@@ -47,22 +48,29 @@ html.sc-enabled.sc-layout-minimal:not(#sc-specificity) {
 }
 
 /* ---------------------------------------------------------------------------
- * minimal.rail: #controls as a full-height column on the right edge
+ * minimal.rail: a full-height column on the right edge
+ * Songsterr measures how much of the window the player covers from the top
+ * of #controls (window height - its top) and keeps the playing line above
+ * that. A full-height #controls told it the whole window was covered, so it
+ * dropped the line of context above the playing line and scrolled the
+ * editor's line to the top on every small move. So #controls itself is an
+ * empty strip on the bottom edge (it covers nothing), and the column is the
+ * card inside it, fixed to the window (#controls has no transform, so fixed
+ * children are placed against the window, like the video panel below).
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-layout-minimal #controls {
-  top: var(--sc-top-inset, 0px);
+  top: auto;
   bottom: var(--sc-bottom-inset, 0px);
   left: auto;
   right: 0;
   width: var(--sc-rail-w);
   max-width: none;
-  height: auto;
+  height: 0;
   max-height: none;
   padding: 0;
   border: 0;
-  border-left: 1px solid var(--sc-border);
   border-radius: 0;
-  background: var(--sc-toolbar-bg);
+  background: none;
   box-shadow: none;
   overflow: visible;
   /* Songsterr writes inline translateY offsets while the pane is dragged or
@@ -74,7 +82,16 @@ html.sc-enabled.sc-layout-minimal #controls #controls-panel-handle {
   display: none;
 }
 html.sc-enabled.sc-layout-minimal #controls [class*="_controlsCard"] {
-  height: 100%;
+  position: fixed;
+  top: var(--sc-top-inset, 0px);
+  bottom: var(--sc-bottom-inset, 0px);
+  left: auto;
+  right: 0;
+  box-sizing: border-box;
+  width: var(--sc-rail-w);
+  height: auto;
+  border-left: 1px solid var(--sc-border);
+  background: var(--sc-toolbar-bg);
 }
 html.sc-enabled.sc-layout-minimal #controls [class*="_controlsCard"]::before {
   display: none;                     /* floating-bubble backdrop */
@@ -420,21 +437,26 @@ html.sc-enabled.sc-layout-minimal.sc-menu-fusion [class*="_bottomBarWide"] {
 
 /* ---------------------------------------------------------------------------
  * minimal.video: the synced-video / audio-mix panel Songsterr puts inside the
- * pane floats beside the column, top aligned, at the Fusion pane's width.
+ * pane floats beside the column, bottom aligned, at the Fusion pane's width.
+ * Not at the top: during playback Songsterr scrolls the playing line to the
+ * top of the window, where the panel covered its right end (and Songsterr,
+ * seeing the line under the video, kept trying to scroll it clear). At the
+ * bottom it is where Songsterr's own floating video sits, which its
+ * scrolling already keeps lines away from.
  * Hidden panels (_panelHidden) are left alone.
  * ------------------------------------------------------------------------- */
 /* The wrapper is a still, see-through frame beside the column that clips
    what leaves it (overflow: hidden) and lets clicks through; 24px of
-   padding on the left and bottom leave room for the panel's shadow. The
+   padding on the top and left leave room for the panel's shadow. The
    panel inside carries the background, border and scrolling. */
 html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
   position: fixed;
-  top: var(--sc-top-inset, 0px);
+  bottom: var(--sc-bottom-inset, 0px);
   right: var(--sc-rail-w);
   box-sizing: border-box;
   width: calc(var(--sc-video-w) + 24px);
   max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
-  padding: 0 0 24px 24px;
+  padding: 24px 0 0 24px;
   overflow: hidden;
   pointer-events: none;
 }
@@ -443,10 +465,10 @@ html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [c
   max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px) - 24px);
   padding-top: 12px;
   overflow: auto;
-  border-bottom: 1px solid var(--sc-border);
+  border-top: 1px solid var(--sc-border);
   border-left: 1px solid var(--sc-border);
   background: var(--sc-toolbar-bg);
-  box-shadow: var(--sc-elev);
+  box-shadow: inset 0 1px 0 var(--sc-highlight), var(--sc-elev);
   pointer-events: auto;
   transition: translate 0.2s ease-out, visibility 0s;
 }
@@ -456,7 +478,7 @@ html.sc-enabled.sc-layout-minimal {
 }
 
 /* minimal.videoCollapse: the tab (content.js, #sc-video-toggle) sits on the
-   panel's left edge, level with its top; collapsed, the panel slides off to
+   panel's left edge, near its bottom; collapsed, the panel slides off to
    the right, behind the column, and the tab moves next to the column. The
    panel only hides while the tab is in the page, and the tab shows whenever
    the panel is open (base.css), so it can't get stuck hidden.
@@ -469,7 +491,7 @@ html.sc-enabled.sc-layout-minimal.sc-video-collapsed:has(#sc-video-toggle) #cont
   transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
 html.sc-enabled.sc-layout-minimal:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
-  top: calc(var(--sc-top-inset, 0px) + 12px);
+  bottom: calc(var(--sc-bottom-inset, 0px) + 12px);
   right: calc(var(--sc-rail-w) + var(--sc-video-w));
 }
 html.sc-enabled.sc-layout-minimal.sc-video-collapsed:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {

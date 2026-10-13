@@ -13,7 +13,10 @@
  *     site requested itself.
  *   - Never changes the request, the response, or what the site receives:
  *     the original promise is returned untouched.
- *   - Forwards nothing but { songId, revisionId, author: { name, profileName } }.
+ *   - Forwards nothing but { songId, revisionId, latest, author: { name, profileName } }.
+ *     `latest` is true for /api/meta/{songId} (the current version), false for
+ *     /api/meta/{songId}/{revisionId} (one revision: history, diffs), so
+ *     content.js never shows an old revision's author on the current tab.
  */
 (() => {
   'use strict';
@@ -30,13 +33,14 @@
     return '';
   }
 
-  function report(data) {
+  function report(data, match) {
     if (!data || typeof data !== 'object' || !data.author) return;
     const { name, profileName } = data.author;
     document.dispatchEvent(new CustomEvent(EVENT, {
       detail: JSON.stringify({
-        songId: data.songId,
-        revisionId: data.revisionId,
+        songId: data.songId ?? match[1],
+        revisionId: data.revisionId ?? match[2],
+        latest: !match[2],
         author: { name: String(name || ''), profileName: String(profileName || '') }
       })
     }));
@@ -45,10 +49,11 @@
   function observedFetch(input, init) {
     const result = original.apply(this, arguments);
     try {
-      if (META_URL.test(urlOf(input))) {
+      const match = urlOf(input).match(META_URL);
+      if (match) {
         result
           .then((res) => (res && res.ok ? res.clone().json() : null))
-          .then(report, () => {});
+          .then((data) => report(data, match), () => {});
       }
     } catch (_) { /* never interfere with the site's request */ }
     return result;

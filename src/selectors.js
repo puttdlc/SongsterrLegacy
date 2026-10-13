@@ -61,7 +61,7 @@
 
     minimal: {
       status: 'styled (Legacy layout only)',
-      rail:   { sel: 'html.sc-layout-minimal #controls', tier: 'id', note: 'Pane as a full-height column on the right edge (minimal.css). Handle hidden, row turned into a column, play first.' },
+      rail:   { sel: 'html.sc-layout-minimal #controls', tier: 'id', note: 'Pane as a full-height column on the right edge (minimal.css): #controls is an empty bottom strip, its card the column. Handle hidden, row turned into a column, play first.' },
       source: { sel: 'html.sc-layout-minimal #control-source > span', tier: 'id', note: 'Orig. / Synth options, stacked under play.' },
       strip:  { sel: 'html.sc-layout-minimal [data-controls-top-panel] > [class*="_controlsTopPanel"]', tier: 'data', note: 'Favourite / display mode / editor, moved to the top left of the page.' }
     },
