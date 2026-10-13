@@ -54,11 +54,27 @@ html.sc-enabled.sc-menu-minimal:not(.sc-layout-classic):not(#sc-specificity) {
    tab touched it. Both sides get the same gap instead, measured from the
    sidebar and from whatever is on the right (the Legacy button column, or
    nothing). 34px is the gap the column leaves inside Songsterr's 90px.
-   Below 880px Songsterr hides the sidebar and drops its margins itself. */
+   Below 880px Songsterr hides the sidebar and drops its margins itself.
+   Songsterr lays the tab out for the window width minus twice
+   --app-tab-horizontal-margin, read from <html> (getComputedStyle). It gets
+   the mean of our two margins, so the layout is exactly as wide as the tab
+   now is; otherwise the notation was scaled to fit while the editor's bar
+   buttons and their popovers, placed in layout pixels, drifted off their
+   bars, further down the page. Registered as a <length> so the calc()
+   reaches Songsterr as a number of pixels; content.js makes Songsterr
+   re-read it when it changes (syncTabWidth). */
+@property --app-tab-horizontal-margin {
+  syntax: "<length>";
+  inherits: true;
+  initial-value: 90px;
+}
 html.sc-enabled.sc-menu-minimal {
   --sc-page-gap: 34px;
 }
 @media (width >= 880px) {
+  html.sc-enabled.sc-menu-minimal:not(#sc-specificity) {
+    --app-tab-horizontal-margin: calc((var(--sc-left-inset) + var(--sc-right-inset, 0px)) / 2 + var(--sc-page-gap));
+  }
   html.sc-enabled.sc-menu-minimal :is(#header, #apptab) {
     margin-left: calc(var(--sc-left-inset) + var(--sc-page-gap));
     margin-right: calc(var(--sc-right-inset, 0px) + var(--sc-page-gap));

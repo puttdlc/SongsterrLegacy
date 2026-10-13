@@ -14,7 +14,8 @@
  *   6. in the Classic layout, feeds the track name to the track selector and
  *      measures the right-hand strip so the bar can make room for it,
  *   7. keeps Songsterr's player panel open once the user opens it (Fusion),
- *   8. answers the popup's "Check selectors" request.
+ *   8. answers the popup's "Check selectors" request,
+ *   9. has Songsterr re-measure the tab width when our page margins change.
  * It never changes Songsterr's own state, requests or feature logic.
  */
 (() => {
@@ -651,6 +652,23 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Tab width (minimal-menu.css minimalMenu.page). Songsterr reads
+  // --app-tab-horizontal-margin only when the window resizes, so when ours
+  // changes (quick menu switched, the sidebar shown once data-ready) it is
+  // made to re-read it: the same resize event its own listener waits for.
+  // The first pass sends one too, in case Songsterr measured before our
+  // stored settings arrived.
+  // ---------------------------------------------------------------------------
+  let tabMargin = null;
+
+  function syncTabWidth() {
+    const value = getComputedStyle(root).getPropertyValue('--app-tab-horizontal-margin').trim();
+    if (value === tabMargin) return;
+    tabMargin = value;
+    (window.visualViewport || window).dispatchEvent(new Event('resize'));
+  }
+
+  // ---------------------------------------------------------------------------
   // Upkeep, coalesced. Songsterr is a single-page app and re-renders often
   // (the playback cursor animates constantly), so DOM changes only schedule
   // one cheap pass at most every 250ms.
@@ -667,6 +685,7 @@
       syncAuthor();
       syncClassic();
       syncKeepOpen();
+      syncTabWidth();
     }, 250);
   }
 
