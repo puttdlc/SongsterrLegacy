@@ -1,7 +1,7 @@
 # Privacy Policy
 
 **Classic Skin - Songsterr Extension**
-Last updated: 7 October 2026
+Last updated: 14 October 2026
 
 Classic Skin is an unofficial browser extension that restyles the interface of
 songsterr.com. It is not affiliated with or endorsed by Songsterr.
@@ -24,6 +24,7 @@ The only data the extension saves is its own settings:
 | Author line | show / hide |
 | Nav bar | shown / collapsed |
 | Player | full / minimised |
+| Orig. metronome | on / off |
 
 These are stored in two places:
 
@@ -51,6 +52,12 @@ author's name from song information the Songsterr page has already loaded:
 
 The author name is only used to display that line on the page. It is not
 stored or sent anywhere.
+
+To play the metronome while the original recording plays, the extension reads
+the song's beat timing, the bar-to-video sync points and the video's current
+position from the Songsterr page, and plays the clicks in your browser. The
+metronome on/off and volume are Songsterr's own settings, which Songsterr
+saves as usual. The extension itself stores and sends none of it.
 
 ## Permissions
 

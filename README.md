@@ -4,7 +4,9 @@ Unofficial. Not affiliated with or endorsed by Songsterr.
 
 A Manifest V3 Chrome extension that reskins songsterr.com with flat, rectangular,
 tightly aligned controls and subtle edge lighting (bevels, hairline highlights,
-inset shadows). It changes the look only. The site behaves exactly as before.
+inset shadows). It changes the look only, with one exception you can switch
+off: the metronome also works while the original recording plays (see
+"Metronome with the original recording").
 
 - No network requests, analytics, remote code, fonts or CDNs.
 - Permissions: `storage` only, and the content script runs only on `*://*.songsterr.com/*`.
@@ -45,6 +47,7 @@ Click the toolbar icon to open the settings popup:
 | Nav bar | Shown / Collapsed | Fusion quick menu only. Same as the chevron tab at the bottom-left of the page. |
 | Stay open | On (default) / Off | Fusion only. Songsterr folds its player panel back to one row whenever you click a button in it, press play, or switch Tab/Sheet/Chords. With **On**, once you open it, it stays open until you close it yourself (handle or drag). |
 | Player | Full / Minimised | Fusion only. Same as the chevron at the end of the favourite / display-mode / editor strip. |
+| Orig. metronome | On (default) / Off | The metronome button and **N** also work while the original recording (**Orig.**) plays, and its "…" tab opens a Metronome window with the volume. **Off** is Songsterr's own behaviour (Synth only). See "Metronome with the original recording" below. |
 | Video | Shown (default) / Collapsed | Classic and Legacy only. The synced-video / audio-mix panel (some songs, mostly Plus) floats over the page; **Collapsed** slides it out of the way (down behind the bar in Classic, off to the right in Legacy) and it keeps playing. Same as the chevron tab on the panel's edge. |
 
 Settings live in `chrome.storage.sync` and apply live to every open Songsterr tab.
@@ -167,6 +170,36 @@ the reskin or the Author setting is turned off. Revision URLs
 (`…-s84335t4/r93259…`) are supported. Chords pages are skipped because they use
 a separate chords revision.
 
+## Metronome with the original recording
+
+Songsterr's metronome is part of its Synth audio engine, which is idle while
+the original recording (the synced YouTube video) plays. So Songsterr greys
+the button out there ("Metronome is not supported with original audio").
+`src/page-metronome.js` (in the page's own JS world) fills that gap:
+
+- **Same switch.** The button and **N** send Songsterr's own
+  `controls/metronome` action. While the video is the source, the script
+  answers it by flipping Songsterr's own metronome setting (the one Synth
+  uses, saved the same way), so turning it on in Orig. and switching to Synth
+  keeps it on, and the other way round.
+- **Volume.** Songsterr doesn't show its Metronome window with the video, so
+  the button gets a "…" tab of ours that opens a small window with the same
+  volume slider. It sets Songsterr's own metronome volume.
+- **The clicks** are played by the extension with Web Audio. The beats come
+  from Songsterr's own metronome timeline for the tab (the beat list its Synth
+  metronome uses, repeats included), placed on the video with Songsterr's own
+  bar-to-video sync points. The video's position, speed and pause state are
+  read from its YouTube player, so seeking, loops, slow-down and count-in all
+  follow. Beat 1 of every bar is accented. **One Two** (spoken counting)
+  plays as Tick Tock here.
+- It only acts while the video is the source on a tab page, makes no
+  requests, and uses Songsterr's plain setters, so toggling or changing the
+  volume never pauses or restarts the video. Any error just stops the clicks.
+
+The YouTube audio and the clicks reach your speakers through different
+paths, so the clicks may sound a few milliseconds early or late depending on
+the machine.
+
 ## Fixing after a Songsterr update
 
 Songsterr's class names look like `_8e144G_button`, a 6-character module hash plus a
@@ -181,6 +214,13 @@ Docking also leans on the site's own CSS variables (`--controls-panel-right`,
 `--controls-top-panel-bottom`, `--controls-panel-padding`), and the author feature
 leans on the `/api/meta/{songId}` URL shape plus the `author` field. If the
 author line disappears, check those first (`src/page-meta.js`, `content.js`).
+
+The metronome with the original recording leans on Songsterr's store (found
+as the `store`/`context` prop near React's root in `#root`), its actions
+`controls/metronome`, `player/toggleMetronome`, `player/changeMetronomeVolume`
+and `preferences/sync`, and its video player (`services.video`:
+`metronomeTimeline`, `getAudioPoints`, `getVideoPoints`, `position`, `player`).
+If the button stays grey with the video, check those (`src/page-metronome.js`).
 
 When something stops looking right:
 
@@ -260,6 +300,7 @@ selector can never make the play button or the tab disappear.
 - **Notation** (`#tablature` and everything the renderer draws): not styled.
 - **Plus/lock badges** on toolbar buttons: recolored at most, never hidden or moved.
 - **Disabled/locked logic**: Songsterr decides what is disabled; we only change how it looks.
+  The one exception is the metronome button with the original recording (see above).
 - **Song header colours and the logo artwork**: the title/artist keep Songsterr's
   colours (they sit on the notation background); the logo only loses its big
   shadow.
@@ -305,6 +346,7 @@ src/
   content.js        settings -> <html> classes, nav collapse tab, author attribute, diagnostics
   page-meta.js      page-world, read-only observer of the site's /api/meta responses (author)
   page-scroll.js    page-world, keeps the editor's scroll target below the top bar / Legacy strip
+  page-metronome.js page-world, metronome with the original recording (clicks, "…" tab, volume window)
   selectors.js      selector map, the single place to fix after site updates
   styles/
     tokens.css      CSS variables for Dark / Light / Auto + density

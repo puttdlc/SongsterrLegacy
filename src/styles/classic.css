@@ -516,7 +516,7 @@ html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWr
 /* ---------------------------------------------------------------------------
  * classic.metronomeSettings: the "..." tab above the metronome button
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-layout-classic #controls #metronome-settings {
+html.sc-enabled.sc-layout-classic #controls :is(#metronome-settings, #sc-metronome-settings) {
   top: -9px;
   height: 12px;
   border: 1px solid var(--sc-border);
@@ -524,7 +524,7 @@ html.sc-enabled.sc-layout-classic #controls #metronome-settings {
   background: var(--sc-btn-bg);
   box-shadow: var(--sc-bevel);
 }
-html.sc-enabled.sc-layout-classic #controls #metronome-settings svg {
+html.sc-enabled.sc-layout-classic #controls :is(#metronome-settings, #sc-metronome-settings) svg {
   fill: var(--sc-icon);
 }
 
@@ -828,7 +828,7 @@ html.sc-enabled.sc-layout-classic.sc-classic-tighter #controls [class*="_control
 /* A scrolling row clips what sticks out of it, and the metronome "..." tab
    sits 9px above its button (classic.metronomeSettings). Labels are gone at
    this level, so there is room for it inside the button's top edge. */
-html.sc-enabled.sc-layout-classic.sc-classic-tighter #controls #metronome-settings {
+html.sc-enabled.sc-layout-classic.sc-classic-tighter #controls :is(#metronome-settings, #sc-metronome-settings) {
   top: 2px;
 }
 

@@ -16,7 +16,9 @@
  *   7. keeps Songsterr's player panel open once the user opens it (Fusion),
  *   8. answers the popup's "Check selectors" request,
  *   9. has Songsterr re-measure the tab width when our page margins change.
- * It never changes Songsterr's own state, requests or feature logic.
+ * It never changes Songsterr's own state, requests or feature logic. (The
+ * metronome with the original recording, page-metronome.js, is the one
+ * feature that does; this script only puts its on/off class on <html>.)
  */
 (() => {
   'use strict';
@@ -35,7 +37,8 @@
     paneMinimized: false,
     videoCollapsed: false,  // Classic / Legacy: synced-video panel slid off to the right
     keepOpen: true,         // Fusion: undo Songsterr folding the player on its own
-    animations: true        // false = UI transitions and animations cut to an instant (base.css)
+    animations: true,       // false = UI transitions and animations cut to an instant (base.css)
+    origMetronome: true     // metronome with the original recording (page-metronome.js)
   });
   const VALID = {
     layout: ['fusion', 'classic', 'minimal'],
@@ -45,7 +48,7 @@
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
   };
-  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations'];
+  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'origMetronome'];
   // Mirror of the last-known settings in the page's localStorage. It is read
   // synchronously at document_start so the right theme paints on the first
   // frame; chrome.storage stays the source of truth.
@@ -91,6 +94,7 @@
       `sc-theme-${s.theme}`, `sc-density-${s.density}`];
     if (s.showAuthor) list.push('sc-show-author');
     if (!s.animations) list.push('sc-no-motion');
+    if (s.origMetronome) list.push('sc-orig-metronome');   // read by page-metronome.js
     // Collapsing only exists for the Fusion quick menu (bottom-left dock).
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
     // Minimising only exists in Fusion; Classic and Legacy are fixed bars.
@@ -303,7 +307,8 @@
     ['#profile-popup-desktop', 'menu-account', 'navLayout'],
     ['#default-mixer', 'control-mixer', 'layout'],
     ['[class*="_transposeNotation"]', 'control-transpose', 'layout'],
-    ['#settings-popup', 'control-settings', 'layout']
+    ['#settings-popup', 'control-settings', 'layout'],
+    ['#metronome-popup', 'c-metronome', 'layout']
   ];
   const POPUP_MARGIN = 8;
 
@@ -342,6 +347,8 @@
   // keyboard shortcut keep Songsterr's own placement. An anchored popup
   // remembers its button and is centred again on every pass, so it follows
   // when the window is resized or the bar re-flows while it is open.
+  // The Metronome window opens from the "..." tab (#metronome-settings),
+  // which classic.metronomeSettings centres over the metronome button.
   // ---------------------------------------------------------------------------
   const ANCHOR_WINDOW_MS = 1500;
   let lastControl = null;
@@ -350,7 +357,7 @@
 
   document.addEventListener('click', (event) => {
     const target = event.target instanceof Element ? event.target : null;
-    const button = target && target.closest('#controls [id^="control-"]');
+    const button = target && target.closest('#controls :is([id^="control-"], #metronome-settings)');
     if (button) {
       lastControl = button;
       lastControlAt = Date.now();

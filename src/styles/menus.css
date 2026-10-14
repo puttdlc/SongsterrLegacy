@@ -273,3 +273,83 @@ html.sc-enabled [role="listbox"] {
 html.sc-enabled [role="listbox"] [role="option"] {
   border-radius: 0;
 }
+
+/* ---------------------------------------------------------------------------
+ * menus.origMetronome: the Metronome window page-metronome.js shows while
+ * the original recording plays (Songsterr's own, #metronome-popup, is Synth
+ * only). Fixed; page-metronome.js sets left/top: centred over the button
+ * (Classic, Fusion) or beside the column, level with it (Legacy).
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #sc-metronome-popup {
+  position: fixed;
+  z-index: calc(var(--zIndexControlsTop, 75) + 1);
+  box-sizing: border-box;
+  width: 280px;
+  max-width: calc(100vw - 16px);
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius-panel);
+  background: var(--sc-surface);
+  box-shadow: var(--sc-elev);
+  color: var(--sc-text);
+  font: var(--sc-font-size) / var(--sc-line) var(--sc-font);
+  animation: sc-metronome-in 120ms ease-out;
+}
+@keyframes sc-metronome-in {
+  from { opacity: 0; transform: translateY(4px); }
+}
+html.sc-enabled #sc-metronome-popup .sc-mp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 4px 4px 12px;
+  border-bottom: 1px solid var(--sc-divider);
+  background: var(--sc-surface-raised);
+  box-shadow: var(--sc-bevel);
+  font-weight: 600;
+}
+html.sc-enabled #sc-metronome-popup .sc-mp-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--sc-radius);
+  background: transparent;
+  color: var(--sc-icon);
+  cursor: pointer;
+}
+html.sc-enabled #sc-metronome-popup .sc-mp-close:hover {
+  background: var(--sc-row-hover);
+  color: var(--sc-text);
+}
+html.sc-enabled #sc-metronome-popup .sc-mp-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 12px;
+  color: var(--sc-icon);
+}
+html.sc-enabled #sc-metronome-popup input[type="range"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  accent-color: var(--sc-accent);
+}
+html.sc-enabled #sc-metronome-popup output {
+  min-width: 3ch;
+  color: var(--sc-text-muted);
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+html.sc-enabled #sc-metronome-popup .sc-mp-note {
+  margin: -6px 0 0;
+  padding: 0 12px 12px;
+  color: var(--sc-text-muted);
+  font-size: var(--sc-font-size-small);
+}
+html.sc-enabled #sc-metronome-popup :focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: 1px;
+}

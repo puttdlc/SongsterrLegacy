@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Classic Skin - Songsterr Extension",
-  "version": "0.3.16",
+  "version": "0.3.17",
   "description": "Unofficial classic reskin for songsterr.com: flat docked controls, dark/light themes, and the tab author back under the title.",
   "browser_specific_settings": {
     "gecko": {
@@ -50,7 +50,8 @@
       "world": "MAIN",
       "js": [
         "src/page-meta.js",
-        "src/page-scroll.js"
+        "src/page-scroll.js",
+        "src/page-metronome.js"
       ]
     }
   ],
