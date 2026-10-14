@@ -175,7 +175,9 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="hotkey"] {
  * menus.dialogHeader: title bars of docked popups (Mixer, Settings, Print,
  * Metronome ...). 55px tall centered headers -> compact title strip.
  * ------------------------------------------------------------------------- */
-html.sc-enabled :is([role="dialog"], #metronome-popup) [class*="_popupHeader"] {
+/* :not(_popupHeaderTitle): the title span inside matches the stem too, and
+   drew its own short border under the title. */
+html.sc-enabled :is([role="dialog"], #metronome-popup) [class*="_popupHeader"]:not([class*="_popupHeaderTitle"]) {
   min-height: calc(var(--sc-ctl-h) + 4px);
   padding: 0 36px;
   background: var(--sc-toolbar-bg);
@@ -285,6 +287,23 @@ html.sc-enabled :is(#metronome-sound-value, #mixer-sound-value) input[type="rang
   box-shadow: var(--sc-bevel), 0 1px 2px var(--sc-shade);
 }
 
+/* Metronome volume: its row hugged the header, and the green pill on the
+   left is only a decorative speaker (not a mute button, unlike the Mixer's),
+   so it becomes a plain icon. */
+html.sc-enabled #metronome-sound-value {
+  gap: 10px;
+  padding: 12px 15px 4px;
+}
+html.sc-enabled #metronome-sound-value > [class*="_iconContainer"] {
+  width: auto;
+  height: auto;
+  border-radius: 0;
+  background: none;
+}
+html.sc-enabled #metronome-sound-value > [class*="_iconContainer"] svg {
+  fill: var(--sc-icon);
+}
+
 /* Metronome sound (Tick tock / One two): 10px-radius tiles -> bevelled
    buttons; the chosen one gets the accent fill, like segmented choices. */
 html.sc-enabled #metronome-popup [class*="_wrapper"] > button {
@@ -341,9 +360,129 @@ html.sc-enabled button:has(> svg[class*="_icon "]:is([class*="_iconMinus"], [cla
   opacity: 0.45;
 }
 
+/* Plain action buttons in the player's windows (Download formats, History
+   "Comment" ...): flat dark pills -> bevelled buttons. Submit buttons
+   (Print) keep the accent fill. */
+html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_actionsButton"]:not([class*="_buttonSubmit"]) {
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  color: var(--sc-text);
+}
+html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_actionsButton"]:not([class*="_buttonSubmit"]):not(:disabled):hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_actionsButton"]:not([class*="_buttonSubmit"]):not(:disabled):active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_actionsButton"]:disabled {
+  opacity: 0.5;
+}
+
 /* Print: the 60px zoom figure -> a readable 32px value between the steps. */
 html.sc-enabled [data-tab-control="print"] [class*="_zoom"] {
   font: 600 32px / 1 var(--sc-font);
+}
+
+/* ---------------------------------------------------------------------------
+ * menus.history: the History (revisions) card. Square card on the popup
+ * surface with a title strip like the other windows; revisions become flat
+ * rows split by hairlines (were 10px-radius cards with gaps); the current
+ * one keeps Songsterr's tint plus an accent bar. Its link pills (Tab,
+ * comments, delete), "?" and close get the bevelled-button look.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [class*="_sidebar"]:has(#revisions-list) {
+  border: 1px solid var(--sc-border);
+  border-radius: 0;
+  box-shadow: var(--sc-elev);
+}
+html.sc-enabled [class*="_sidebar"] [class*="_header"]:has(> [class*="_titleBlock"]) {
+  padding: 8px 44px;
+  margin-bottom: 10px;
+  background: var(--sc-toolbar-bg);
+  border-bottom: 1px solid var(--sc-border);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+}
+html.sc-enabled [class*="_sidebar"] [class*="_titleBlock"] > h3 {
+  font: 600 15px / 1.3 var(--sc-font);
+}
+/* Close (x) and "?": same square treatment as menus.dialogHeader. */
+html.sc-enabled [class*="_sidebar"] [class*="_backToTabIconClose"] {
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--sc-icon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html.sc-enabled [class*="_sidebar"] [class*="_backToTabIconClose"] > svg {
+  display: none;
+}
+html.sc-enabled [class*="_sidebar"] [class*="_backToTabIconClose"]::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 1l8 8M9 1l-8 8' stroke='%23000' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 1l8 8M9 1l-8 8' stroke='%23000' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html.sc-enabled [class*="_sidebar"] [class*="_backToTabIconClose"]:hover {
+  border-color: var(--sc-border);
+  background: var(--sc-btn-bg-hover);
+  box-shadow: var(--sc-bevel);
+  color: var(--sc-text);
+}
+html.sc-enabled [class*="_sidebar"] [class*="_helpButton"] :is(button, [role="button"]) {
+  border-radius: 2px;
+}
+/* Rows */
+html.sc-enabled #revisions-list {
+  gap: 0;
+  padding: 0;
+  border-top: 1px solid var(--sc-divider);
+}
+html.sc-enabled #revisions-list > li {
+  border-radius: 0;
+  border-bottom: 1px solid var(--sc-divider);
+  padding: 12px 15px;
+}
+html.sc-enabled #revisions-list > li[class*="_itemActive"] {
+  box-shadow: inset 3px 0 0 var(--sc-accent);
+}
+/* Link pills: Tab, comments, delete */
+html.sc-enabled #revisions-list [class*="_linkIcon"] {
+  height: 20px;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  color: var(--sc-text);
+}
+html.sc-enabled #revisions-list [class*="_linkIcon"] svg {
+  fill: var(--sc-icon);
+}
+html.sc-enabled #revisions-list [class*="_link"]:hover [class*="_linkIcon"] {
+  background: var(--sc-btn-bg-hover);
+  color: var(--sc-text);
+}
+/* Comment box */
+html.sc-enabled #revisions-list textarea {
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background-color: var(--sc-surface-sunken);
+  box-shadow: inset 0 1px 2px var(--sc-shade);
+  color: var(--sc-text);
+}
+html.sc-enabled #revisions-list textarea:focus {
+  border-color: var(--sc-focus);
+  outline: none;
 }
 
 /* ---------------------------------------------------------------------------
