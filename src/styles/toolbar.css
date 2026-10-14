@@ -340,7 +340,7 @@ html.sc-enabled.sc-layout-fusion #controls #control-mixer {
  * Play keeps the accent fill (so it stays the obvious primary action) but is
  * a rounded square, not a bubble. The source toggle joins it as a segment.
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-layout-fusion #controls #c-play {
+html.sc-enabled.sc-layout-fusion #controls :is(#c-play, [class*="_itemPlayButtonInChords"]) {
   margin: 0 var(--sc-group-gap);
 }
 html.sc-enabled.sc-layout-fusion #controls #item-play-button {

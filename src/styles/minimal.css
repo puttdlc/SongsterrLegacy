@@ -125,7 +125,7 @@ html.sc-enabled.sc-layout-minimal #controls [class*="_controlsCard"] > div > * {
   gap: 0;
   order: 3;
 }
-html.sc-enabled.sc-layout-minimal #controls #c-play       { order: 1; margin-bottom: 6px; }
+html.sc-enabled.sc-layout-minimal #controls :is(#c-play, [class*="_itemPlayButtonInChords"])       { order: 1; margin-bottom: 6px; }
 html.sc-enabled.sc-layout-minimal #controls #mixer-button { order: 2; }
 
 /* ---------------------------------------------------------------------------
@@ -351,6 +351,8 @@ html.sc-enabled.sc-layout-minimal #controls #metronome-settings svg {
  * page, always visible (Songsterr fades it out during playback).
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-layout-minimal [data-controls-top-panel] {
+  position: fixed;                   /* chords page: static inside _rightStack */
+  clip-path: none;
   top: calc(var(--sc-top-inset, 0px) + 10px);
   bottom: auto;
   left: calc(var(--sc-left-inset, 0px) + 12px);

@@ -135,7 +135,7 @@ html.sc-enabled.sc-layout-classic #controls #mixer-button {
   order: 3;
 }
 html.sc-enabled.sc-layout-classic #controls #mixer-button { order: 1; flex-shrink: 0; }
-html.sc-enabled.sc-layout-classic #controls #c-play       { order: 2; flex-shrink: 0; }
+html.sc-enabled.sc-layout-classic #controls :is(#c-play, [class*="_itemPlayButtonInChords"])       { order: 2; flex-shrink: 0; }
 html.sc-enabled.sc-layout-classic #controls #c-speed      { flex-shrink: 0; }  /* keep "100%" readable */
 
 /* ---------------------------------------------------------------------------
@@ -184,6 +184,8 @@ html.sc-enabled.sc-layout-classic {
   & #control-voice         { --sc-label: "Metronome"; }
   & #control-export        { --sc-label: "Export"; }
   & #control-print         { --sc-label: "Print"; }
+  & #control-showdiagrams  { --sc-label: "Diagrams"; }   /* chords page */
+  & #control-simplify      { --sc-label: "Simplify"; }
   & #control-revision      { --sc-label: "History"; }
   & #control-settings      { --sc-label: "More"; }
   & #control-pitchshift    { --sc-label: "Pitch"; }
@@ -395,7 +397,7 @@ html.sc-enabled.sc-layout-classic #controls #control-mixer:disabled {
  * classic.play: big green play button, audio-source toggle joined on the
  * right with its two options stacked.
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-layout-classic #controls #c-play {
+html.sc-enabled.sc-layout-classic #controls :is(#c-play, [class*="_itemPlayButtonInChords"]) {
   align-self: center;
   height: auto;
   margin-right: 28px;
@@ -533,11 +535,18 @@ html.sc-enabled.sc-layout-classic #controls #metronome-settings svg {
  * bar, always visible (Songsterr fades it out during playback).
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-layout-classic [data-controls-top-panel] {
+  position: fixed;                   /* chords page: static inside _rightStack */
+  clip-path: none;
   left: auto;
   right: 0;
   bottom: 2px;                       /* sit on the base line */
   width: auto;
   height: calc(var(--sc-classic-h) - 3px);
+  z-index: calc(var(--zIndexControls, 60) + 1);
+}
+/* Chords page: the strip lives in Songsterr's fixed _rightStack (a stacking
+   context at the controls' level); lift it so the bar can't cover the strip. */
+html.sc-enabled.sc-layout-classic [class*="_rightStack"]:has(> [data-controls-top-panel]) {
   z-index: calc(var(--zIndexControls, 60) + 1);
 }
 html.sc-enabled.sc-layout-classic [data-controls-top-panel][data-hidden="true"] {
@@ -750,11 +759,11 @@ html.sc-enabled.sc-layout-classic :is(#tab-controls, #chord-controls) [class*="_
  * the right-hand strip; the whole slot is the button (hover/click area).
  * "Icons" (.sc-bar-icons) keeps them packed to the left without labels.
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-layout-classic.sc-bar-spread #controls [class*="_controlsCard"] > div > :not(#mixer-button, #c-play) {
+html.sc-enabled.sc-layout-classic.sc-bar-spread #controls [class*="_controlsCard"] > div > :not(#mixer-button, #c-play, [class*="_itemPlayButtonInChords"]) {
   flex-grow: 1;
   align-items: stretch;
 }
-html.sc-enabled.sc-layout-classic.sc-bar-spread #controls [class*="_controlsCard"] > div > :not(#mixer-button, #c-play) > :is(button, a)[id^="control-"] {
+html.sc-enabled.sc-layout-classic.sc-bar-spread #controls [class*="_controlsCard"] > div > :not(#mixer-button, #c-play, [class*="_itemPlayButtonInChords"]) > :is(button, a)[id^="control-"] {
   width: 100%;
 }
 
@@ -779,7 +788,7 @@ html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls
 html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) [data-controls-top-panel] :is(#favorite-toggle, #control-editor)::after {
   letter-spacing: 0.02em;
 }
-html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls :is(#mixer-button, #c-play) {
+html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls :is(#mixer-button, #c-play, [class*="_itemPlayButtonInChords"]) {
   margin-right: 8px;
 }
 html.sc-enabled.sc-layout-classic:is(.sc-classic-small, .sc-bar-icons) #controls :is(#control-play, #control-source) {
