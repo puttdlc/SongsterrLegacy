@@ -9,7 +9,7 @@
  *
  * This script fills that gap while html has .sc-orig-metronome (content.js:
  * Reskin on and "Orig. metronome: On"):
- *   - It finds Songsterr's own store (the object React's root is rendered
+ *   - It finds Songsterr's own store (the object its Preact app at #root is rendered
  *     with) and listens to the same "controls/metronome" action the button
  *     and N send. With the video open it flips the same isMetronome setting
  *     Songsterr keeps for Synth, so one switch covers both sources.
@@ -60,22 +60,37 @@
     }
   }
 
+  function storeIn(props) {
+    if (!props || typeof props !== 'object') return null;
+    if (isStore(props.store)) return props.store;
+    if (isStore(props.context)) return props.context;
+    return null;
+  }
+
+  // Songsterr renders with Preact: #root.__k is the root vnode, each vnode
+  // keeps its children in __k and its props in props. (React's fibre tree,
+  // __reactContainer$*, is checked too in case that ever changes.)
   function findStore() {
     const el = document.getElementById('root');
     if (!el) return null;
+    const queue = [];
+    if (el.__k) queue.push({ node: el.__k, preact: true });
     const key = Object.keys(el).find((k) => k.startsWith('__reactContainer$'));
     let fiber = key ? el[key] : null;
     if (fiber && fiber.stateNode && fiber.stateNode.current) fiber = fiber.stateNode.current;
-    const queue = fiber ? [fiber] : [];
+    if (fiber) queue.push({ node: fiber, preact: false });
     for (let seen = 0; queue.length && seen < 300; seen++) {
-      const f = queue.shift();
-      const props = f.memoizedProps;
-      if (props && typeof props === 'object') {
-        if (isStore(props.store)) return props.store;
-        if (isStore(props.context)) return props.context;
+      const { node, preact } = queue.shift();
+      const found = storeIn(preact ? node.props : node.memoizedProps);
+      if (found) return found;
+      if (preact) {
+        if (Array.isArray(node.__k)) {
+          for (const child of node.__k) if (child && typeof child === 'object') queue.push({ node: child, preact });
+        }
+      } else {
+        if (node.child) queue.push({ node: node.child, preact });
+        if (node.sibling) queue.push({ node: node.sibling, preact });
       }
-      if (f.child) queue.push(f.child);
-      if (f.sibling) queue.push(f.sibling);
     }
     return null;
   }
@@ -159,7 +174,7 @@
     }
   }
 
-  // React re-renders the button (disabled again) after the store changes,
+  // Preact re-renders the button (disabled again) after the store changes,
   // so changes inside the metronome slot are answered straight away.
   let observed = null;
   let syncQueued = false;

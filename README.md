@@ -216,7 +216,7 @@ leans on the `/api/meta/{songId}` URL shape plus the `author` field. If the
 author line disappears, check those first (`src/page-meta.js`, `content.js`).
 
 The metronome with the original recording leans on Songsterr's store (found
-as the `store`/`context` prop near React's root in `#root`), its actions
+as the `store`/`context` prop near the root of its Preact tree, `#root.__k`), its actions
 `controls/metronome`, `player/toggleMetronome`, `player/changeMetronomeVolume`
 and `preferences/sync`, and its video player (`services.video`:
 `metronomeTimeline`, `getAudioPoints`, `getVideoPoints`, `position`, `player`).
