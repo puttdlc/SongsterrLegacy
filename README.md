@@ -34,6 +34,7 @@ Click the toolbar icon to open the settings popup:
 | Setting | Options | Notes |
 |---|---|---|
 | Reskin | On / Off | Off removes every style instantly, no reload. |
+| Gradient | On (default) / Off | **Off** fills buttons and title bars with a flat colour instead of a top-to-bottom shine. Their bevelled edges stay, so buttons still look raised. |
 | Controls | Fusion / Classic / Legacy (default) | How the player controls are laid out. See "Layouts" below. |
 | Bar buttons | Spread (default) / Icons | Classic controls only. **Spread**: a label under every icon, buttons spaced equally across the bar. **Icons**: icons only, packed to the left. |
 | Quick menu | Fusion / Classic / Legacy (default) | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |

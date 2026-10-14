@@ -361,11 +361,17 @@ html.sc-enabled.sc-layout-fusion #controls #control-play {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -1px 0 rgba(0, 0, 0, 0.2);
   transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
 }
+html.sc-enabled.sc-layout-fusion.sc-flat #controls #control-play {
+  background: var(--sc-accent-bg-hover);   /* Gradient: Off */
+}
 html.sc-enabled.sc-layout-fusion #controls #control-play svg {
   fill: var(--sc-on-accent);
 }
 html.sc-enabled.sc-layout-fusion #controls #control-play:not(:disabled):hover {
   background: linear-gradient(to bottom, color-mix(in srgb, var(--sc-accent-bg-hover) 88%, white), var(--sc-accent-bg-hover));
+}
+html.sc-enabled.sc-layout-fusion.sc-flat #controls #control-play:not(:disabled):hover {
+  background: color-mix(in srgb, var(--sc-accent-bg-hover) 94%, white);
 }
 html.sc-enabled.sc-layout-fusion #controls #control-play:not(:disabled):active,
 html.sc-enabled.sc-layout-fusion #controls #control-play[aria-pressed="true"] {

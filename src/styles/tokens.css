@@ -177,6 +177,15 @@ html.sc-enabled {
   --sc-accent-bg-hover: var(--sc-accent-hover);
   --sc-accent-edge:     transparent;   /* outline for fills that have no border */
 }
+/* Popup "Gradient: Off" (sc-flat): the same fills without the top-to-bottom
+   shine, each a flat mix of its two stops. Bevels (--sc-bevel) stay, so
+   buttons still read as raised. Every rule reads these tokens, so this is
+   the whole switch except Fusion's play button (toolbar.css). */
+html.sc-enabled.sc-flat {
+  --sc-btn-bg:         color-mix(in srgb, var(--sc-btn-top), var(--sc-btn-bottom));
+  --sc-btn-bg-hover:   color-mix(in srgb, var(--sc-btn-hover-top), var(--sc-btn-hover-bottom));
+  --sc-toolbar-bg:     color-mix(in srgb, var(--sc-toolbar-top), var(--sc-toolbar-bottom));
+}
 
 /* ---------- Accent colour (popup "Color theme") ----------
  * html.sc-accent-blue    -> the hand-tuned blue values above (unchanged).
