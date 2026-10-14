@@ -139,7 +139,8 @@
       inbox:    { sel: '#inbox-popup', tier: 'id', note: 'Inbox popup (logged in).' },
       profile:  { sel: '#profile-popup-desktop', tier: 'id', note: 'Account / Sign out menu (logged in; #profile-popup-mobile on phones).' },
       switches: { sel: '[class*="_switchSlider"]', tier: 'stem', note: 'Toggle switches (role="switch" inputs).' },
-      popupsLayer: { sel: '#tab-controls [class*="_popupsLayer"]', tier: 'stem', note: 'Layer holding the toolbar popovers (speed, metronome, settings).' }
+      popupsLayer: { sel: '#tab-controls [class*="_popupsLayer"]', tier: 'stem', note: 'Layer holding the toolbar popovers (speed, metronome, settings).' },
+      sidebar:     { sel: '[class*="_sidebar"]', tier: 'stem', note: 'History (revisions) card, fixed top-right; moved below the menu bar / beside the Legacy column.' }
     },
 
     promos: {

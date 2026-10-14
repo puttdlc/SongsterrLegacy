@@ -714,6 +714,12 @@ html.sc-enabled.sc-layout-classic #settings-popup {
   max-height: calc(100vh - var(--sc-classic-h) - var(--sc-top-inset, 0px));
 }
 
+/* classic.sidebar: the History (revisions) card. Songsterr fixes it 15px
+   from the top edge, so its header ran under the Classic quick menu bar. */
+html.sc-enabled.sc-layout-classic [class*="_sidebar"] {
+  top: calc(var(--sc-top-inset, 0px) + var(--controls-panel-padding, 15px));
+}
+
 /* ---------------------------------------------------------------------------
  * classic.popups: a button's popup opens above that button instead of at
  * the bar's right end. content.js marks every toolbar popup data-sc-pop:

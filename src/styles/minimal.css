@@ -538,6 +538,14 @@ html.sc-enabled.sc-layout-minimal #metronome-popup {
   overflow: auto;
 }
 
+/* minimal.sidebar: the History (revisions) card. Songsterr fixes it 15px
+   from the top and right edges: under the Classic quick menu bar and the
+   column. It keeps its 15px gap, now from both. */
+html.sc-enabled.sc-layout-minimal [class*="_sidebar"] {
+  top: calc(var(--sc-top-inset, 0px) + var(--controls-panel-padding, 15px));
+  right: calc(var(--sc-rail-w) + var(--controls-panel-padding, 15px));
+}
+
 /* minimal.levelled: popups Songsterr pins to the bottom edge with no anchor
    of their own (Plus speed and pitch shift panels, concert pitch,
    download). content.js marks one opened from a column button
