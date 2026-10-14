@@ -381,6 +381,25 @@ html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_action
   opacity: 0.5;
 }
 
+/* Submit buttons (Print ...): flat accent slab ->
+   the bevelled accent button of the Classic play button. */
+html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"] {
+  border: 1px solid var(--sc-accent-border);
+  border-radius: var(--sc-radius);
+  background: var(--sc-accent-bg);
+  box-shadow: var(--sc-bevel);
+  color: var(--sc-on-accent);
+}
+html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):hover {
+  background: var(--sc-accent-bg-hover);
+}
+html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):active {
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:disabled {
+  opacity: 0.5;
+}
+
 /* Print: the 60px zoom figure -> a readable 32px value between the steps. */
 html.sc-enabled [data-tab-control="print"] [class*="_zoom"] {
   font: 600 32px / 1 var(--sc-font);
@@ -472,17 +491,36 @@ html.sc-enabled #revisions-list [class*="_link"]:hover [class*="_linkIcon"] {
   background: var(--sc-btn-bg-hover);
   color: var(--sc-text);
 }
-/* Comment box */
-html.sc-enabled #revisions-list textarea {
+/* Comment box: Songsterr draws the frame on a wrapper holding the textarea
+   and its placeholder label (above it), so the wrapper gets the sunken
+   field look and the textarea stays transparent inside it. */
+html.sc-enabled #revisions-list [class*="_wrapper"]:has(> textarea) {
   border: 1px solid var(--sc-border);
   border-radius: 2px;
   background-color: var(--sc-surface-sunken);
   box-shadow: inset 0 1px 2px var(--sc-shade);
+}
+html.sc-enabled #revisions-list [class*="_wrapper"]:has(> textarea:focus) {
+  border-color: var(--sc-focus);
+}
+html.sc-enabled #revisions-list [class*="_wrapper"] > textarea {
   color: var(--sc-text);
 }
-html.sc-enabled #revisions-list textarea:focus {
-  border-color: var(--sc-focus);
-  outline: none;
+/* Delete / recover revision: its own pill button beside the link pills. */
+html.sc-enabled #revisions-list button[class*="_revisionButton"] {
+  height: 20px;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  fill: var(--sc-icon);
+}
+html.sc-enabled #revisions-list button[class*="_revisionButton"]:not(:disabled):hover {
+  background: var(--sc-btn-bg-hover);
+  fill: var(--sc-text);
+}
+html.sc-enabled #revisions-list button[class*="_revisionButton"]:disabled {
+  opacity: 0.5;
 }
 
 /* ---------------------------------------------------------------------------
