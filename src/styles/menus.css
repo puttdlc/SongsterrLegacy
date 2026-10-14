@@ -558,18 +558,54 @@ html.sc-enabled [role="dialog"] :is([class*="_contentCard"], [class*="_featuresB
 }
 
 /* ---------------------------------------------------------------------------
- * menus.inbox
+ * menus.inbox: a list window like the track list. "Mark all as read" sits
+ * in a title strip; notifications become flat rows split by hairlines (were
+ * 10px-radius cards with gaps); unread ones get an accent bar, read ones
+ * keep Songsterr's muted text.
  * ------------------------------------------------------------------------- */
 html.sc-enabled #inbox-popup {
+  border: 1px solid var(--sc-border);
   border-radius: 0;
 }
-html.sc-enabled #inbox-popup [class*="_item"] {
-  border-radius: 0;
-  margin: 0;
-  border-bottom: 1px solid var(--sc-divider);
+html.sc-enabled #inbox-popup [class*="_actions"] {
+  padding: 6px 10px;
+  background: var(--sc-toolbar-bg);
+  border-bottom: 1px solid var(--sc-border);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
 }
 html.sc-enabled #inbox-popup [class*="_actions"] button {
   border-radius: 2px;
+}
+html.sc-enabled #inbox-popup [class*="_wrapper"] {
+  gap: 0;
+  margin: 0;
+  padding: 0;
+}
+html.sc-enabled #inbox-popup a[class*="_item"] {
+  gap: 4px;
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: 0;
+  border-bottom: 1px solid var(--sc-divider);
+  background: transparent;
+  text-decoration: none;
+}
+html.sc-enabled #inbox-popup a[class*="_item"]:hover {
+  background: var(--sc-row-hover);
+}
+html.sc-enabled #inbox-popup a[class*="_item"]:not([class*="_itemRead"]) {
+  box-shadow: inset 3px 0 0 var(--sc-accent);
+}
+html.sc-enabled #inbox-popup [class*="_recency"] {
+  font-size: var(--sc-font-size-small);
+  color: var(--sc-text-muted);
+}
+html.sc-enabled #inbox-popup :is([class*="_subject"], [class*="_body"]) {
+  font-size: var(--sc-font-size);
+  line-height: 1.35;
+}
+html.sc-enabled #inbox-popup [class*="_empty"]:not([class*="_empty"] *) {
+  padding: 12px 14px;
 }
 
 /* ---------------------------------------------------------------------------
