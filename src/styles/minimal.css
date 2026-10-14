@@ -332,7 +332,7 @@ html.sc-enabled.sc-layout-minimal #controls #control-speed [class*="_textSpeed"]
  * minimal.metronomeSettings: the "..." tab sits on the metronome button's
  * left edge (above it would cover the button before it in the column).
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-layout-minimal #controls :is(#metronome-settings, #sc-metronome-settings) {
+html.sc-enabled.sc-layout-minimal #controls #metronome-settings {
   top: auto;
   bottom: 0;
   left: 0;
@@ -342,7 +342,7 @@ html.sc-enabled.sc-layout-minimal #controls :is(#metronome-settings, #sc-metrono
   border-radius: 2px;
   background: var(--sc-btn-bg);
 }
-html.sc-enabled.sc-layout-minimal #controls :is(#metronome-settings, #sc-metronome-settings) svg {
+html.sc-enabled.sc-layout-minimal #controls #metronome-settings svg {
   fill: var(--sc-icon);
 }
 

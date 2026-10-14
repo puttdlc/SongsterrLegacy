@@ -16,9 +16,7 @@
  *   7. keeps Songsterr's player panel open once the user opens it (Fusion),
  *   8. answers the popup's "Check selectors" request,
  *   9. has Songsterr re-measure the tab width when our page margins change.
- * It never changes Songsterr's own state, requests or feature logic. (The
- * metronome with the original recording, page-metronome.js, is the one
- * feature that does; this script only puts its on/off class on <html>.)
+ * It never changes Songsterr's own state, requests or feature logic.
  */
 (() => {
   'use strict';
@@ -37,8 +35,7 @@
     paneMinimized: false,
     videoCollapsed: false,  // Classic / Legacy: synced-video panel slid off to the right
     keepOpen: true,         // Fusion: undo Songsterr folding the player on its own
-    animations: true,       // false = UI transitions and animations cut to an instant (base.css)
-    origMetronome: true     // metronome with the original recording (page-metronome.js)
+    animations: true        // false = UI transitions and animations cut to an instant (base.css)
   });
   const VALID = {
     layout: ['fusion', 'classic', 'minimal'],
@@ -48,7 +45,7 @@
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
   };
-  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'origMetronome'];
+  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations'];
   // Mirror of the last-known settings in the page's localStorage. It is read
   // synchronously at document_start so the right theme paints on the first
   // frame; chrome.storage stays the source of truth.
@@ -94,7 +91,6 @@
       `sc-theme-${s.theme}`, `sc-density-${s.density}`];
     if (s.showAuthor) list.push('sc-show-author');
     if (!s.animations) list.push('sc-no-motion');
-    if (s.origMetronome) list.push('sc-orig-metronome');   // read by page-metronome.js
     // Collapsing only exists for the Fusion quick menu (bottom-left dock).
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
     // Minimising only exists in Fusion; Classic and Legacy are fixed bars.

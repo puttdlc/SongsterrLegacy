@@ -409,7 +409,7 @@ html.sc-enabled.sc-layout-fusion #controls #control-source [class*="_background"
 /* ---------------------------------------------------------------------------
  * toolbar.metronomeSettings: the "..." tab above the metronome button
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-layout-fusion #controls :is(#metronome-settings, #sc-metronome-settings) {
+html.sc-enabled.sc-layout-fusion #controls #metronome-settings {
   height: 12px;
   top: -7px;
   border: 1px solid var(--sc-border);
@@ -417,13 +417,13 @@ html.sc-enabled.sc-layout-fusion #controls :is(#metronome-settings, #sc-metronom
   background: var(--sc-btn-bg);
   box-shadow: var(--sc-bevel);
 }
-html.sc-enabled.sc-layout-fusion #controls :is(#metronome-settings, #sc-metronome-settings) svg {
+html.sc-enabled.sc-layout-fusion #controls #metronome-settings svg {
   fill: var(--sc-icon);
 }
-html.sc-enabled.sc-layout-fusion #controls :is(#metronome-settings, #sc-metronome-settings):hover {
+html.sc-enabled.sc-layout-fusion #controls #metronome-settings:hover {
   background: var(--sc-btn-bg-hover);
 }
-html.sc-enabled.sc-layout-fusion #controls :is(#metronome-settings, #sc-metronome-settings):active {
+html.sc-enabled.sc-layout-fusion #controls #metronome-settings:active {
   background: var(--sc-btn-pressed);
   box-shadow: var(--sc-bevel-pressed);
 }

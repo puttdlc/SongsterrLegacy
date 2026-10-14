@@ -21,10 +21,9 @@
     paneMinimized: false,
     videoCollapsed: false,
     keepOpen: true,
-    animations: true,
-    origMetronome: true
+    animations: true
   };
-  const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'origMetronome']);
+  const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations']);
 
   const form = document.getElementById('settings');
   document.getElementById('version').textContent = `V${chrome.runtime.getManifest().version}`;

@@ -50,8 +50,7 @@
       "world": "MAIN",
       "js": [
         "src/page-meta.js",
-        "src/page-scroll.js",
-        "src/page-metronome.js"
+        "src/page-scroll.js"
       ]
     }
   ],

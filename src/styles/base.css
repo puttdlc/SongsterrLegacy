@@ -309,23 +309,3 @@ html.sc-enabled div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-
 html.sc-enabled div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-group"]) > * {
   pointer-events: auto;
 }
-
-/* ---------------------------------------------------------------------------
- * base.origMetronomeTab: the "..." tab page-metronome.js adds to the
- * metronome button while the original recording plays (Songsterr renders
- * its own, #metronome-settings, for Synth only). The same box as Songsterr's
- * tab; each layout then styles both alike (<layout>.metronomeSettings).
- * ------------------------------------------------------------------------- */
-html.sc-enabled #controls #sc-metronome-settings {
-  position: absolute;
-  top: -9px;
-  left: calc(50% - 11.5px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  width: 23px;
-  height: 18px;
-  padding: 0;
-  cursor: pointer;
-}
