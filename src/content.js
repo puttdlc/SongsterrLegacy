@@ -365,7 +365,7 @@
 
   function placeClassicPopups() {
     if (!settings.enabled || settings.layout !== 'classic') return;
-    const layer = document.querySelector('#tab-controls [class*="_popupsLayer"]');
+    const layer = document.querySelector(':is(#tab-controls, #chord-controls) [class*="_popupsLayer"]');
     if (!layer || !layer.firstElementChild) return;
     const fresh = lastControl && lastControl.isConnected && Date.now() - lastControlAt < ANCHOR_WINDOW_MS;
     for (const el of layer.querySelectorAll(':scope > *, :scope > * > *')) {
@@ -400,7 +400,7 @@
 
   function placeLegacyLevelled() {
     if (!settings.enabled || settings.layout !== 'minimal') return;
-    const layer = document.querySelector('#tab-controls [class*="_popupsLayer"]');
+    const layer = document.querySelector(':is(#tab-controls, #chord-controls) [class*="_popupsLayer"]');
     if (!layer || !layer.firstElementChild) return;
     const fresh = lastControl && lastControl.isConnected && Date.now() - lastControlAt < ANCHOR_WINDOW_MS;
     for (const el of layer.querySelectorAll(':scope > *, :scope > * > *')) {

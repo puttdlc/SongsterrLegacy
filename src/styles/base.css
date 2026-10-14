@@ -309,3 +309,39 @@ html.sc-enabled div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-
 html.sc-enabled div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-group"]) > * {
   pointer-events: auto;
 }
+
+/* ---------------------------------------------------------------------------
+ * insets.fixed: Songsterr's fixed pieces that assume nothing is docked on the
+ * page edges. Each keeps its own gap, now measured from our bars: the
+ * Classic quick menu (--sc-top-inset), the Legacy sidebar (--sc-left-inset)
+ * and the Legacy column (--sc-right-inset). Without those bars the insets
+ * are 0 and nothing moves. ":not(X *)" picks the outer element when the
+ * stem is shared with its children (_toastText, _replyModalClose ...).
+ * ------------------------------------------------------------------------- */
+/* Toasts ("Saved", errors): 40px from the top, under the Classic menu bar. */
+html.sc-enabled [class*="_toast"]:not([class*="_toast"] *) {
+  top: max(40px, var(--sc-top-inset, 0px));
+}
+/* Pressed-keys hint: top-left corner, over the menu bar / Legacy sidebar. */
+html.sc-enabled [class*="_notification"]:has(> span[class*="_item"]) {
+  top: calc(var(--sc-top-inset, 0px) + 5px);
+  left: calc(var(--sc-left-inset, 0px) + 5px);
+}
+/* Inbox reply box: 20px from the right edge, under the Legacy column. */
+html.sc-enabled [class*="_replyModal"]:not([class*="_replyModal"] *) {
+  right: calc(var(--sc-right-inset, 0px) + 20px);
+}
+/* Drum "Notation Help" legend: 15px from the left, under the Legacy sidebar. */
+html.sc-enabled [class*="_wrap"]:has(> [class*="_card"] > #drum_legend) {
+  left: calc(var(--sc-left-inset, 0px) + 15px);
+}
+/* Video sync editor card: as wide as the page minus the pane, from x = 15px. */
+html.sc-enabled [class*="_editorCard"] {
+  max-width: calc(100vw - var(--controls-panel-width-plus-paddings, 15px) - 15px - var(--sc-left-inset, 0px));
+}
+/* Help opened with Ctrl+K: 15px above the bottom edge, over the Classic
+   player bar; its max-height let a long list run under the menu bar. */
+html.sc-enabled #help-menu[class*="_detached"] {
+  bottom: calc(var(--sc-bottom-inset, 0px) + 15px);
+  max-height: calc(100vh - 30px - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
+}

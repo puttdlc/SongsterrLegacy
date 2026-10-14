@@ -731,15 +731,15 @@ html.sc-enabled.sc-layout-classic [class*="_sidebar"] {
  * kinds; the upsells' inline --anchor-bottom only ever put them a few
  * pixels higher. The transpose panel is the same case as the Plus panels.
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-layout-classic #tab-controls [class*="_popupsLayer"] [data-sc-pop] {
+html.sc-enabled.sc-layout-classic :is(#tab-controls, #chord-controls) [class*="_popupsLayer"] [data-sc-pop] {
   bottom: var(--sc-classic-h) !important;
   max-height: calc(100vh - var(--sc-classic-h) - var(--sc-top-inset, 0px)) !important;
 }
-html.sc-enabled.sc-layout-classic #tab-controls [class*="_popupsLayer"] [data-sc-anchored] {
+html.sc-enabled.sc-layout-classic :is(#tab-controls, #chord-controls) [class*="_popupsLayer"] [data-sc-anchored] {
   left: var(--sc-pop-x) !important;
   right: auto !important;
 }
-html.sc-enabled.sc-layout-classic #tab-controls [class*="_transposeNotation"] {
+html.sc-enabled.sc-layout-classic :is(#tab-controls, #chord-controls) [class*="_transposeNotation"] {
   bottom: var(--sc-classic-h);
   max-height: calc(100vh - var(--sc-classic-h) - var(--sc-top-inset, 0px));
 }

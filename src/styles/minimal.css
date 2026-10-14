@@ -522,7 +522,7 @@ html.sc-enabled.sc-layout-minimal #settings-popup {
   max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
   border-bottom: 1px solid var(--sc-border);
 }
-html.sc-enabled.sc-layout-minimal #tab-controls [class*="_transposeNotation"] {
+html.sc-enabled.sc-layout-minimal :is(#tab-controls, #chord-controls) [class*="_transposeNotation"] {
   top: var(--sc-pop-control-transpose, auto);
   bottom: auto;
   max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
@@ -552,7 +552,7 @@ html.sc-enabled.sc-layout-minimal [class*="_sidebar"] {
    data-sc-level and sets --sc-pop-y on it: level with the button, pushed
    up just enough to stay on screen. !important beats Songsterr's rules on
    the various popup kinds (same as classic.popups). */
-html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] [data-sc-level] {
+html.sc-enabled.sc-layout-minimal :is(#tab-controls, #chord-controls) [class*="_popupsLayer"] [data-sc-level] {
   top: var(--sc-pop-y) !important;
   bottom: auto !important;
   right: var(--sc-rail-w) !important;
@@ -571,7 +571,7 @@ html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] [data-sc
    starts level with its button. The spacer may shrink, so a popup that
    would run off the bottom is pushed up just enough to fit. The wrapper
    itself lets clicks through; only the popup takes them. */
-html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] > * > [class*="_root"] {
+html.sc-enabled.sc-layout-minimal :is(#tab-controls, #chord-controls) [class*="_popupsLayer"] > * > [class*="_root"] {
   top: var(--sc-top-inset, 0px);
   bottom: var(--sc-bottom-inset, 0px);
   left: auto;
@@ -580,12 +580,12 @@ html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] > * > [c
   flex-direction: column;
   pointer-events: none;
 }
-html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] > * > [class*="_root"]::before {
+html.sc-enabled.sc-layout-minimal :is(#tab-controls, #chord-controls) [class*="_popupsLayer"] > * > [class*="_root"]::before {
   content: "";
   flex: 0 1 auto;
   height: max(0px, calc(100vh - var(--anchor-bottom, 100vh) + 8px - var(--sc-top-inset, 0px)));
 }
-html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] > * > [class*="_root"] > * {
+html.sc-enabled.sc-layout-minimal :is(#tab-controls, #chord-controls) [class*="_popupsLayer"] > * > [class*="_root"] > * {
   flex: 0 0 auto;
   max-height: 100%;
   overflow: auto;
@@ -595,8 +595,8 @@ html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] > * > [c
 /* minimal.popupMotion: the player's popups (speed, loop, track list,
    settings ...) share Songsterr's slide-up entrance, made for a pane at the
    bottom. Beside the column they slide in from it and back into it. */
-html.sc-enabled.sc-layout-minimal #tab-controls [class*="_enter"]:not([class*="_enterActive"]),
-html.sc-enabled.sc-layout-minimal #tab-controls [class*="_exitActive"] {
+html.sc-enabled.sc-layout-minimal :is(#tab-controls, #chord-controls) [class*="_enter"]:not([class*="_enterActive"]),
+html.sc-enabled.sc-layout-minimal :is(#tab-controls, #chord-controls) [class*="_exitActive"] {
   transform: translateX(20px);
 }
 
