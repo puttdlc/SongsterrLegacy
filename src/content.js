@@ -294,7 +294,10 @@
   // and once per frame however many changes came in), not from the 250ms
   // upkeep, so a popup never shows in the wrong place first.
   // The column's other popups (speed, loop, print ...) are aligned in CSS
-  // (minimal.anchoredPopups), from Songsterr's own --anchor-bottom.
+  // (minimal.anchoredPopups), from Songsterr's own --anchor-bottom. The few
+  // with no anchor of their own (Plus speed and pitch panels, concert pitch,
+  // download) are levelled with the button they were opened from, like
+  // Classic centres them (placeLegacyLevelled, below).
   // ---------------------------------------------------------------------------
   const LEGACY_POPUPS = [
     // [popup selector, button id, which setting must be "minimal"]
@@ -382,6 +385,46 @@
     }
   }
 
+  // ---------------------------------------------------------------------------
+  // Legacy popups level with their button (minimal.css, minimal.levelled)
+  // Songsterr pins a few toolbar popups to the bottom edge with no anchor
+  // (the Plus speed and pitch shift panels, concert pitch, download), so in
+  // the column they opened at the bottom, far from a button near the top.
+  // Same scheme as Classic: one that appears within a moment of a click on a
+  // column button is marked data-sc-level and given --sc-pop-y (its top,
+  // level with the button, pushed up just enough to stay on screen). Popups
+  // placed elsewhere are skipped: Songsterr's anchored wrappers
+  // (minimal.anchoredPopups) and the ones in LEGACY_POPUPS.
+  // ---------------------------------------------------------------------------
+  const LEGACY_PLACED = '[class*="_root"], #default-mixer, #settings-popup, #metronome-popup, [class*="_transposeNotation"]';
+
+  function placeLegacyLevelled() {
+    if (!settings.enabled || settings.layout !== 'minimal') return;
+    const layer = document.querySelector('#tab-controls [class*="_popupsLayer"]');
+    if (!layer || !layer.firstElementChild) return;
+    const fresh = lastControl && lastControl.isConnected && Date.now() - lastControlAt < ANCHOR_WINDOW_MS;
+    for (const el of layer.querySelectorAll(':scope > *, :scope > * > *')) {
+      if (!el.hasAttribute('data-sc-level')) {
+        if (!fresh || !lastControl.id) continue;
+        if (el.closest(LEGACY_PLACED)) continue;
+        if (getComputedStyle(el).position !== 'fixed') continue;
+        const width = el.offsetWidth;
+        if (!width || width > window.innerWidth * 0.9) continue;                    // full-screen overlays
+        anchors.set(el, lastControl.id);
+        el.setAttribute('data-sc-level', '');
+      }
+      const buttonId = anchors.get(el);
+      const button = buttonId && document.getElementById(buttonId);
+      if (button) levelWith(el, button);
+    }
+  }
+
+  function levelWith(el, button) {
+    const lowest = window.innerHeight - insetPx('--sc-bottom-inset') - POPUP_MARGIN - el.offsetHeight;
+    const y = `${Math.round(Math.max(insetPx('--sc-top-inset'), Math.min(button.getBoundingClientRect().top, lowest)))}px`;
+    if (el.style.getPropertyValue('--sc-pop-y') !== y) el.style.setProperty('--sc-pop-y', y);
+  }
+
   function anchorOver(el, button) {
     const width = el.offsetWidth;
     if (!width) return;
@@ -400,6 +443,7 @@
     placeFrame = requestAnimationFrame(() => {
       placeFrame = 0;
       placeLegacyPopups();
+      placeLegacyLevelled();
       placeClassicPopups();
       syncVideoToggle();
     });

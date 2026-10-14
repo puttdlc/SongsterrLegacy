@@ -538,6 +538,21 @@ html.sc-enabled.sc-layout-minimal #metronome-popup {
   overflow: auto;
 }
 
+/* minimal.levelled: popups Songsterr pins to the bottom edge with no anchor
+   of their own (Plus speed and pitch shift panels, concert pitch,
+   download). content.js marks one opened from a column button
+   data-sc-level and sets --sc-pop-y on it: level with the button, pushed
+   up just enough to stay on screen. !important beats Songsterr's rules on
+   the various popup kinds (same as classic.popups). */
+html.sc-enabled.sc-layout-minimal #tab-controls [class*="_popupsLayer"] [data-sc-level] {
+  top: var(--sc-pop-y) !important;
+  bottom: auto !important;
+  right: var(--sc-rail-w) !important;
+  left: auto !important;
+  max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px)) !important;
+  overflow: auto;
+}
+
 /* minimal.anchoredPopups: Songsterr opens a button's popup (Plus upsells for
    speed, loop, print ... and similar) in a fixed wrapper whose bottom sits
    just above the button: inline --anchor-bottom = window height - button
