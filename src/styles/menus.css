@@ -1289,6 +1289,67 @@ html.sc-enabled [class*="_radioButtonDefault"] [class*="_radio"] {
 }
 
 /* ---------------------------------------------------------------------------
+ * menus.fretboard: the Fretboard window (editor). Only its chrome is
+ * themed: square window with a hairline, square board outline, theme font
+ * on the labels, icon-coloured gear (Songsterr's was always green; accent
+ * on hover / open), the square x of the other windows, and the accent for
+ * the sounding note. Note dots, strings and frets keep Songsterr's look:
+ * like the notation, that is the instrument diagram players read.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) {
+  --fretboard-panel-bg: var(--sc-surface);
+  --fretboard-surface-border: var(--sc-border);
+  --fretboard-settings: var(--sc-icon);
+  --fretboard-settings-hover: var(--sc-accent);
+  --fretboard-settings-open: var(--sc-accent);
+  --fretboard-close: var(--sc-icon);
+  --fretboard-close-hover: var(--sc-text);
+  --fretboard-note-active: var(--sc-accent-fill);
+  border: 1px solid var(--sc-border);
+  border-radius: 0;
+  box-shadow: var(--sc-elev);
+}
+html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) [class*="_surface"]:not([class*="_surface"] *) {
+  border-radius: var(--sc-radius);
+}
+html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) [class*="_headerTitle"] {
+  font: 600 var(--sc-font-size-small) / 16px var(--sc-font);
+  color: var(--sc-text);
+}
+html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) [class*="_annotation"] {
+  font-family: var(--sc-font);
+  color: var(--sc-text-muted);
+}
+html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) button[class*="_closeButton"] {
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  min-height: 20px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+}
+html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) button[class*="_closeButton"] > svg {
+  display: none;
+}
+html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) button[class*="_closeButton"]::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 1l8 8M9 1l-8 8' stroke='%23000' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 1l8 8M9 1l-8 8' stroke='%23000' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) button[class*="_closeButton"]:hover {
+  border-color: var(--sc-border);
+  background: var(--sc-btn-bg-hover);
+  box-shadow: var(--sc-bevel);
+}
+/* Collapse tab of the strip under the fretboard (^): 6px top corners. */
+html.sc-enabled button[class*="_closeTab"] {
+  border-radius: 2px 2px 0 0;
+}
+
+/* ---------------------------------------------------------------------------
  * menus.profile: Account / Sign out
  * ------------------------------------------------------------------------- */
 html.sc-enabled #profile-popup-desktop,
