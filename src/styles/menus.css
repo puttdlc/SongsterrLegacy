@@ -697,6 +697,99 @@ html.sc-enabled #inbox-popup [class*="_empty"]:not([class*="_empty"] *) {
 }
 
 /* ---------------------------------------------------------------------------
+ * menus.notifications: the alerts stacked top-right ("Switch to the editor
+ * to use this shortcut", "Saved", errors). Songsterr's 20px-radius pills in
+ * a solid kind colour become square panels on the window surface; the kind
+ * colour (info / success / warn / error) moves to a strip on the left and
+ * the icon. The round close disc becomes the square x of the dialogs.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [data-id="notification"] {
+  --sc-note: var(--notification-info);
+  min-height: 0;
+  padding: 10px 34px 10px 14px;
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  background: var(--sc-elev);
+  color: var(--sc-text);
+  box-shadow: inset 4px 0 0 var(--sc-note), inset 0 1px 0 var(--sc-highlight), 0 3px 10px var(--sc-shade-strong);
+  font-family: var(--sc-font);
+}
+html.sc-enabled [data-id="notification"][class*="_success"] { --sc-note: var(--notification-success); }
+html.sc-enabled [data-id="notification"][class*="_warn"] { --sc-note: var(--notification-warn); }
+html.sc-enabled [data-id="notification"][class*="_error"] { --sc-note: var(--notification-error); }
+html.sc-enabled [data-id="notification"] > svg[class*="_iconType"] {
+  width: 24px;
+  height: 26px;
+  margin: 0 12px 0 2px;
+  fill: var(--sc-note);
+}
+html.sc-enabled [data-id="notification"] [class*="_spinnerBadge"] circle {
+  stroke: var(--sc-note);
+}
+html.sc-enabled [data-id="notification"] [class*="_message"] {
+  font-size: var(--sc-font-size);
+  font-weight: 600;
+  line-height: 1.35;
+}
+html.sc-enabled [data-id="notification"] [class*="_message"] > span {
+  margin-top: 3px;
+  font-size: var(--sc-font-size-small);
+  font-weight: 400;
+  color: var(--sc-text-muted);
+}
+html.sc-enabled [data-id="notification"] [class*="_reasons"] {
+  font-size: var(--sc-font-size-small);
+  font-weight: 400;
+}
+html.sc-enabled [data-id="notification"] [class*="_primaryAction"] {
+  border: 1px solid var(--sc-accent-border);
+  border-radius: 2px;
+  background: var(--sc-accent-bg);
+  color: var(--sc-on-accent);
+  box-shadow: var(--sc-bevel);
+  padding: 5px 12px;
+}
+html.sc-enabled [data-id="notification"] [class*="_primaryAction"]:hover {
+  background: var(--sc-accent-bg-hover);
+}
+html.sc-enabled [data-id="notification"] [class*="_secondaryAction"] {
+  color: var(--sc-accent);
+}
+/* Close (x): same square button as menus.dialogHeader. */
+html.sc-enabled [data-id="notification"] > [class*="_close"] {
+  box-sizing: border-box;
+  width: 22px;
+  height: 22px;
+  top: 5px;
+  right: 5px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--sc-icon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html.sc-enabled [data-id="notification"] > [class*="_close"] > svg {
+  display: none;
+}
+html.sc-enabled [data-id="notification"] > [class*="_close"]::before {
+  content: "";
+  width: 9px;
+  height: 9px;
+  background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 1l8 8M9 1l-8 8' stroke='%23000' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 1l8 8M9 1l-8 8' stroke='%23000' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+html.sc-enabled [data-id="notification"] > [class*="_close"]:hover {
+  border-color: var(--sc-border);
+  background: var(--sc-btn-bg-hover);
+  box-shadow: var(--sc-bevel);
+  color: var(--sc-text);
+}
+
+/* ---------------------------------------------------------------------------
  * menus.profile: Account / Sign out
  * ------------------------------------------------------------------------- */
 html.sc-enabled #profile-popup-desktop,

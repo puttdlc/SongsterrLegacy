@@ -322,6 +322,11 @@ html.sc-enabled div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-
 html.sc-enabled [class*="_toast"]:not([class*="_toast"] *) {
   top: max(40px, var(--sc-top-inset, 0px));
 }
+/* Alerts stack: 50px from the top and 20px from the right edge. */
+html.sc-enabled [class*="_notifications"]:has(> [data-id="notification"]) {
+  top: calc(var(--sc-top-inset, 0px) + 50px);
+  right: calc(var(--sc-right-inset, 0px) + 20px);
+}
 /* Pressed-keys hint: top-left corner, over the menu bar / Legacy sidebar. */
 html.sc-enabled [class*="_notification"]:has(> span[class*="_item"]) {
   top: calc(var(--sc-top-inset, 0px) + 5px);
