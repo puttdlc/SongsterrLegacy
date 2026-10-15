@@ -407,8 +407,10 @@ html.sc-enabled :is([class*="_planBadge"], [class*="_plusBadge"]) svg {
 /* ---------------------------------------------------------------------------
  * tab.header: the title block over the tab (song, artist, instrument, "Last
  * edited by"). Theme font throughout; the artist link takes the accent
- * colour instead of Songsterr's green; the info line is muted. Screen only,
- * so Songsterr's print styles (serif title on chords) stay as they are.
+ * colour instead of Songsterr's green. Text colours stay Songsterr's: the
+ * block sits on Songsterr's page, which can be light while our controls are
+ * dark (our --sc-text there was light grey on white). Screen only, so
+ * Songsterr's print styles (serif title on chords) stay as they are.
  * ------------------------------------------------------------------------- */
 @media screen {
   html.sc-enabled header#header {
@@ -423,9 +425,5 @@ html.sc-enabled :is([class*="_planBadge"], [class*="_plusBadge"]) svg {
   }
   html.sc-enabled header#header [class*="_trackForPrint"] {
     font-family: var(--sc-font);
-    color: var(--sc-text);
-  }
-  html.sc-enabled header#header [class*="_info"] {
-    color: var(--sc-text-muted);
   }
 }
