@@ -350,3 +350,27 @@ html.sc-enabled #help-menu[class*="_detached"] {
   bottom: calc(var(--sc-bottom-inset, 0px) + 15px);
   max-height: calc(100vh - 30px - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px));
 }
+
+/* ---------------------------------------------------------------------------
+ * controls.revisionDate: the date tag over the History button ("09/19/26",
+ * or "New" right after an edit). Was a 10px-radius blue pill; now a small
+ * square accent tag with a bevel, in every layout.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #c-revision [class*="_badge"][class*="_date"] {
+  box-sizing: border-box;
+  height: 16px;
+  padding: 0 5px;
+  border: 1px solid var(--sc-accent-border);
+  border-radius: 2px;
+  background: var(--sc-accent-bg);
+  color: var(--sc-on-accent);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 1px 2px var(--sc-shade);
+  font: 600 11px / 14px var(--sc-font);
+  letter-spacing: 0.02em;
+  text-transform: none;
+  top: -8px;
+}
+html.sc-enabled #c-revision [class*="_badge"][class*="_date"] [class*="_newBadge"] {
+  font: inherit;
+  color: inherit;
+}
