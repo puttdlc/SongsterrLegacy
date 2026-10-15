@@ -57,6 +57,13 @@ html.sc-enabled:not(#sc-specificity) {
   --mobile-controls-dots-shadow: var(--sc-elev);
   --logo-shadow: var(--sc-elev);
 
+  /* Tooltips (hover hints, "?" bubbles, invites): solid theme surface
+     instead of 80% black with a blur; their arrows use the same variable. */
+  --tooltip-background: var(--sc-surface-raised);
+  --tooltip-text: var(--sc-text);
+  --tooltip-shadow: 0 0 0 1px var(--sc-border), 0 2px 6px var(--sc-shade);
+  --tooltip-arrow-opacity: 1;
+
   /* Popups anchored to the bottom nav: sit directly on our slimmer bar. */
   --bottombar-height: calc(var(--sc-nav-h, 32px) + 1px);
   --bottombar-popup-offset: 0px;
