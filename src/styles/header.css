@@ -272,6 +272,25 @@ html.sc-enabled.sc-menu-fusion #tablist [class*="_icon"] > :is([class*="_planBad
 html.sc-enabled #logo {
   border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
 }
+/* The box follows the colour theme: Blue keeps Songsterr's own gradient
+   (the brand blue), Green / Red / Custom run the same dark-to-bright sweep
+   in the accent colour, Off is a neutral slate. Gradient Off makes it flat.
+   The white logo stays readable on all of them. */
+html.sc-enabled:is(.sc-accent-green, .sc-accent-red, .sc-accent-custom) #logo {
+  --logo-bg: linear-gradient(92deg, color-mix(in srgb, var(--sc-accent-base) 45%, #0d1117) 0.26%, var(--sc-accent-base) 99.91%);
+}
+html.sc-enabled.sc-accent-off #logo {
+  --logo-bg: linear-gradient(92deg, #24262b 0.26%, #4b4f58 99.91%);
+}
+html.sc-enabled.sc-flat:is(.sc-accent-green, .sc-accent-red, .sc-accent-custom) #logo {
+  --logo-bg: color-mix(in srgb, var(--sc-accent-base) 80%, #0d1117);
+}
+html.sc-enabled.sc-flat.sc-accent-off #logo {
+  --logo-bg: #3a3d44;
+}
+html.sc-enabled.sc-flat.sc-accent-blue #logo {
+  --logo-bg: #3570b4;
+}
 
 /* ---------------------------------------------------------------------------
  * nav.popups: the account menu hangs 20px left of the Account item, which is
