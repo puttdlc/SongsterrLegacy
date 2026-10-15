@@ -14,7 +14,7 @@
     classicBar: 'spread',
     accent: 'auto',          // auto = Classic green, Fusion / Legacy blue (see content.js)
     accentCustom: '#2f9e44',
-    theme: 'dark',
+    theme: 'auto',
     density: 'compact',
     showAuthor: true,
     navCollapsed: false,

@@ -39,7 +39,7 @@ Click the toolbar icon to open the settings popup:
 | Bar buttons | Spread (default) / Icons | Classic controls only. **Spread**: a label under every icon, buttons spaced equally across the bar. **Icons**: icons only, packed to the left. |
 | Quick menu | Fusion / Classic / Legacy (default) | Where the site menu (Search, My tabs, Help ...) sits. See "Layouts" below. |
 | Color theme | Blue / Green / Red / Custom / Off | Accent colour for every layout: play button, toggled buttons, selections, focus ring, Classic's base line. Until you pick one, Fusion and Legacy use Blue and Classic uses Green. **Custom** shows a colour picker; **Off** uses no colour: filled buttons take the Dark or Light theme's own surface colour, and lines and rings its text colour. |
-| Theme | Dark (default) / Light / Auto | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
+| Theme | Dark / Light / Auto (default) | **Auto** follows Songsterr's own theme setting, which keeps the controls and the notation area in the same scheme. |
 | Density | Compact (default) / Comfortable | 32px vs 38px control height. |
 | Animation | On (default) / Off | **Off** makes windows, menus and buttons open and change instantly instead of sliding and fading. The tab itself and the playback cursor are not affected, nor is Fusion's player fold, which Songsterr animates in script. |
 | Author | Show / Hide | "Last edited by <name>" under the song title (see below). |

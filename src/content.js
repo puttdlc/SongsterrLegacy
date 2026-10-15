@@ -28,7 +28,7 @@
     classicBar: 'spread',   // Classic controls: spread (labels, equal spacing) | icons (packed, no labels)
     accent: 'auto',         // auto | blue | green | red | custom | off
     accentCustom: '#2f9e44', // #rrggbb, used when accent = custom
-    theme: 'dark',          // dark | light | auto
+    theme: 'auto',          // dark | light | auto
     density: 'compact',     // compact | comfortable
     showAuthor: true,
     navCollapsed: false,
