@@ -449,6 +449,10 @@ html.sc-enabled.sc-layout-fusion #controls #controls-panel-handle {
   padding-top: 4px;
   border-bottom: 1px solid var(--sc-divider);
 }
+/* The slimmer strip left the video/cover box touching it; give it room. */
+html.sc-enabled.sc-layout-fusion #controls [class*="_panel"]:has(> [class*="_video"]) {
+  padding-top: 10px;
+}
 
 /* ---------------------------------------------------------------------------
  * toolbar.minimize: third collapse level (ours).
