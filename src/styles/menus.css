@@ -790,6 +790,72 @@ html.sc-enabled [data-id="notification"] > [class*="_close"]:hover {
 }
 
 /* ---------------------------------------------------------------------------
+ * menus.videoPane: the original-audio box above the player bar (cover or
+ * video, "Full mix" select, upload and report buttons). Songsterr's 10px
+ * rounded tiles become square bevelled controls; the cover gets a hairline
+ * frame; the connector lines from the cover take the accent colour.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled #controls [class*="_panel"] > [class*="_video"] {
+  border-radius: var(--sc-radius);
+  box-shadow: 0 0 0 1px var(--sc-border);
+}
+html.sc-enabled #controls [class*="_sidePanel"] button[class*="_sideButton"] {
+  box-sizing: border-box;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+}
+html.sc-enabled #controls [class*="_sidePanel"] button[class*="_sideButton"] [class*="_sideButtonIcon"] {
+  fill: var(--sc-icon);
+}
+html.sc-enabled #controls [class*="_sidePanel"] button[class*="_sideButton"]:not(:disabled):hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled #controls [class*="_sidePanel"] button[class*="_sideButton"]:not(:disabled):hover [class*="_sideButtonIcon"] {
+  fill: var(--sc-text);
+}
+html.sc-enabled #controls [class*="_sidePanel"] button[class*="_sideButton"]:not(:disabled):active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled #controls [class*="_sidePanel"] button[class*="_sideButtonActive"] {
+  border-color: var(--sc-accent-border);
+  background: var(--sc-accent-bg);
+}
+html.sc-enabled #controls [class*="_sidePanel"] button[class*="_sideButtonActive"] [class*="_sideButtonIcon"],
+html.sc-enabled #controls [class*="_sidePanel"] button[class*="_sideButtonActive"]:not(:disabled):hover [class*="_sideButtonIcon"] {
+  fill: var(--sc-on-accent);
+}
+html.sc-enabled #controls [class*="_sidePanel"] button[class*="_sideButtonActive"]:not(:disabled):hover {
+  background: var(--sc-accent-bg-hover);
+}
+/* "Full mix" select: a bevelled drop-down button. */
+html.sc-enabled #controls [class*="_sideSelect"] [class*="_chosenValue"] {
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+}
+html.sc-enabled #controls [class*="_sideSelect"] [class*="_chosenValue"]:hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled #controls [class*="_sideSelect"] [class*="_placeholder"] {
+  font: 600 var(--sc-font-size) / 20px var(--sc-font);
+  color: var(--sc-text);
+}
+html.sc-enabled #controls [class*="_sideSelect"] [class*="_arrow"] {
+  fill: var(--sc-icon);
+}
+/* Connector lines from the cover to the select / buttons. */
+html.sc-enabled #controls [class*="_connectors"] [class*="_active"] {
+  stroke: var(--sc-accent);
+}
+html.sc-enabled #controls [class*="_connectors"] [class*="_inactive"] {
+  stroke: var(--sc-divider);
+}
+
+/* ---------------------------------------------------------------------------
  * menus.profile: Account / Sign out
  * ------------------------------------------------------------------------- */
 html.sc-enabled #profile-popup-desktop,
