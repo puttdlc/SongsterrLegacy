@@ -1350,6 +1350,39 @@ html.sc-enabled button[class*="_closeTab"] {
 }
 
 /* ---------------------------------------------------------------------------
+ * menus.leftovers: last hard-coded round / blue bits found by the coverage
+ * scan. Shapes only; each keeps its own colours unless noted.
+ * ------------------------------------------------------------------------- */
+/* Orange warning box in the Mixer: 20px -> square. */
+html.sc-enabled [class*="_warnPopup"] [class*="_popup"]:not([class*="_popup"] *) {
+  border-radius: var(--sc-radius);
+}
+/* Loading line across a bar button: Songsterr blue -> accent. */
+html.sc-enabled [class*="_buttonLoading"] [class*="_content"]::before {
+  background-color: var(--sc-accent);
+}
+/* Embedded YouTube video: 10px -> square. */
+html.sc-enabled [class*="_embeddedContainer"] {
+  border-radius: var(--sc-radius);
+}
+/* Chords page chord / text tags: 5px -> 2px. */
+html.sc-enabled :is([class*="_blockChord"], [class*="_blockText"]) label {
+  border-radius: 2px;
+}
+/* Added / changed / deleted badges in revision compare: 10px pill -> tag. */
+html.sc-enabled [class*="_statusBadge"] {
+  border-radius: 2px;
+}
+/* Onboarding ring around player controls: 14px -> square. */
+html.sc-enabled [class*="_controlsTargetPulse"] {
+  border-radius: var(--sc-radius);
+}
+/* "Duplicate song" dialog icon tile: 8px -> square. */
+html.sc-enabled [class*="_duplicateIcon"] {
+  border-radius: var(--sc-radius);
+}
+
+/* ---------------------------------------------------------------------------
  * menus.profile: Account / Sign out
  * ------------------------------------------------------------------------- */
 html.sc-enabled #profile-popup-desktop,
