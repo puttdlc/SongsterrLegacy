@@ -230,6 +230,11 @@ html.sc-enabled.sc-menu-classic [class*="_bottomBarWide"] [class*="_enter"]:not(
 html.sc-enabled.sc-menu-classic #header {
   padding-top: calc(var(--sc-menu-h) - 20px);
 }
+/* A status badge over the title ("Editor draft", "Not published" ...) sits
+   15px above it and would tuck under the bar; give it 6px of clearance. */
+html.sc-enabled.sc-menu-classic #header:has([class*="_titleBadge"]:not(:empty)) {
+  padding-top: calc(var(--sc-menu-h) - 8px);
+}
 
 /* ---------------------------------------------------------------------------
  * classicMenu.logo: Songsterr's logo sits on the bar's left end (it hung

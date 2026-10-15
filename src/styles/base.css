@@ -64,6 +64,13 @@ html.sc-enabled:not(#sc-specificity) {
   --tooltip-shadow: 0 0 0 1px var(--sc-border), 0 2px 6px var(--sc-shade);
   --tooltip-arrow-opacity: 1;
 
+  /* Playback cursor and the tuning fork button beside the first staff:
+     Songsterr green / blue -> the accent. The extra multitrack cursors
+     (--cursor-body-1..4) keep their own colours to tell tracks apart. */
+  --cursor-body: var(--sc-accent);
+  --cursor-body-0: var(--sc-accent);
+  --tuning-button: var(--sc-accent);
+
   /* Popups anchored to the bottom nav: sit directly on our slimmer bar. */
   --bottombar-height: calc(var(--sc-nav-h, 32px) + 1px);
   --bottombar-popup-offset: 0px;
