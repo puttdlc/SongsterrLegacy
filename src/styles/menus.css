@@ -1107,6 +1107,92 @@ html.sc-enabled :is([class*="_fab"], [class*="_sheet"] [class*="_submit"]) {
 }
 
 /* ---------------------------------------------------------------------------
+ * menus.editor: editor-only pieces with hard-coded round shapes.
+ * ------------------------------------------------------------------------- */
+/* "Edited / Saving / Saved / Error" status tag: 10px pill -> square tag
+   (keeps Songsterr's orange / green / red meaning). */
+html.sc-enabled [class*="_editedBadge"] {
+  border-radius: 2px;
+  padding: 3px 6px;
+  font-family: var(--sc-font);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+/* Publish: 16px outlined pill -> square outlined button (same colours). */
+html.sc-enabled button[class*="_publishButton"] {
+  border-width: 1px;
+  border-radius: 2px;
+  font-family: var(--sc-font);
+}
+/* Fretboard settings popup: 8px cards -> one square window; select button
+   bevelled like the other selects. */
+html.sc-enabled [class*="_settingsWrapper"]:has(> [class*="_settingsSurface"]) {
+  border-radius: 0;
+}
+html.sc-enabled [class*="_settingsWrapper"] > [class*="_settingsHeading"] {
+  background: var(--sc-toolbar-bg);
+  border-bottom: 1px solid var(--sc-border);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+  font: 600 var(--sc-font-size-small) / 1.3 var(--sc-font);
+}
+html.sc-enabled [class*="_settingsWrapper"] > [class*="_settingsSurface"] {
+  border-radius: 0;
+  padding: 14px;
+}
+html.sc-enabled [class*="_settingsSurface"] button[class*="_selectButton"] {
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background-color: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+}
+html.sc-enabled [class*="_settingsSurface"] button[class*="_selectButton"]:hover {
+  background-color: var(--sc-btn-bg-hover);
+}
+html.sc-enabled [class*="_settingsSurface"] button[class*="_selectButton"]::after {
+  background-color: var(--sc-icon);
+}
+/* Fretboard capo bar: 8px -> slight rounding. */
+html.sc-enabled [class*="_capo"]:is([class*="_capoFull"], [class*="_capoPartial"]) {
+  border-radius: 2px;
+}
+/* "?" help buttons on the editor toolbars: 6px tiles -> bevelled squares. */
+html.sc-enabled [class*="_helpMenuActionIcon"] {
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+}
+html.sc-enabled [class*="_helpMenuActionIcon"]:hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled [class*="_helpMenuActionIcon"] svg {
+  fill: var(--sc-icon);
+}
+html.sc-enabled [class*="_focused"]:has(> [class*="_helpMenuActionIcon"])::after,
+html.sc-enabled [class*="_helpMenuActionIcon"][class*="_focused"]::after {
+  border-radius: 3px;
+}
+/* Onboarding pulse rings: follow the square buttons they circle. */
+html.sc-enabled :is([class*="_pulseCircle"], [class*="_pulseRect"], [class*="_pulsePropagate"]) {
+  border-radius: var(--sc-radius);
+}
+/* AI / instrument settings groups: 8px tinted cards -> framed squares. */
+html.sc-enabled :is([class*="_settingsGroup"], [class*="_instrumentGroup"]):not([class*="_settingsGroup"] *, [class*="_instrumentGroup"] *) {
+  border: 1px solid var(--sc-divider);
+  border-radius: var(--sc-radius);
+}
+/* File drop zones (Upload audio, New tab) and their drag overlays. */
+html.sc-enabled :is([class*="_fileInputLabel"], [class*="_dragOverlay"]) {
+  border-radius: var(--sc-radius);
+}
+html.sc-enabled [class*="_fileInputLabelWithFile"] {
+  border-color: var(--sc-accent);
+}
+/* Measure-select popup: 20px source pill -> square strip. */
+html.sc-enabled [class*="_sourceBar"] {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
  * menus.profile: Account / Sign out
  * ------------------------------------------------------------------------- */
 html.sc-enabled #profile-popup-desktop,
