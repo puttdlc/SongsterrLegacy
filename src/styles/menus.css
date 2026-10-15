@@ -709,7 +709,7 @@ html.sc-enabled [data-id="notification"] {
   padding: 10px 34px 10px 14px;
   border: 1px solid var(--sc-border);
   border-radius: var(--sc-radius);
-  background: var(--sc-elev);
+  background: var(--sc-surface-raised);
   color: var(--sc-text);
   box-shadow: inset 4px 0 0 var(--sc-note), inset 0 1px 0 var(--sc-highlight), 0 3px 10px var(--sc-shade-strong);
   font-family: var(--sc-font);
