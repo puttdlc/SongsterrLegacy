@@ -530,6 +530,69 @@ html.sc-enabled #revisions-list button[class*="_revisionButton"]:disabled {
 }
 
 /* ---------------------------------------------------------------------------
+ * menus.profile-panel: the User profile side panel (someone's revisions and
+ * comments). Title strip and square x like the other windows; the 10px-radius
+ * cards become flat rows split by hairlines, like History and Inbox, with the
+ * song / date line small and muted above the description.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [class*="_header"]:has(> [class*="_profileInfo"]) > [class*="_popupHeader"]:not([class*="_popupHeaderTitle"]) {
+  min-height: calc(var(--sc-ctl-h) + 4px);
+  margin-bottom: 12px;
+  padding: 0 36px;
+  background: var(--sc-toolbar-bg);
+  border-bottom: 1px solid var(--sc-border);
+  box-shadow: inset 0 1px 0 var(--sc-highlight);
+}
+html.sc-enabled [class*="_header"]:has(> [class*="_profileInfo"]) [class*="_popupHeaderTitle"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font: 600 15px / 1 var(--sc-font);
+}
+html.sc-enabled [class*="_header"]:has(> [class*="_profileInfo"]) [class*="_popupCloseButton"] {
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+}
+html.sc-enabled [class*="_profileInfo"] [class*="_name"] {
+  font: 600 15px / 20px var(--sc-font);
+}
+html.sc-enabled [class*="_profileInfo"] :is([class*="_email"], [class*="_karmaLabel"]) {
+  font-size: var(--sc-font-size);
+  color: var(--sc-text-muted);
+}
+html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] {
+  gap: 0;
+  padding: 0;
+  border-top: 1px solid var(--sc-divider);
+}
+html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] > a[class*="_item"] {
+  gap: 4px;
+  padding: 10px 15px;
+  border-radius: 0;
+  border-bottom: 1px solid var(--sc-divider);
+  background: transparent;
+  text-decoration: none;
+}
+html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] > a[class*="_item"]:is(:hover, :focus-visible) {
+  background: var(--sc-row-hover);
+}
+html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] [class*="_info"] {
+  gap: 2px;
+  margin: 0;
+  font-size: var(--sc-font-size-small);
+  color: var(--sc-text-muted);
+}
+html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] [class*="_text"] {
+  font-size: var(--sc-font-size);
+  line-height: 1.35;
+  color: var(--sc-text);
+}
+html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_stub"] h2 {
+  font: 600 16px / 1.3 var(--sc-font);
+}
+
+/* ---------------------------------------------------------------------------
  * menus.settings: docked bottom-right, flush, like the player pane.
  * ------------------------------------------------------------------------- */
 html.sc-enabled #settings-popup {
