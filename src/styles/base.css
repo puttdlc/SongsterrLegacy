@@ -389,3 +389,29 @@ html.sc-enabled :is([class*="_planBadge"], [class*="_plusBadge"]) {
 html.sc-enabled :is([class*="_planBadge"], [class*="_plusBadge"]) svg {
   fill: var(--sc-on-accent);
 }
+
+/* ---------------------------------------------------------------------------
+ * tab.header: the title block over the tab (song, artist, instrument, "Last
+ * edited by"). Theme font throughout; the artist link takes the accent
+ * colour instead of Songsterr's green; the info line is muted. Screen only,
+ * so Songsterr's print styles (serif title on chords) stay as they are.
+ * ------------------------------------------------------------------------- */
+@media screen {
+  html.sc-enabled header#header {
+    font-family: var(--sc-font);
+  }
+  html.sc-enabled header#header [class*="_song"] {
+    font-family: var(--sc-font);
+    letter-spacing: -0.01em;
+  }
+  html.sc-enabled header#header #song-artist {
+    color: var(--sc-accent);
+  }
+  html.sc-enabled header#header [class*="_trackForPrint"] {
+    font-family: var(--sc-font);
+    color: var(--sc-text);
+  }
+  html.sc-enabled header#header [class*="_info"] {
+    color: var(--sc-text-muted);
+  }
+}
