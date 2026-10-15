@@ -1193,6 +1193,102 @@ html.sc-enabled [class*="_sourceBar"] {
 }
 
 /* ---------------------------------------------------------------------------
+ * menus.ai: AI Assistant chat. Speech-bubble shapes (8px / 20px corners)
+ * -> square message boxes with a hairline; your own messages take the
+ * accent. Thumbs up / down become a joined bevelled pair; the Plus card and
+ * the attachment chip are squared. Loading dots and spinners stay round.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled :is([class*="_userMessageBox"], [class*="_botMessageBox"], [class*="_moderatorMessageBox"]) {
+  border: 1px solid var(--sc-divider);
+  border-radius: var(--sc-radius);
+}
+html.sc-enabled [class*="_userMessageBox"] {
+  border-color: var(--sc-accent-border);
+  background: var(--sc-accent-fill);
+}
+html.sc-enabled [class*="_markdownContent"] :is(code, pre) {
+  border-radius: 2px;
+}
+html.sc-enabled :is([class*="_like"], [class*="_dislike"]):is(button, [role="button"]) {
+  border-radius: 0;
+}
+html.sc-enabled button[class*="_like"]:not([class*="_dislike"]) {
+  border-radius: 2px 0 0 2px;
+}
+html.sc-enabled button[class*="_dislike"] {
+  border-radius: 0 2px 2px 0;
+}
+html.sc-enabled :is([class*="_fileAttachmentInfo"], [class*="_functionCallPlaceholder"]) {
+  border-radius: 2px;
+}
+html.sc-enabled [class*="_card"]:has(> [class*="_close"]):not(#help-menu *) {
+  border-radius: var(--sc-radius);
+}
+html.sc-enabled [class*="_card"] > button[class*="_close"] {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * menus.plus: Plus / pricing / payment pages and popups. Songsterr's own
+ * sales pages, so their brand colours stay; only the rounded boxes are
+ * squared, and the highlighted price box takes the accent instead of blue.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [class*="_priceBox"] {
+  border-radius: var(--sc-radius);
+}
+html.sc-enabled [class*="_priceBoxRight"] {
+  background-color: var(--sc-accent-fill);
+}
+html.sc-enabled :is([class*="_words"]:not([class*="_words"] *), [class*="_appStoreLink"], [class*="_descriptionRight"]) {
+  border-radius: var(--sc-radius);
+}
+html.sc-enabled [class*="_buttonFooter"] {
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------------------
+ * menus.consent: cookie / privacy settings. The 7px segmented toggle and
+ * its sliding indicator, the 14px vendor search and the vendor chips
+ * become square like the other segmented controls and fields.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled :is([class*="_activeIndicator"], [class*="_activeIndicator"] ~ [class*="_button"], [class*="_button"]:has(~ [class*="_activeIndicator"])) {
+  border-radius: 2px;
+}
+html.sc-enabled [class*="_vendor"]:not([class*="_vendor"] *) {
+  border-radius: 2px;
+}
+html.sc-enabled [role="dialog"] input[class*="_search"] {
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-surface-sunken);
+  box-shadow: inset 0 1px 2px var(--sc-shade);
+}
+
+/* ---------------------------------------------------------------------------
+ * menus.fermata: Fermata settings. The 40px shape picker tiles (8px) become
+ * bevelled squares; the round radio dots stay round (that is what a radio
+ * button looks like) but take the theme's border and accent.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled [class*="_radioButtonButton"] {
+  box-sizing: border-box;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background-color: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+}
+html.sc-enabled [class*="_radioWrapperButton"]:hover > [class*="_radioButtonButton"] {
+  background-color: var(--sc-btn-bg-hover);
+}
+html.sc-enabled input:checked + [class*="_radioButtonButton"] {
+  border-color: var(--sc-accent-border);
+  background-color: var(--sc-accent-bg);
+}
+html.sc-enabled [class*="_radioButtonDefault"] [class*="_radio"] {
+  border-color: var(--sc-border);
+  background: var(--sc-surface-sunken);
+}
+
+/* ---------------------------------------------------------------------------
  * menus.profile: Account / Sign out
  * ------------------------------------------------------------------------- */
 html.sc-enabled #profile-popup-desktop,
