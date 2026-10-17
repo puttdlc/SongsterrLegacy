@@ -2,6 +2,10 @@
 
 Unofficial. Not affiliated with or endorsed by Songsterr.
 
+## [Get it for Chrome](https://chromewebstore.google.com/detail/hibbioblpmhnofcnidgmcndehhpaocfp?utm_source=item-share-cb)
+
+## [Get it for Firefox](https://addons.mozilla.org/en-US/firefox/addon/classic-skin-for-songsterr/)
+
 A Manifest V3 Chrome extension that reskins songsterr.com with flat, rectangular,
 tightly aligned controls and subtle edge lighting (bevels, hairline highlights,
 inset shadows). It changes the look only. The site behaves exactly as before.
