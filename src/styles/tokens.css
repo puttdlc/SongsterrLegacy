@@ -80,6 +80,10 @@ html.sc-enabled {
 
   --sc-toolbar-top:     #26282c;
   --sc-toolbar-bottom:  #212226;
+
+  /* Logo box: the gradient's start colour and how much accent it holds. */
+  --sc-logo-from:       #0d1117;
+  --sc-logo-mix:        45%;
 }
 
 /* ---------- Light ---------- */
@@ -121,6 +125,9 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
 
   --sc-toolbar-top:     #f6f7f8;
   --sc-toolbar-bottom:  #eceef1;
+
+  --sc-logo-from:       #ffffff;
+  --sc-logo-mix:        65%;
 }
 
 @media (prefers-color-scheme: light) {
@@ -159,6 +166,9 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
 
     --sc-toolbar-top:     #f6f7f8;
     --sc-toolbar-bottom:  #eceef1;
+
+    --sc-logo-from:       #ffffff;
+    --sc-logo-mix:        65%;
   }
 }
 
