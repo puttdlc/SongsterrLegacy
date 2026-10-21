@@ -404,10 +404,10 @@ html.sc-enabled.sc-layout-fusion #controls #control-source [class*="_label"] {
   color: var(--sc-text-muted);
 }
 html.sc-enabled.sc-layout-fusion #controls #control-source [class*="_labelChecked"] {
-  color: var(--sc-on-accent);
+  color: var(--sc-source-on-text, var(--sc-on-accent));
 }
 html.sc-enabled.sc-layout-fusion #controls #control-source [class*="_background"] {
-  background-color: var(--sc-accent-bg);
+  background-color: var(--sc-source-on, var(--sc-accent-bg));
 }
 
 /* ---------------------------------------------------------------------------

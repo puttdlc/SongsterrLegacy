@@ -141,6 +141,11 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
   --sc-play-pressed-top:     var(--sc-accent-bg);
   --sc-play-pressed-bottom:  color-mix(in srgb, var(--sc-accent-bg) 88%, white);
   --sc-accent-pressed-shade: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+  /* Chosen source (Orig. / Synth) beside the play button: a lighter tint, so
+     it stays apart from the playing button (in the dark theme the play
+     button is the darker one). Its text picks white or dark for contrast. */
+  --sc-source-on:            color-mix(in srgb, var(--sc-accent-bg) 78%, white);
+  --sc-source-on-text:       oklch(from var(--sc-source-on) clamp(0.2, (0.66 - l) * 1000, 1) 0 0);
 }
 
 @media (prefers-color-scheme: light) {
@@ -187,6 +192,8 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
     --sc-play-pressed-top:     var(--sc-accent-bg);
     --sc-play-pressed-bottom:  color-mix(in srgb, var(--sc-accent-bg) 88%, white);
     --sc-accent-pressed-shade: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
+    --sc-source-on:            color-mix(in srgb, var(--sc-accent-bg) 78%, white);
+    --sc-source-on-text:       oklch(from var(--sc-source-on) clamp(0.2, (0.66 - l) * 1000, 1) 0 0);
   }
 }
 
@@ -271,6 +278,8 @@ html.sc-enabled:not(#sc-specificity).sc-accent-off:is(.sc-theme-light, .sc-theme
   --sc-play-pressed-bottom:  var(--sc-btn-pressed);
   --sc-accent-pressed-shade: var(--sc-bevel-pressed);
   --sc-toggle-pressed-bg:    var(--sc-btn-pressed);
+  --sc-source-on:            var(--sc-accent-bg);
+  --sc-source-on-text:       var(--sc-on-accent);
 }
 @media (prefers-color-scheme: light) {
   html.sc-enabled:not(#sc-specificity).sc-accent-off.sc-theme-auto:not([color-scheme="dark"]) {
@@ -278,6 +287,8 @@ html.sc-enabled:not(#sc-specificity).sc-accent-off:is(.sc-theme-light, .sc-theme
     --sc-play-pressed-bottom:  var(--sc-btn-pressed);
     --sc-accent-pressed-shade: var(--sc-bevel-pressed);
     --sc-toggle-pressed-bg:    var(--sc-btn-pressed);
+    --sc-source-on:            var(--sc-accent-bg);
+    --sc-source-on-text:       var(--sc-on-accent);
   }
 }
 /* Text and icons on Green / Red / Custom fills: white on mid and dark

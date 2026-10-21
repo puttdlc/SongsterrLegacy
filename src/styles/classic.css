@@ -485,14 +485,14 @@ html.sc-enabled.sc-layout-classic #controls #control-source [class*="_background
   transform: none;
 }
 html.sc-enabled.sc-layout-classic #controls #control-source [class*="_labelChecked"] [class*="_background"] {
-  background-color: var(--sc-classic-play);
+  background-color: var(--sc-source-on, var(--sc-classic-play));
 }
 html.sc-enabled.sc-layout-classic #controls #control-source [class*="_text"] {
   position: relative;                /* above the background fill */
   color: inherit;
 }
 html.sc-enabled.sc-layout-classic #controls #control-source [class*="_labelChecked"] {
-  color: var(--sc-on-accent);
+  color: var(--sc-source-on-text, var(--sc-on-accent));
 }
 html.sc-enabled.sc-layout-classic #controls #control-source:hover > span:not([class*="_labelChecked"]) {
   color: var(--sc-text);
