@@ -276,21 +276,18 @@ html.sc-enabled #logo {
    (light to brand blue), Green / Red / Custom sweep into the accent colour,
    Off is a neutral slate. The sweep starts dark in the dark theme and light
    in the light one (--sc-logo-from / --sc-logo-mix in tokens.css). Gradient
-   Off makes it flat. */
+   Off fills it with the theme colour itself. */
 html.sc-enabled:is(.sc-accent-green, .sc-accent-red, .sc-accent-custom) #logo {
   --logo-bg: linear-gradient(92deg, color-mix(in srgb, var(--sc-accent-base) var(--sc-logo-mix), var(--sc-logo-from)) 0.26%, var(--sc-accent-base) 99.91%);
 }
 html.sc-enabled.sc-accent-off #logo {
   --logo-bg: linear-gradient(92deg, color-mix(in srgb, #4b4f58 var(--sc-logo-mix), var(--sc-logo-from)) 0.26%, #4b4f58 99.91%);
 }
-html.sc-enabled.sc-flat:is(.sc-accent-green, .sc-accent-red, .sc-accent-custom) #logo {
-  --logo-bg: color-mix(in srgb, var(--sc-accent-base) 80%, var(--sc-logo-from));
+html.sc-enabled.sc-flat:is(.sc-accent-blue, .sc-accent-green, .sc-accent-red, .sc-accent-custom) #logo {
+  --logo-bg: var(--sc-accent);   /* the theme colour itself */
 }
 html.sc-enabled.sc-flat.sc-accent-off #logo {
-  --logo-bg: color-mix(in srgb, #4b4f58 80%, var(--sc-logo-from));
-}
-html.sc-enabled.sc-flat.sc-accent-blue #logo {
-  --logo-bg: #3570b4;
+  --logo-bg: #4b4f58;            /* the slate the gradient ends on */
 }
 
 /* ---------------------------------------------------------------------------

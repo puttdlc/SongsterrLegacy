@@ -200,15 +200,20 @@ html.sc-enabled {
   --sc-accent-bg:       var(--sc-accent);
   --sc-accent-bg-hover: var(--sc-accent-hover);
   --sc-accent-edge:     transparent;   /* outline for fills that have no border */
+  /* Accent buttons (play, submit): a lighter top shining down to the accent. */
+  --sc-accent-shine:       linear-gradient(to bottom, var(--sc-accent-bg-hover), var(--sc-accent-bg));
+  --sc-accent-shine-hover: linear-gradient(to bottom, color-mix(in srgb, var(--sc-accent-bg-hover) 88%, white), var(--sc-accent-bg-hover));
 }
 /* Popup "Gradient: Off" (sc-flat): the same fills without the top-to-bottom
-   shine, each a flat mix of its two stops. Bevels (--sc-bevel) stay, so
-   buttons still read as raised. Every rule reads these tokens, so this is
-   the whole switch except Fusion's play button (toolbar.css). */
+   shine. The grey ones are a flat mix of their two (nearly equal) stops;
+   accent ones (--sc-accent-shine, the logo, the playing play button) take
+   the theme colour itself. Bevels (--sc-bevel) stay, so buttons still read as raised. */
 html.sc-enabled.sc-flat {
   --sc-btn-bg:         color-mix(in srgb, var(--sc-btn-top), var(--sc-btn-bottom));
   --sc-btn-bg-hover:   color-mix(in srgb, var(--sc-btn-hover-top), var(--sc-btn-hover-bottom));
   --sc-toolbar-bg:     color-mix(in srgb, var(--sc-toolbar-top), var(--sc-toolbar-bottom));
+  --sc-accent-shine:       var(--sc-accent-bg);
+  --sc-accent-shine-hover: var(--sc-accent-bg-hover);
 }
 
 /* ---------- Accent colour (popup "Color theme") ----------

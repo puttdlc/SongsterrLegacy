@@ -40,7 +40,6 @@ html.sc-enabled.sc-layout-classic {
   /* Play button, source toggle and base line follow the accent colour
      (popup "Color theme"; green is the old player's look). */
   --sc-classic-play: var(--sc-accent-bg);
-  --sc-classic-play-hover: var(--sc-accent-bg-hover);
   --sc-classic-play-border: var(--sc-accent-border);
   --sc-classic-line: var(--sc-accent);
 
@@ -416,15 +415,15 @@ html.sc-enabled.sc-layout-classic #controls #control-play {
   height: 100%;
   border: 1px solid var(--sc-classic-play-border);
   border-radius: 2px;
-  background: var(--sc-classic-play);
+  background: var(--sc-accent-shine);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   transition: background-color var(--sc-ease);
 }
 html.sc-enabled.sc-layout-classic #controls #control-play svg {
   fill: var(--sc-on-accent);
 }
-html.sc-enabled.sc-layout-classic #controls #control-play:not(:disabled):hover {
-  background: var(--sc-classic-play-hover);
+html.sc-enabled.sc-layout-classic #controls #control-play:not(:disabled, [aria-pressed="true"]):hover {
+  background: var(--sc-accent-shine-hover);
 }
 html.sc-enabled.sc-layout-classic #controls #control-play:not(:disabled):active,
 html.sc-enabled.sc-layout-classic #controls #control-play[aria-pressed="true"] {
@@ -433,7 +432,7 @@ html.sc-enabled.sc-layout-classic #controls #control-play[aria-pressed="true"] {
 }
 html.sc-enabled.sc-layout-classic.sc-flat #controls #control-play:not(:disabled):active,
 html.sc-enabled.sc-layout-classic.sc-flat #controls #control-play[aria-pressed="true"] {
-  background: color-mix(in srgb, var(--sc-play-pressed-top, var(--sc-classic-play-border)), var(--sc-play-pressed-bottom, var(--sc-classic-play-border)));   /* Gradient: Off */
+  background: var(--sc-play-pressed-top, var(--sc-classic-play-border));   /* Gradient: Off: the accent itself */
 }
 html.sc-enabled.sc-layout-classic #controls #control-play:disabled {
   opacity: 0.45;

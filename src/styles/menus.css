@@ -386,12 +386,12 @@ html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_action
 html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"] {
   border: 1px solid var(--sc-accent-border);
   border-radius: var(--sc-radius);
-  background: var(--sc-accent-bg);
+  background: var(--sc-accent-shine);
   box-shadow: var(--sc-bevel);
   color: var(--sc-on-accent);
 }
 html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):hover {
-  background: var(--sc-accent-bg-hover);
+  background: var(--sc-accent-shine-hover);
 }
 html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):active {
   box-shadow: var(--sc-accent-pressed-shade);
