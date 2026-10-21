@@ -271,8 +271,8 @@ html.sc-enabled.sc-no-motion :not(#tablature, #tablature *)::after {
 }
 
 /* ---------------------------------------------------------------------------
- * notes.flash (experimental, sc-note-flash; page-flash.js): while the Synth
- * plays, a copy of the measure's tab-number path, clipped to the notes being
+ * notes.flash (experimental, sc-note-flash; page-flash.js): during playback
+ * (Synth or Orig.), a copy of the measure's tab-number path, clipped to the notes being
  * played, is laid over the original in the accent colour and fades out over
  * the note's length (--sc-flash-ms). The copy is the same glyphs, so the
  * number looks recoloured. Animation: Off keeps the colour for the note's

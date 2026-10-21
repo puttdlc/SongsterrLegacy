@@ -37,7 +37,7 @@
     keepOpen: true,         // Fusion: undo Songsterr folding the player on its own
     animations: true,       // false = UI transitions and animations cut to an instant (base.css)
     gradients: true,        // false = buttons and title strips filled flat, bevels kept (tokens.css)
-    noteFlash: false        // experimental: tab numbers flash while the Synth plays (page-flash.js)
+    noteFlash: false        // experimental: tab numbers flash during playback (page-flash.js)
   });
   const VALID = {
     layout: ['fusion', 'classic', 'minimal'],

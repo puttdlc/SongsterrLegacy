@@ -1,13 +1,16 @@
 /*
  * Classic Skin: note flash, experimental (runs in the page's MAIN world)
  * ======================================================================
- * While the Synth plays, each tab number lights up in the accent colour when
- * its beat is reached and fades back over the note's length. On only while
+ * While a tab plays (Synth or Orig.), each tab number lights up in the
+ * accent colour when its beat is reached and fades back over the note's
+ * length. On only while
  * <html> has sc-enabled and sc-note-flash (the popup's "Note flash").
  *
  * Reads, from Songsterr's store (found in its Preact tree, it isn't global):
  *   player.instance.getCursor()   song position in ms (the clock the synth
- *                                 and Songsterr's own fretboard follow)
+ *                                 and Songsterr's own fretboard follow; with
+ *                                 Orig. it is the video time mapped through
+ *                                 Songsterr's sync points)
  *   part.current.timestamps       start of every beat of voice 1, in ms
  *   part.current.measures[].voices[0].beats[]  notes (string, fret), layout
  * Fret numbers have no element of their own: each measure's are one merged
@@ -20,8 +23,10 @@
  *   - Read-only towards Songsterr: no dispatch, no patched functions.
  *   - Any error or unexpected data shape turns the flash off for that track
  *     instead of throwing into the page.
- *   - Off (or not playing, or Orig. selected): no per-frame work, only a
- *     4Hz check of the play state.
+ *   - Note lengths are scaled by how fast that clock really runs (measured,
+ *     not the speed setting): a recording's tempo isn't the score's.
+ *   - Off (or not playing): no per-frame work, only a 4Hz check of the play
+ *     state.
  */
 (() => {
   'use strict';
@@ -33,6 +38,7 @@
   let store = null;
   let cache = null;        // { part, beats, timestamps } for the current track
   let lastIndex = -1;
+  let clock = null;        // { cursor, at, rate }: song ms per real ms, smoothed
   let rafId = 0;
   let idleId = 0;
   let clipSeq = 0;
@@ -150,24 +156,41 @@
     let state;
     try { state = store.get(); } catch (_) { store = null; return null; }
     const player = state && state.player;
-    if (!player || !player.shouldPlay || player.videoOpened || !player.instance) return null;
+    if (!player || !player.shouldPlay || !player.instance) return null;
     if (typeof player.instance.getCursor !== 'function') return null;
     const part = state.part && state.part.current;
     const data = part && trackData(part);
     return data ? { player, data } : null;
   }
 
+  // Song ms per real ms. Starts from the speed setting, then follows the
+  // clock itself (the video's real tempo with Orig.). Jumps (seeks, loops)
+  // and stalls (buffering) are left out of the average.
+  function clockRate(player, cursor, now) {
+    const setting = Number(player.speed) > 0 ? Number(player.speed) / 100 : 1;
+    if (!clock) { clock = { cursor, at: now, rate: setting }; return setting; }
+    const dt = now - clock.at;
+    if (dt >= 100) {
+      const r = (cursor - clock.cursor) / dt;
+      if (r > 0.1 && r < 4) clock.rate += (r - clock.rate) * 0.3;
+      clock.cursor = cursor;
+      clock.at = now;
+    }
+    return clock.rate;
+  }
+
   function frame() {
     rafId = 0;
     const active = activePlayer();
-    if (!active) { lastIndex = -1; idle(); return; }
+    if (!active) { lastIndex = -1; clock = null; idle(); return; }
     try {
       const { player, data } = active;
-      const index = beatIndexAt(data.timestamps, player.instance.getCursor());
+      const cursor = player.instance.getCursor();
+      const rate = clockRate(player, cursor, performance.now());
+      const index = beatIndexAt(data.timestamps, cursor);
       if (index !== lastIndex) {
         lastIndex = index;
-        const speed = Number(player.speed) > 0 ? Number(player.speed) / 100 : 1;
-        if (index >= 0) flash(data, index, speed);
+        if (index >= 0) flash(data, index, rate);
       }
     } catch (_) {
       if (cache) cache.ok = false;
