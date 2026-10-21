@@ -375,8 +375,12 @@ html.sc-enabled.sc-layout-fusion.sc-flat #controls #control-play:not(:disabled):
 }
 html.sc-enabled.sc-layout-fusion #controls #control-play:not(:disabled):active,
 html.sc-enabled.sc-layout-fusion #controls #control-play[aria-pressed="true"] {
-  background: var(--sc-play-pressed, var(--sc-accent-bg));
-  box-shadow: inset 0 1px 3px var(--sc-accent-shade);
+  background: linear-gradient(to bottom, var(--sc-play-pressed-top, var(--sc-accent-bg)), var(--sc-play-pressed-bottom, var(--sc-accent-bg)));
+  box-shadow: var(--sc-accent-pressed-shade);
+}
+html.sc-enabled.sc-layout-fusion.sc-flat #controls #control-play:not(:disabled):active,
+html.sc-enabled.sc-layout-fusion.sc-flat #controls #control-play[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--sc-play-pressed-top, var(--sc-accent-bg)), var(--sc-play-pressed-bottom, var(--sc-accent-bg)));   /* Gradient: Off */
 }
 html.sc-enabled.sc-layout-fusion #controls #control-play:disabled {
   opacity: 0.45;

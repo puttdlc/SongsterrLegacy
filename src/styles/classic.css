@@ -428,8 +428,12 @@ html.sc-enabled.sc-layout-classic #controls #control-play:not(:disabled):hover {
 }
 html.sc-enabled.sc-layout-classic #controls #control-play:not(:disabled):active,
 html.sc-enabled.sc-layout-classic #controls #control-play[aria-pressed="true"] {
-  background: var(--sc-play-pressed, var(--sc-classic-play-border));
-  box-shadow: inset 0 1px 3px var(--sc-accent-shade);
+  background: linear-gradient(to bottom, var(--sc-play-pressed-top, var(--sc-classic-play-border)), var(--sc-play-pressed-bottom, var(--sc-classic-play-border)));
+  box-shadow: var(--sc-accent-pressed-shade);
+}
+html.sc-enabled.sc-layout-classic.sc-flat #controls #control-play:not(:disabled):active,
+html.sc-enabled.sc-layout-classic.sc-flat #controls #control-play[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--sc-play-pressed-top, var(--sc-classic-play-border)), var(--sc-play-pressed-bottom, var(--sc-classic-play-border)));   /* Gradient: Off */
 }
 html.sc-enabled.sc-layout-classic #controls #control-play:disabled {
   opacity: 0.45;
