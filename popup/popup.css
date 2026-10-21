@@ -76,6 +76,15 @@
 :root {
   --sc-bevel:         inset 0 1px 0 var(--sc-highlight), inset 0 -1px 0 var(--sc-shade);
   --sc-bevel-pressed: inset 0 1px 2px var(--sc-shade-strong);
+  --sc-bar-bg:        linear-gradient(to bottom, var(--sc-bar-top), var(--sc-bar-bottom));
+  --sc-btn-bg:        linear-gradient(to bottom, var(--sc-btn-top), var(--sc-btn-bottom));
+  --sc-btn-bg-hover:  linear-gradient(to bottom, var(--sc-btn-hover-top), var(--sc-btn-hover-bottom));
+}
+/* Gradient: Off, as on the page (tokens.css sc-flat). */
+:root[data-gradients="false"] {
+  --sc-bar-bg:        color-mix(in srgb, var(--sc-bar-top), var(--sc-bar-bottom));
+  --sc-btn-bg:        color-mix(in srgb, var(--sc-btn-top), var(--sc-btn-bottom));
+  --sc-btn-bg-hover:  color-mix(in srgb, var(--sc-btn-hover-top), var(--sc-btn-hover-bottom));
 }
 
 * { box-sizing: border-box; }
@@ -99,7 +108,7 @@ body {
   align-items: center;
   gap: 6px;
   padding: 6px 10px;
-  background: linear-gradient(to bottom, var(--sc-bar-top), var(--sc-bar-bottom));
+  background: var(--sc-bar-bg);
 }
 .titlebar {
   border-bottom: 1px solid var(--sc-border);
@@ -169,7 +178,7 @@ body {
   height: 26px;
   padding: 0 8px;
   border: 1px solid var(--sc-border);
-  background: linear-gradient(to bottom, var(--sc-btn-top), var(--sc-btn-bottom));
+  background: var(--sc-btn-bg);
   box-shadow: var(--sc-bevel);
   color: var(--sc-text);
   font: inherit;
@@ -182,7 +191,7 @@ body {
 
 .seg span:hover,
 .btn:hover {
-  background: linear-gradient(to bottom, var(--sc-btn-hover-top), var(--sc-btn-hover-bottom));
+  background: var(--sc-btn-bg-hover);
 }
 .seg span:active,
 .btn:active {

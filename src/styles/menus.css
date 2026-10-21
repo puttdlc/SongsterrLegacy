@@ -328,8 +328,8 @@ html.sc-enabled #metronome-popup [class*="_wrapper"] > button:not(:disabled, [ar
   fill: var(--sc-text);
 }
 html.sc-enabled #metronome-popup [class*="_wrapper"] > button[aria-pressed="true"] {
-  border-color: var(--sc-accent-fill);
-  background: var(--sc-accent-fill);
+  border-color: var(--sc-toggle-pressed-bg, var(--sc-accent-fill));
+  background: var(--sc-toggle-pressed-bg, var(--sc-accent-fill));
   box-shadow: var(--sc-accent-pressed-shade);
 }
 html.sc-enabled #metronome-popup [class*="_wrapper"] > button[aria-pressed="true"] :is(span, svg) {

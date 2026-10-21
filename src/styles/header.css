@@ -272,6 +272,13 @@ html.sc-enabled.sc-menu-fusion #tablist [class*="_icon"] > :is([class*="_planBad
 html.sc-enabled #logo {
   border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
 }
+html.sc-enabled #logo svg {
+  fill: var(--sc-on-accent);   /* white, or dark on a pale custom colour */
+  filter: var(--sc-logo-shade, none);
+}
+html.sc-enabled:is(.sc-accent-blue, .sc-accent-off) #logo svg {
+  fill: #ffffff;               /* Off's on-accent is the text colour */
+}
 /* The box follows the colour theme: Blue keeps Songsterr's own gradient
    (light to brand blue), Green / Red / Custom sweep into the accent colour,
    Off is a neutral slate. The sweep starts dark in the dark theme and light

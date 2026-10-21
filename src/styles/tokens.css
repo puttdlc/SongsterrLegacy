@@ -81,7 +81,9 @@ html.sc-enabled {
   --sc-toolbar-top:     #26282c;
   --sc-toolbar-bottom:  #212226;
 
-  /* Logo box: the gradient's start colour and how much accent it holds. */
+  /* Logo box: the gradient's start colour and how much accent it holds.
+     The light theme adds a faint shade behind the artwork, as its light
+     start is low contrast for the white logo. */
   --sc-logo-from:       #0d1117;
   --sc-logo-mix:        45%;
   /* Pressed / chosen accent fills: sunk with a dark inner shade here, a
@@ -130,13 +132,14 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
   --sc-toolbar-bottom:  #eceef1;
 
   --sc-logo-from:       #ffffff;
-  --sc-logo-mix:        65%;
+  --sc-logo-mix:        80%;
+  --sc-logo-shade:      drop-shadow(0 0 1px rgba(0, 0, 0, 0.45));
 
   /* Pressed play button (playing): the idle shine turned upside down, from
      the accent down to a lighter tint. Never darker than the accent; the
      dark theme's darker fill is the fallback in each layout. */
   --sc-play-pressed-top:     var(--sc-accent-bg);
-  --sc-play-pressed-bottom:  color-mix(in srgb, var(--sc-accent-bg) 80%, white);
+  --sc-play-pressed-bottom:  color-mix(in srgb, var(--sc-accent-bg) 88%, white);
   --sc-accent-pressed-shade: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
 }
 
@@ -178,10 +181,11 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
     --sc-toolbar-bottom:  #eceef1;
 
     --sc-logo-from:       #ffffff;
-    --sc-logo-mix:        65%;
+    --sc-logo-mix:        80%;
+    --sc-logo-shade:      drop-shadow(0 0 1px rgba(0, 0, 0, 0.45));
 
     --sc-play-pressed-top:     var(--sc-accent-bg);
-    --sc-play-pressed-bottom:  color-mix(in srgb, var(--sc-accent-bg) 80%, white);
+    --sc-play-pressed-bottom:  color-mix(in srgb, var(--sc-accent-bg) 88%, white);
     --sc-accent-pressed-shade: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
   }
 }
@@ -236,7 +240,7 @@ html.sc-enabled.sc-accent-red   { --sc-accent-base: #d64545; }
 
 html.sc-enabled:not(#sc-specificity):is(.sc-accent-green, .sc-accent-red, .sc-accent-custom) {
   --sc-accent:        var(--sc-accent-base, #3a82e4);
-  --sc-accent-hover:  color-mix(in srgb, var(--sc-accent) 85%, white);   /* lighter in both themes, like Blue */
+  --sc-accent-hover:  color-mix(in srgb, var(--sc-accent) 92%, white);   /* lighter in both themes, like Blue */
   --sc-accent-border: color-mix(in srgb, var(--sc-accent) 75%, black);
   --sc-accent-fill:   color-mix(in srgb, var(--sc-accent) 85%, black);
   --sc-on-accent:     #ffffff;
@@ -258,4 +262,29 @@ html.sc-enabled:not(#sc-specificity).sc-accent-off {
   --sc-selected-bg:     var(--sc-btn-pressed);
   --sc-selected-fg:     var(--sc-text);
   --sc-focus:           var(--sc-text-muted);
+}
+/* Off in the light theme: its fills are near-white, so a light edge or a
+   lighter "playing" shade would not show. Pressed and playing look sunk
+   instead, like the grey buttons. */
+html.sc-enabled:not(#sc-specificity).sc-accent-off:is(.sc-theme-light, .sc-theme-auto[color-scheme="light"]) {
+  --sc-play-pressed-top:     var(--sc-divider);
+  --sc-play-pressed-bottom:  var(--sc-btn-pressed);
+  --sc-accent-pressed-shade: var(--sc-bevel-pressed);
+  --sc-toggle-pressed-bg:    var(--sc-btn-pressed);
+}
+@media (prefers-color-scheme: light) {
+  html.sc-enabled:not(#sc-specificity).sc-accent-off.sc-theme-auto:not([color-scheme="dark"]) {
+    --sc-play-pressed-top:     var(--sc-divider);
+    --sc-play-pressed-bottom:  var(--sc-btn-pressed);
+    --sc-accent-pressed-shade: var(--sc-bevel-pressed);
+    --sc-toggle-pressed-bg:    var(--sc-btn-pressed);
+  }
+}
+/* Text and icons on Green / Red / Custom fills: white on mid and dark
+   colours, near-black on light ones (a pale custom pick), whichever reads.
+   The switch sits at oklch lightness 0.66, where white drops below 3:1. */
+@supports (color: oklch(from red l c h)) {
+  html.sc-enabled:not(#sc-specificity):is(.sc-accent-green, .sc-accent-red, .sc-accent-custom) {
+    --sc-on-accent: oklch(from var(--sc-accent-base, #3a82e4) clamp(0.2, (0.66 - l) * 1000, 1) 0 0);
+  }
 }

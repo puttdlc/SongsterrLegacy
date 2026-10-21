@@ -55,6 +55,7 @@
     document.getElementById('custom-swatch').style.setProperty('--swatch', custom);
     document.getElementById('custom-row').hidden = accent !== 'custom';
     document.documentElement.dataset.accent = accent;
+    document.documentElement.dataset.gradients = String(settings.gradients !== false);
     const base = { green: '#2f9e44', red: '#d64545', custom }[accent];
     if (base) document.documentElement.style.setProperty('--sc-accent-base', base);
 
