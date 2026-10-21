@@ -158,6 +158,14 @@ html.sc-enabled :is(
   --controls-play-hover-light: var(--sc-accent-bg-hover);
   --controls-play-hover-dark: var(--sc-accent-bg-hover);
   --blue-color: var(--sc-accent-bg);
+  /* ... and the same fixed green / blue in lists (My tabs, Search): the
+     favourite star, difficulty dots, active playlist marks, link buttons. */
+  --mytabs-favorites-icon: var(--sc-accent);
+  --difficulty-color-fill: var(--sc-accent);
+  --playlist-active: var(--sc-accent);
+  --playlist-edit-border-bottom: var(--sc-accent);
+  --delete-songs-title: var(--sc-selected-fg);
+  --button-link-color: var(--sc-selected-fg);
 
   /* buttons */
   --button-bg: var(--sc-btn-bottom);
