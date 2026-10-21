@@ -14,13 +14,13 @@
  * menu (bottom-left dock, icon beside label, collapse tab) is in header.css,
  * scoped to .sc-menu-fusion, so the two share no nav rules.
  *
- * DOM (see header.css): nav#tablist holds three groups, in DOM order
- *   _bottomBarLeft (Plus) | _bottomBarCenter (Search ... For teachers) |
- *   _bottomBarRight (account, inbox, help)
- * The groups are flattened with `display: contents`, so every item is a flex
- * child of #tablist. `order` reverses the right group (help, inbox, account)
- * and three `margin-left: auto` gaps split the free space evenly between the
- * clusters. No element is moved.
+ * DOM (see header.css): nav#tablist holds groups whose contents Songsterr
+ * reshuffles between releases (logged in it now has: Account | Inbox, Help |
+ * Search ... For teachers | Plus). The groups are flattened with
+ * `display: contents`, so every item is a flex child of #tablist, and each
+ * item gets its `order` from the link it holds, never from its group or
+ * position. Three `margin-left: auto` gaps split the free space evenly
+ * between the clusters. No element is moved.
  *
  * Songsterr's own visibility rules are kept: the bar still hides below 880px,
  * for data-plus="true" and until data-ready="true". We never set `display`
@@ -78,23 +78,29 @@ html.sc-enabled.sc-menu-classic #tablist [class*="_itemWrapper"] {
   order: 0;
 }
 
-/* Right group reversed: help, inbox, account (DOM: account, inbox, help).
-   Matched by the link each child holds, not by position: the open inbox
-   popup is a child of this group too (right after its item) and shifted
-   every index. Logged out, Help has its own group and Sign in is alone here. */
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] {
-  & > :has(a[id^="menu-"])  { order: 4; }   /* unknown items go last */
-  & > :has(#menu-help)      { order: 1; }
-  & > :has(#menu-inbox)     { order: 2; }
-  & > :has(#menu-account)   { order: 3; }
-  & > :has(#menu-signin)    { order: 3; }
+/* Order, by the link each child holds (not by group or position: the open
+   inbox popup is a child of a group too, right after its item, and Songsterr
+   moves items between groups): Plus | Search ... For teachers | Help |
+   Inbox, Account / Sign in. Unknown items go last. */
+html.sc-enabled.sc-menu-classic #tablist > div {
+  & > :has(a[id^="menu-"])           { order: 9; }
+  & > :has(#menu-plus)               { order: 1; }
+  & > :has(#menu-search)             { order: 2; }
+  & > :has(#menu-favorites, #menu-mytabs) { order: 3; }
+  & > :has(#menu-newtab)             { order: 4; }
+  & > :has(#menu-teacherPlan)        { order: 5; }
+  & > :has(#menu-help)               { order: 6; }
+  & > :has(#menu-inbox)              { order: 7; }
+  & > :has(#menu-account, #menu-signin) { order: 8; }
 }
 
-/* Cluster gaps: before Search, before Help, before Inbox (logged out: before
-   Help and before Sign in). */
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarCenter"] > :first-child,
-html.sc-enabled.sc-menu-classic #tablist > [class*="_bottomBarRight"] > :is(:has(#menu-help), :has(#menu-inbox), :has(#menu-signin)) {
-  margin-left: auto;
+/* Cluster gaps: before Search, before Help, and before Inbox (before Sign in
+   / Account when there's no inbox, e.g. logged out). */
+html.sc-enabled.sc-menu-classic #tablist {
+  & > div > :has(#menu-search, #menu-help, #menu-inbox),
+  &:not(:has(#menu-inbox)) > div > :has(#menu-account, #menu-signin) {
+    margin-left: auto;
+  }
 }
 
 /* ---------------------------------------------------------------------------
