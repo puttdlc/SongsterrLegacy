@@ -274,10 +274,12 @@ html.sc-enabled #logo {
 }
 html.sc-enabled #logo svg {
   fill: var(--sc-on-accent);   /* white, or dark on a pale custom colour */
+  color: var(--sc-on-accent);
   filter: var(--sc-logo-shade, none);
 }
 html.sc-enabled:is(.sc-accent-blue, .sc-accent-off) #logo svg {
   fill: #ffffff;               /* Off's on-accent is the text colour */
+  color: #ffffff;
 }
 /* The box follows the colour theme: Blue keeps Songsterr's own gradient
    (light to brand blue), Green / Red / Custom sweep into the accent colour,

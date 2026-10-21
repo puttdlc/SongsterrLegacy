@@ -494,10 +494,6 @@ html.sc-enabled.sc-layout-classic #controls #control-source [class*="_text"] {
 html.sc-enabled.sc-layout-classic #controls #control-source [class*="_labelChecked"] {
   color: var(--sc-source-on-text, var(--sc-on-accent));
 }
-html.sc-enabled.sc-layout-classic #controls #control-source:hover > span:not([class*="_labelChecked"]) {
-  color: var(--sc-text);
-  background: var(--sc-row-hover);
-}
 
 /* Songs without the quick toggle get a small source button instead. */
 html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"] {

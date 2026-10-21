@@ -149,6 +149,16 @@ html.sc-enabled :is(
   --button-group-active: var(--sc-accent-fill);
   --button-group-devider: var(--sc-divider);
 
+  /* Songsterr's own fill colours: the play colour (green or blue, used for
+     the source toggle's hover and slide, pins ...) and its brand blue
+     (toolbar badges, the mixer's solo/mute headphone, loading lines).
+     Only inside these containers, so the notation keeps its colours. */
+  --controls-play: var(--sc-accent-bg);
+  --controls-play-hover: var(--sc-accent-bg-hover);
+  --controls-play-hover-light: var(--sc-accent-bg-hover);
+  --controls-play-hover-dark: var(--sc-accent-bg-hover);
+  --blue-color: var(--sc-accent-bg);
+
   /* buttons */
   --button-bg: var(--sc-btn-bottom);
   --button-hover: var(--sc-btn-hover-top);
@@ -195,6 +205,25 @@ html.sc-enabled :is(
 html.sc-enabled #controls {
   font-size: var(--sc-font-size);
   line-height: var(--sc-line);
+}
+
+/* Source toggle (Orig. / Synth), every layout: Songsterr paints both labels
+   in its play colour on hover, which showed as a flash of colour while the
+   chosen fill slid across. Hover is a plain row tint on the other label and
+   nothing on the chosen one (its sliding fill shows through). */
+html.sc-enabled #controls #control-source:hover > [class*="_label"]:not([class*="_labelChecked"]) {
+  color: var(--sc-text);
+  background-color: var(--sc-row-hover);
+}
+html.sc-enabled #controls #control-source:hover > [class*="_labelChecked"] {
+  background-color: transparent;
+}
+
+/* Badges on toolbar buttons (and the mixer's solo/mute headphone) take the
+   accent fill above; their text and icon pick the readable colour on it. */
+html.sc-enabled #controls :is([class*="_badge "], [class$="_badge"], [class*="_soloMuteIndicator"]) {
+  color: var(--sc-on-accent);
+  fill: var(--sc-on-accent);
 }
 
 /* One consistent ring for every restyled control. Drawn inset so joined
