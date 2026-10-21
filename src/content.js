@@ -36,7 +36,8 @@
     videoCollapsed: false,  // Classic / Legacy: synced-video panel slid off to the right
     keepOpen: true,         // Fusion: undo Songsterr folding the player on its own
     animations: true,       // false = UI transitions and animations cut to an instant (base.css)
-    gradients: true         // false = buttons and title strips filled flat, bevels kept (tokens.css)
+    gradients: true,        // false = buttons and title strips filled flat, bevels kept (tokens.css)
+    noteFlash: false        // experimental: tab numbers flash while the Synth plays (page-flash.js)
   });
   const VALID = {
     layout: ['fusion', 'classic', 'minimal'],
@@ -46,7 +47,7 @@
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable']
   };
-  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'gradients'];
+  const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'gradients', 'noteFlash'];
   // Mirror of the last-known settings in the page's localStorage. It is read
   // synchronously at document_start so the right theme paints on the first
   // frame; chrome.storage stays the source of truth.
@@ -93,6 +94,7 @@
     if (s.showAuthor) list.push('sc-show-author');
     if (!s.animations) list.push('sc-no-motion');
     if (!s.gradients) list.push('sc-flat');
+    if (s.noteFlash) list.push('sc-note-flash');
     // Collapsing only exists for the Fusion quick menu (bottom-left dock).
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
     // Minimising only exists in Fusion; Classic and Legacy are fixed bars.

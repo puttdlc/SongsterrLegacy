@@ -271,7 +271,28 @@ html.sc-enabled.sc-no-motion :not(#tablature, #tablature *)::after {
 }
 
 /* ---------------------------------------------------------------------------
- * video.toggle: our collapse tab on the left edge of the floating video panel
+ * notes.flash (experimental, sc-note-flash; page-flash.js): while the Synth
+ * plays, a copy of the measure's tab-number path, clipped to the notes being
+ * played, is laid over the original in the accent colour and fades out over
+ * the note's length (--sc-flash-ms). The copy is the same glyphs, so the
+ * number looks recoloured. Animation: Off keeps the colour for the note's
+ * length and drops it without a fade (steps), since motion.off skips the tab.
+ * ------------------------------------------------------------------------- */
+@keyframes sc-note-flash {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+html.sc-enabled.sc-note-flash #tablature path.sc-flash {
+  fill: var(--sc-accent, #3a82e4);
+  pointer-events: none;
+  animation: sc-note-flash var(--sc-flash-ms, 200ms) cubic-bezier(0.4, 0, 0.7, 0.2) forwards;
+}
+html.sc-enabled.sc-note-flash.sc-no-motion #tablature path.sc-flash {
+  animation-timing-function: steps(1, end);
+}
+
+/* ---------------------------------------------------------------------------
+ * video.toggle:our collapse tab on the left edge of the floating video panel
  * (Classic and Legacy; content.js). Shown only while the panel is open, decided
  * in CSS (:has on <html>) rather than by content.js, so the tab and the
  * collapsed panel always appear in the same style pass: switching Synth ->

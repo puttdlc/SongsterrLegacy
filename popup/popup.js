@@ -22,9 +22,10 @@
     videoCollapsed: false,
     keepOpen: true,
     animations: true,
-    gradients: true
+    gradients: true,
+    noteFlash: false
   };
-  const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'gradients']);
+  const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'gradients', 'noteFlash']);
 
   const form = document.getElementById('settings');
   document.getElementById('version').textContent = `V${chrome.runtime.getManifest().version}`;
