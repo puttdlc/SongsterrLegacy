@@ -111,6 +111,12 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"]:has(>
   background: var(--sc-surface-sunken);
   box-shadow: inset 0 1px 2px var(--sc-shade);
 }
+/* My tabs pins this row at 72px and the list header at 124px, sized for
+   Songsterr's 2px border (52px with margins). The 1px border above left a
+   2px slit the list showed through; the margin gives the pixel back. */
+html.sc-enabled main[id^="panel-"] [class*="_group"] > [class*="_group"]:has(> [class*="_groupItem"]) {
+  margin-block: 11px;
+}
 html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItem"] {
   border-radius: 0;
   transition: background-color var(--sc-ease), color var(--sc-ease);
