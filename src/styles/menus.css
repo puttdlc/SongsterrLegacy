@@ -118,6 +118,13 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItem"] {
 html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItem"]:not([class*="_groupItemActive"]):hover {
   background: var(--sc-row-hover);
 }
+/* Songsterr colours an unchosen item's text with the chosen fill colour on
+   hover, press and focus (it stays focused after a click), which read as a
+   dark accent. Keep the normal text colour; the row tint marks hover. */
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItem"]:not([class*="_groupItemActive"]):is(:hover, :active, :focus) {
+  color: var(--sc-text);
+  fill: var(--sc-text);
+}
 html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItemActive"] {
   background: var(--sc-accent-fill);
   color: var(--sc-on-accent);

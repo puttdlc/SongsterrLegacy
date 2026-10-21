@@ -166,6 +166,7 @@ html.sc-enabled :is(
   --playlist-edit-border-bottom: var(--sc-accent);
   --delete-songs-title: var(--sc-selected-fg);
   --button-link-color: var(--sc-selected-fg);
+  --button-progress-line: var(--sc-accent);   /* busy line under a button */
 
   /* buttons */
   --button-bg: var(--sc-btn-bottom);
