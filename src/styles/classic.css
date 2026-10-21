@@ -428,8 +428,8 @@ html.sc-enabled.sc-layout-classic #controls #control-play:not(:disabled):hover {
 }
 html.sc-enabled.sc-layout-classic #controls #control-play:not(:disabled):active,
 html.sc-enabled.sc-layout-classic #controls #control-play[aria-pressed="true"] {
-  background: var(--sc-classic-play-border);
-  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.35);
+  background: var(--sc-play-pressed, var(--sc-classic-play-border));
+  box-shadow: inset 0 1px 3px var(--sc-accent-shade);
 }
 html.sc-enabled.sc-layout-classic #controls #control-play:disabled {
   opacity: 0.45;

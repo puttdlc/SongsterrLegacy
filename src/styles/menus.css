@@ -122,7 +122,7 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItemActi
   background: var(--sc-accent-fill);
   color: var(--sc-on-accent);
   fill: var(--sc-on-accent);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 2px var(--sc-accent-shade);
 }
 html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"]:has(> [class*="_groupItemActive"]) > [class*="_activeButton"] {
   visibility: hidden;
@@ -330,7 +330,7 @@ html.sc-enabled #metronome-popup [class*="_wrapper"] > button:not(:disabled, [ar
 html.sc-enabled #metronome-popup [class*="_wrapper"] > button[aria-pressed="true"] {
   border-color: var(--sc-accent-fill);
   background: var(--sc-accent-fill);
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 2px var(--sc-accent-shade);
 }
 html.sc-enabled #metronome-popup [class*="_wrapper"] > button[aria-pressed="true"] :is(span, svg) {
   color: var(--sc-on-accent);
@@ -394,7 +394,7 @@ html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_button
   background: var(--sc-accent-bg-hover);
 }
 html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):active {
-  box-shadow: var(--sc-bevel-pressed);
+  box-shadow: inset 0 1px 2px var(--sc-accent-shade);
 }
 /* Disabled ("All caught up" ...): a muted neutral button, not a faded
    accent one (Songsterr swaps the fill, which left a lone accent outline). */

@@ -84,6 +84,9 @@ html.sc-enabled {
   /* Logo box: the gradient's start colour and how much accent it holds. */
   --sc-logo-from:       #0d1117;
   --sc-logo-mix:        45%;
+  /* Inner shade on pressed / chosen accent fills: dark here, a light edge
+     in the light theme. */
+  --sc-accent-shade:    rgba(0, 0, 0, 0.35);
 }
 
 /* ---------- Light ---------- */
@@ -128,6 +131,11 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
 
   --sc-logo-from:       #ffffff;
   --sc-logo-mix:        65%;
+
+  /* Pressed play button (playing): a lighter fill, not the dark theme's
+     darker one (the fallback in each layout). */
+  --sc-play-pressed:       color-mix(in srgb, var(--sc-accent-bg) 82%, white);
+  --sc-accent-shade:       rgba(255, 255, 255, 0.55);
 }
 
 @media (prefers-color-scheme: light) {
@@ -169,6 +177,9 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
 
     --sc-logo-from:       #ffffff;
     --sc-logo-mix:        65%;
+
+    --sc-play-pressed:       color-mix(in srgb, var(--sc-accent-bg) 82%, white);
+    --sc-accent-shade:       rgba(255, 255, 255, 0.55);
   }
 }
 
