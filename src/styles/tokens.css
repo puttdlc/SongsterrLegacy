@@ -217,7 +217,7 @@ html.sc-enabled.sc-accent-red   { --sc-accent-base: #d64545; }
 
 html.sc-enabled:not(#sc-specificity):is(.sc-accent-green, .sc-accent-red, .sc-accent-custom) {
   --sc-accent:        var(--sc-accent-base, #3a82e4);
-  --sc-accent-hover:  color-mix(in srgb, var(--sc-accent) 85%, var(--sc-text));
+  --sc-accent-hover:  color-mix(in srgb, var(--sc-accent) 85%, white);   /* lighter in both themes, like Blue */
   --sc-accent-border: color-mix(in srgb, var(--sc-accent) 75%, black);
   --sc-accent-fill:   color-mix(in srgb, var(--sc-accent) 85%, black);
   --sc-on-accent:     #ffffff;
