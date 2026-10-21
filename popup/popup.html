@@ -105,6 +105,25 @@
         <label title="Experimental: while the tab plays, each tab number lights up in the colour theme and fades over the note's length"><input type="radio" name="noteFlash" value="true"><span>On</span></label>
         <label><input type="radio" name="noteFlash" value="false"><span>Off</span></label>
       </div>
+      <p class="row-note muted">Experimental feature*</p>
+    </fieldset>
+
+    <fieldset class="row" id="flash-color-row" hidden>
+      <legend>Flash color</legend>
+      <div class="seg seg-tight" role="radiogroup" aria-label="Note flash colour">
+        <label title="Orange: stands out from the blue playback cursor"><input type="radio" name="flashColor" value="orange"><span><i class="swatch" style="--swatch: #f76707"></i>Orange</span></label>
+        <label title="Pink"><input type="radio" name="flashColor" value="pink"><span><i class="swatch" style="--swatch: #e64980"></i>Pink</span></label>
+        <label title="Same as the Color theme"><input type="radio" name="flashColor" value="theme"><span><i class="swatch" id="flash-theme-swatch"></i>Theme</span></label>
+        <label title="Pick your own colour"><input type="radio" name="flashColor" value="custom"><span><i class="swatch" id="flash-custom-swatch"></i>Custom</span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="row" id="flash-custom-row" hidden>
+      <legend>Custom</legend>
+      <div class="color-pick">
+        <input type="color" name="flashCustom" aria-label="Custom note flash colour">
+        <span id="flash-custom-hex" class="muted"></span>
+      </div>
     </fieldset>
 
     <fieldset class="row">

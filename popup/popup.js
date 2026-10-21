@@ -23,7 +23,9 @@
     keepOpen: true,
     animations: true,
     gradients: true,
-    noteFlash: false
+    noteFlash: false,
+    flashColor: 'orange',
+    flashCustom: '#f76707'
   };
   const BOOLEAN_KEYS = new Set(['enabled', 'showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'gradients', 'noteFlash']);
 
@@ -56,6 +58,14 @@
     document.getElementById('custom-swatch').style.setProperty('--swatch', custom);
     document.getElementById('custom-row').hidden = accent !== 'custom';
     document.documentElement.dataset.accent = accent;
+    const flashCustom = /^#[0-9a-f]{6}$/i.test(String(settings.flashCustom)) ? settings.flashCustom : DEFAULTS.flashCustom;
+    form.elements.flashCustom.value = flashCustom;
+    document.getElementById('flash-custom-hex').textContent = flashCustom;
+    document.getElementById('flash-custom-swatch').style.setProperty('--swatch', flashCustom);
+    document.getElementById('flash-theme-swatch').style.setProperty('--swatch',
+      { blue: '#3a82e4', green: '#2f9e44', red: '#d64545', custom, off: '#8b8f97' }[accent]);
+    document.getElementById('flash-color-row').hidden = !settings.noteFlash;
+    document.getElementById('flash-custom-row').hidden = !settings.noteFlash || settings.flashColor !== 'custom';
     document.documentElement.dataset.gradients = String(settings.gradients !== false);
     const base = { green: '#2f9e44', red: '#d64545', custom }[accent];
     if (base) document.documentElement.style.setProperty('--sc-accent-base', base);
@@ -102,6 +112,13 @@
       current = { ...current, accent: 'custom', accentCustom: value };
       render(current);
       chrome.storage.sync.set({ accent: 'custom', accentCustom: value });
+      return;
+    }
+    // Same for the flash colour.
+    if (input.name === 'flashCustom' && current.flashColor !== 'custom') {
+      current = { ...current, flashColor: 'custom', flashCustom: value };
+      render(current);
+      chrome.storage.sync.set({ flashColor: 'custom', flashCustom: value });
       return;
     }
     current = { ...current, [input.name]: value };

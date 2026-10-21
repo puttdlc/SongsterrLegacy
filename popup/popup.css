@@ -149,6 +149,13 @@ body {
 }
 .row + .row { border-top: 1px solid var(--sc-divider); }
 .row[hidden] { display: none; }
+/* Small line under a row's control (second column), e.g. "Experimental". */
+.row-note {
+  grid-column: 2;
+  margin: 3px 0 0;
+  font-size: 11px;
+  font-style: italic;
+}
 .row legend {
   float: left;               /* lets legend sit in the grid's first column */
   padding: 0;

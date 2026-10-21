@@ -37,7 +37,9 @@
     keepOpen: true,         // Fusion: undo Songsterr folding the player on its own
     animations: true,       // false = UI transitions and animations cut to an instant (base.css)
     gradients: true,        // false = buttons and title strips filled flat, bevels kept (tokens.css)
-    noteFlash: false        // experimental: tab numbers flash during playback (page-flash.js)
+    noteFlash: false,       // experimental: tab numbers flash during playback (page-flash.js)
+    flashColor: 'orange',   // orange | pink | theme (the accent) | custom
+    flashCustom: '#f76707'  // #rrggbb, used when flashColor = custom
   });
   const VALID = {
     layout: ['fusion', 'classic', 'minimal'],
@@ -45,7 +47,8 @@
     classicBar: ['spread', 'icons'],
     accent: ['auto', 'blue', 'green', 'red', 'custom', 'off'],
     theme: ['dark', 'light', 'auto'],
-    density: ['compact', 'comfortable']
+    density: ['compact', 'comfortable'],
+    flashColor: ['orange', 'pink', 'theme', 'custom']
   };
   const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'gradients', 'noteFlash'];
   // Mirror of the last-known settings in the page's localStorage. It is read
@@ -68,6 +71,8 @@
     if (!/^#[0-9a-f]{6}$/i.test(String(s.accentCustom))) s.accentCustom = DEFAULTS.accentCustom;
     if (!VALID.theme.includes(s.theme)) s.theme = DEFAULTS.theme;
     if (!VALID.density.includes(s.density)) s.density = DEFAULTS.density;
+    if (!VALID.flashColor.includes(s.flashColor)) s.flashColor = DEFAULTS.flashColor;
+    if (!/^#[0-9a-f]{6}$/i.test(String(s.flashCustom))) s.flashCustom = DEFAULTS.flashCustom;
     return s;
   }
 
@@ -85,6 +90,17 @@
     if (root.style.getPropertyValue('--sc-accent-base') === value) return;
     if (value) root.style.setProperty('--sc-accent-base', value);
     else root.style.removeProperty('--sc-accent-base');
+  }
+
+  // Note flash colour, the same way (base.css notes.flash). "theme" sets
+  // nothing, so the flash falls back to the accent.
+  const FLASH_COLORS = { orange: '#f76707', pink: '#e64980' };
+  function syncFlashColor() {
+    const value = !settings.enabled || !settings.noteFlash ? ''
+      : settings.flashColor === 'custom' ? settings.flashCustom : FLASH_COLORS[settings.flashColor] || '';
+    if (root.style.getPropertyValue('--sc-flash-color') === value) return;
+    if (value) root.style.setProperty('--sc-flash-color', value);
+    else root.style.removeProperty('--sc-flash-color');
   }
 
   function classesFor(s) {
@@ -119,6 +135,7 @@
     wanted = classesFor(settings);
     syncClasses();
     syncAccentColor();
+    syncFlashColor();
     updateNavToggle();
     updatePaneToggle();
     updateVideoToggle();
