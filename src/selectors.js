@@ -149,11 +149,21 @@
       promo:    { sel: '#promo', tier: 'id', note: 'Contextual promo popup (app store / offers).' }
     },
 
+    // Note flash (page-flash.js, MAIN world, so it keeps its own copies of
+    // these). Store data and fallbacks are listed in its header; when a
+    // selector here stops matching, flashing goes quiet, nothing else.
+    noteFlash: {
+      status: 'styled (opt-in, own copies only)',
+      fretPaths:  { sel: '#tablature [data-part-id] path[data-notes-measure]', tier: 'data', note: 'Each measure\'s fret numbers as one path; voices > 0 in a second one ("<n>o"). Fallback with one track shown: #tablature path[data-notes-measure]. Never modified, only cloned.' },
+      trackGroup: { sel: '#tablature g[data-part-id]', tier: 'data', note: 'One per track and line; picks the right track in the multitrack view (no fallback there).' },
+      copies:     { sel: '#tablature path.sc-flash', tier: 'id', note: 'Ours: clipped, fading copies laid over the original path (base.css notes.flash).' }
+    },
+
     // Never styled: listed so nobody adds rules here by accident.
     notation: {
       status: 'off-limits',
       apptab:    { sel: '#apptab', tier: 'id', note: 'Tab page section. Only its background may be adjusted.' },
-      tablature: { sel: '#tablature', tier: 'id', note: 'Notation renderer output. Do not style.' }
+      tablature: { sel: '#tablature', tier: 'id', note: 'Notation renderer output. Do not style (note flash only adds its own copies).' }
     }
   };
 
