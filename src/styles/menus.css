@@ -65,6 +65,20 @@ html.sc-enabled main[id^="panel-"] input[placeholder]:is([type="text"], :not([ty
   height: 32px;
   font-size: var(--sc-font-size);
 }
+/* Clear button (X): Songsterr sizes it for its 44px field, so in the 32px
+   one it hung low. Fit it to the field and shrink the icon to match. */
+html.sc-enabled main[id^="panel-"] #icon-reset {
+  top: 0;
+  bottom: 0;
+  height: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+html.sc-enabled main[id^="panel-"] #icon-reset svg {
+  width: 12px;
+  height: 12px;
+}
 html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) input:focus {
   border-color: var(--sc-focus);
   outline: none;
