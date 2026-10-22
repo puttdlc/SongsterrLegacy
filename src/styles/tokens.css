@@ -143,9 +143,10 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
   --sc-accent-pressed-shade: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
   /* Chosen source (Orig. / Synth) beside the play button: a lighter tint, so
      it stays apart from the playing button (in the dark theme the play
-     button is the darker one). Its text picks white or dark for contrast. */
+     button is the darker one). Its text is white unless the tint is very
+     pale (a light custom colour), then dark. */
   --sc-source-on:            color-mix(in srgb, var(--sc-accent-bg) 78%, white);
-  --sc-source-on-text:       oklch(from var(--sc-source-on) clamp(0.2, (0.66 - l) * 1000, 1) 0 0);
+  --sc-source-on-text:       oklch(from var(--sc-source-on) clamp(0.2, (0.85 - l) * 1000, 1) 0 0);
 }
 
 @media (prefers-color-scheme: light) {
@@ -193,7 +194,7 @@ html.sc-enabled.sc-theme-auto[color-scheme="light"] {
     --sc-play-pressed-bottom:  color-mix(in srgb, var(--sc-accent-bg) 88%, white);
     --sc-accent-pressed-shade: inset 0 0 0 1px rgba(255, 255, 255, 0.22);
     --sc-source-on:            color-mix(in srgb, var(--sc-accent-bg) 78%, white);
-    --sc-source-on-text:       oklch(from var(--sc-source-on) clamp(0.2, (0.66 - l) * 1000, 1) 0 0);
+    --sc-source-on-text:       oklch(from var(--sc-source-on) clamp(0.2, (0.85 - l) * 1000, 1) 0 0);
   }
 }
 
