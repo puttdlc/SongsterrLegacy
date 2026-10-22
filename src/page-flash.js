@@ -13,6 +13,9 @@
  *                                 Songsterr's sync points)
  *   part.current.timestamps       start of every beat of voice 1, in ms
  *   part.current.measures[].voices[0].beats[]  notes (string, fret), layout
+ *   multiPart.view.parts          in the multitrack view, every shown track
+ *                                 (same shape as part.current, each with its
+ *                                 own timestamps and layout); all flash
  * Fret numbers have no element of their own: each measure's are one merged
  * path (path[data-notes-measure = measure index + 1], in the line's own
  * coordinates, digits centred on beat.layout.absoluteX, strings 12px apart).
@@ -36,8 +39,8 @@
   const IDLE_MS = 250;
 
   let store = null;
-  let cache = null;        // { part, beats, timestamps } for the current track
-  let lastIndex = -1;
+  const cache = new WeakMap(); // part -> { ok, beats, timestamps, partId }
+  const lastIndex = new Map(); // partId -> last flashed beat index
   let clock = null;        // { cursor, at, rate }: song ms per real ms, smoothed
   let rafId = 0;
   let idleId = 0;
@@ -75,8 +78,10 @@
   // Voice 1's beats in order, one per timestamp. Anything else (a format
   // change) marks the track unusable rather than flashing the wrong notes.
   function trackData(part) {
-    if (cache && cache.part === part) return cache.ok ? cache : null;
-    cache = { part, ok: false };
+    const known = cache.get(part);
+    if (known) return known.ok ? known : null;
+    const data = { ok: false };
+    cache.set(part, data);
     try {
       const beats = [];
       part.measures.forEach((m, mi) => {
@@ -84,10 +89,20 @@
       });
       const ts = part.timestamps;
       if (Array.isArray(ts) && ts.length === beats.length && beats.length) {
-        Object.assign(cache, { ok: true, beats, timestamps: ts, partId: part.partId });
+        Object.assign(data, { ok: true, beats, timestamps: ts, partId: part.partId });
       }
     } catch (_) { /* unusable */ }
-    return cache.ok ? cache : null;
+    return data.ok ? data : null;
+  }
+
+  // The tracks on screen: every track of the multitrack view, else the
+  // current one.
+  function shownParts(state) {
+    const multi = state.multiPart;
+    const parts = multi && multi.enabled && multi.view && multi.view.parts;
+    if (Array.isArray(parts) && parts.length) return parts;
+    const part = state.part && state.part.current;
+    return part ? [part] : [];
   }
 
   // Last beat starting at or before t (binary search).
@@ -158,9 +173,8 @@
     const player = state && state.player;
     if (!player || !player.shouldPlay || !player.instance) return null;
     if (typeof player.instance.getCursor !== 'function') return null;
-    const part = state.part && state.part.current;
-    const data = part && trackData(part);
-    return data ? { player, data } : null;
+    const tracks = shownParts(state).map((p) => p && trackData(p)).filter(Boolean);
+    return tracks.length ? { player, tracks } : null;
   }
 
   // Song ms per real ms. Starts from the speed setting, then follows the
@@ -182,18 +196,26 @@
   function frame() {
     rafId = 0;
     const active = activePlayer();
-    if (!active) { lastIndex = -1; clock = null; idle(); return; }
+    if (!active) { lastIndex.clear(); clock = null; idle(); return; }
+    let cursor;
+    let rate;
     try {
-      const { player, data } = active;
-      const cursor = player.instance.getCursor();
-      const rate = clockRate(player, cursor, performance.now());
-      const index = beatIndexAt(data.timestamps, cursor);
-      if (index !== lastIndex) {
-        lastIndex = index;
-        if (index >= 0) flash(data, index, rate);
-      }
+      cursor = active.player.instance.getCursor();
+      rate = clockRate(active.player, cursor, performance.now());
     } catch (_) {
-      if (cache) cache.ok = false;
+      rafId = requestAnimationFrame(frame);
+      return;
+    }
+    for (const data of active.tracks) {
+      try {
+        const index = beatIndexAt(data.timestamps, cursor);
+        if (index !== lastIndex.get(data.partId)) {
+          lastIndex.set(data.partId, index);
+          if (index >= 0) flash(data, index, rate);
+        }
+      } catch (_) {
+        data.ok = false;
+      }
     }
     rafId = requestAnimationFrame(frame);
   }
