@@ -11,13 +11,17 @@
  *                                 and Songsterr's own fretboard follow; with
  *                                 Orig. it is the video time mapped through
  *                                 Songsterr's sync points)
- *   part.current.timestamps       start of every beat of voice 1, in ms
- *   part.current.measures[].voices[0].beats[]  notes (string, fret), layout
+ *   part.current.timestamps       one time (ms) per beat start, all voices
+ *                                 merged, in play order (repeats unrolled)
+ *   part.current.timeline         Map: timestamp -> that onset's layout, whose
+ *                                 beats[] (every voice) carry voice, measure,
+ *                                 startTick, durationInTicks, notes, layout
  *   multiPart.view.parts          in the multitrack view, every shown track
  *                                 (same shape as part.current, each with its
  *                                 own timestamps and layout); all flash
  * Fret numbers have no element of their own: each measure's are one merged
- * path (path[data-notes-measure = measure index + 1], in the line's own
+ * path (path[data-notes-measure = measure index + 1], other voices' in a
+ * second one with "o" appended, in the line's own
  * coordinates, digits centred on beat.layout.absoluteX, strings 12px apart).
  * The flash is a copy of that path, clipped to the played notes and coloured
  * by base.css (notes.flash); Songsterr's elements are never changed.
@@ -75,23 +79,18 @@
     return null;
   }
 
-  // Voice 1's beats in order, one per timestamp. Anything else (a format
-  // change) marks the track unusable rather than flashing the wrong notes.
+  // Songsterr's own clock-to-beat map. Another shape (a format change)
+  // marks the track unusable rather than flashing the wrong notes.
   function trackData(part) {
     const known = cache.get(part);
     if (known) return known.ok ? known : null;
     const data = { ok: false };
     cache.set(part, data);
-    try {
-      const beats = [];
-      part.measures.forEach((m, mi) => {
-        for (const b of m.voices[0].beats) beats.push({ beat: b, measure: mi });
-      });
-      const ts = part.timestamps;
-      if (Array.isArray(ts) && ts.length === beats.length && beats.length) {
-        Object.assign(data, { ok: true, beats, timestamps: ts, partId: part.partId });
-      }
-    } catch (_) { /* unusable */ }
+    const ts = part.timestamps;
+    const timeline = part.timeline;
+    if (Array.isArray(ts) && ts.length && timeline && typeof timeline.get === 'function') {
+      Object.assign(data, { ok: true, timestamps: ts, timeline, partId: part.partId });
+    }
     return data.ok ? data : null;
   }
 
@@ -118,18 +117,40 @@
     return lo;
   }
 
+  // The onset a beat's note ends on: the first later one in the same
+  // measure at or past its end, else the next measure played (which can be
+  // the same measure again, from its start, when it repeats).
+  function endIndex(data, index, beat) {
+    const ts = data.timestamps;
+    const endTick = beat.startTick + beat.durationInTicks;
+    for (let i = index + 1; i < ts.length; i++) {
+      const entry = data.timeline.get(ts[i]);
+      const other = entry && entry.beats && entry.beats[0];
+      if (!other || other.measure !== beat.measure
+        || other.startTick >= endTick || other.startTick <= beat.startTick) return i;
+    }
+    return ts.length;
+  }
+
   function flash(data, index, speed) {
-    const { beat, measure } = data.beats[index];
-    if (beat.rest || !beat.layout) return;
+    const ts = data.timestamps;
+    const entry = data.timeline.get(ts[index]);
+    for (const beat of (entry && entry.beats) || []) {
+      const end = endIndex(data, index, beat);
+      const songMs = end < ts.length ? ts[end] - ts[index] : 500;
+      flashBeat(data, beat, Math.max(60, Math.min(4000, songMs / speed)));
+    }
+  }
+
+  function flashBeat(data, beat, ms) {
+    if (beat.rest || !beat.layout || !beat.measure) return;
     const notes = (beat.notes || []).filter((n) => !n.rest && !n.tie && Number.isFinite(n.string));
     if (!notes.length) return;
-    const ts = data.timestamps;
-    const songMs = index + 1 < ts.length ? ts[index + 1] - ts[index] : 500;
-    const ms = Math.max(60, Math.min(4000, songMs / speed));
     const x = beat.layout.absoluteX;
     const gap = (beat.layout.measureLayout && beat.layout.measureLayout.line && beat.layout.measureLayout.line.intervalSize) || 12;
+    const key = `${beat.measure.index + 1}${beat.voice ? 'o' : ''}`;
     const paths = document.querySelectorAll(
-      `#tablature [data-part-id="${data.partId}"] path[data-notes-measure="${measure + 1}"]`);
+      `#tablature [data-part-id="${data.partId}"] path[data-notes-measure="${key}"]`);
     for (const path of paths) {
       const parent = path.parentNode;
       if (!parent) continue;
