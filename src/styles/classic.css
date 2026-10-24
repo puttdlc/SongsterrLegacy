@@ -703,6 +703,42 @@ html.sc-enabled.sc-layout-classic.sc-video-collapsed #sc-video-toggle svg {
 }
 
 /* ---------------------------------------------------------------------------
+ * classic.arrange: Settings > "Rearrange buttons". Songsterr puts its hint
+ * and Reset / Done bar inside the pane, above the button row; in the
+ * one-row bar it took the bar's place and pushed the buttons out of view.
+ * It floats centred above the bar instead.
+ * Saved orders need nothing: Songsterr renders the items in that order and
+ * every item here has the same `order`, so the DOM order shows. While
+ * dragging it keeps the DOM still and moves items with --arrange-slot,
+ * which the rule below passes on. The track selector and play stay pinned
+ * (classic.bar); the selector shows as fixed, like Songsterr's play.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-classic #controls > [data-testid="controls-panel-arrange-bar"] {
+  position: fixed;
+  left: calc(50% + var(--sc-left-inset, 0px) / 2);
+  bottom: var(--sc-classic-h);
+  translate: -50% 0;
+  width: min(360px, 100vw - var(--sc-left-inset, 0px) - 16px);
+  max-width: none;
+  margin: 0;
+  padding: 12px 25px 14px;
+  border: 1px solid var(--sc-border);
+  border-bottom: 0;
+  background: var(--sc-toolbar-bg);
+  box-shadow: inset 0 1px 0 var(--sc-highlight), var(--sc-elev);
+}
+html.sc-enabled.sc-layout-classic #controls [class*="_controlsCard"] > div > [class*="_itemSlotted"]:not(#mixer-button, #c-play, [class*="_itemPlayButtonInChords"]) {
+  order: calc(3 + var(--arrange-slot, 0));
+}
+html.sc-enabled.sc-layout-classic #controls #mixer-button[data-arranging] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+html.sc-enabled.sc-layout-classic #controls #mixer-button[data-arranging] > [data-arrange-id] {
+  visibility: hidden;                /* no grab, no drop target, no focus */
+}
+
+/* ---------------------------------------------------------------------------
  * classic.mixer: the track list opens on the left, straight above the track
  * selector that opens it, instead of over the right end of the bar. The
  * settings dialog ("More") stays right but sits on the bar, not over it.

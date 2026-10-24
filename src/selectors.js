@@ -42,6 +42,8 @@
       speedText: { sel: '#control-speed [class*="_textSpeed"]', tier: 'stem', note: 'The "100%" label inside the speed button (was a pill).' },
       metronomeSettings: { sel: '#metronome-settings', tier: 'id', note: 'Small "..." tab that appears above the metronome button when it is on.' },
       handle:    { sel: '#controls-panel-handle', tier: 'id', note: 'Drag handle bar above the row (collapse/expand).' },
+      arrangeBar: { sel: '#controls > [data-testid="controls-panel-arrange-bar"]', tier: 'data', note: 'Settings > Rearrange buttons: hint + Reset / Done (#controls-panel-arrange-reset/-done), inside the pane above the card. Floated by classic.css / minimal.css.' },
+      arranging: { sel: '#controls [data-arranging]', tier: 'data', note: 'Items while arranging ("movable" / "fixed"); handle = child [data-arrange-id]. While dragging, stem _itemSlotted orders them with --arrange-slot.' },
       topPanel:  { sel: '[data-controls-top-panel]', tier: 'data', note: 'Row above the pane: favourite, display-mode select, editor. Positioned via --controls-top-panel-bottom.' },
       topItems:  { sel: '[data-controls-top-panel] [class*="_controlsTopItem"]', tier: 'stem', note: 'Item slots inside the top row.' },
       favorite:  { sel: '#favorite-toggle', tier: 'id', note: 'Favourite star. Chosen state = class stem _toggleChosen.' },

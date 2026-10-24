@@ -129,6 +129,40 @@ html.sc-enabled.sc-layout-minimal #controls :is(#c-play, [class*="_itemPlayButto
 html.sc-enabled.sc-layout-minimal #controls #mixer-button { order: 2; }
 
 /* ---------------------------------------------------------------------------
+ * minimal.arrange: Settings > "Rearrange buttons". Songsterr's hint and
+ * Reset / Done bar sat in #controls, which is an empty strip under the
+ * window's bottom edge here, so it was out of view and arranging couldn't
+ * be ended. It floats beside the column instead, bottom aligned like the
+ * video panel (and over it while arranging).
+ * Saved orders need nothing (Songsterr renders the items in that order);
+ * while dragging, items move with --arrange-slot. Play and the track list
+ * stay pinned (minimal.row); the track list shows as fixed, like play.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled.sc-layout-minimal #controls > [data-testid="controls-panel-arrange-bar"] {
+  position: fixed;
+  right: var(--sc-rail-w);
+  bottom: var(--sc-bottom-inset, 0px);
+  width: min(360px, 100vw - var(--sc-rail-w) - var(--sc-left-inset, 0px) - 16px);
+  max-width: none;
+  margin: 0;
+  padding: 12px 25px 14px;
+  border-top: 1px solid var(--sc-border);
+  border-left: 1px solid var(--sc-border);
+  background: var(--sc-toolbar-bg);
+  box-shadow: inset 0 1px 0 var(--sc-highlight), var(--sc-elev);
+}
+html.sc-enabled.sc-layout-minimal #controls [class*="_controlsCard"] > div > [class*="_itemSlotted"]:not(#mixer-button, #c-play, [class*="_itemPlayButtonInChords"]) {
+  order: calc(3 + var(--arrange-slot, 0));
+}
+html.sc-enabled.sc-layout-minimal #controls #mixer-button[data-arranging] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+html.sc-enabled.sc-layout-minimal #controls #mixer-button[data-arranging] > [data-arrange-id] {
+  visibility: hidden;                /* no grab, no drop target, no focus */
+}
+
+/* ---------------------------------------------------------------------------
  * minimal.buttons: round, icon only (the title attribute stays the tooltip)
  * ------------------------------------------------------------------------- */
 html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source),
