@@ -61,16 +61,26 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) input:is([type="text"],
 html.sc-enabled main[id^="panel-"] input[placeholder]:is([type="text"], [type="search"], :not([type])) {
   background-color: var(--sc-surface-sunken);
 }
+html.sc-enabled main[id^="panel-"] {
+  --sc-panel-field-h: 32px;
+}
 html.sc-enabled main[id^="panel-"] input[placeholder]:is([type="text"], :not([type])) {
-  height: 32px;
+  height: var(--sc-panel-field-h);
   font-size: var(--sc-font-size);
 }
 /* Clear button (X): Songsterr sizes it for its 44px field, so in the 32px
-   one it hung low. Fit it to the field and shrink the icon to match. */
+   one it hung low. Fit it to the field and shrink the icon to match.
+   The field's height, not the wrapper's: the wrapper is a flex item that
+   stretches to the tallest thing beside it (in My tabs, the 42px title),
+   so filling it put the X 5px low there. The X keeps the same gap to the
+   right edge as above and below it (10px): Songsterr's right: 30px left a
+   wide gap, and its icon's viewBox (0 -2 16 16) draws the glyph 1px low,
+   hence the nudge up. Measured on the rendered pixels, not the boxes. */
 html.sc-enabled main[id^="panel-"] #icon-reset {
   top: 0;
-  bottom: 0;
-  height: auto;
+  right: 3px;
+  bottom: auto;
+  height: var(--sc-panel-field-h);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -78,6 +88,7 @@ html.sc-enabled main[id^="panel-"] #icon-reset {
 html.sc-enabled main[id^="panel-"] #icon-reset svg {
   width: 12px;
   height: 12px;
+  translate: 0 -1px;
 }
 html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) input:focus {
   border-color: var(--sc-focus);
