@@ -92,7 +92,7 @@
 html, body { margin: 0; }
 
 body {
-  width: 340px;
+  width: 384px;
   background: var(--sc-bg);
   color: var(--sc-text);
   font: 13px/1.25 var(--sc-font);
@@ -107,7 +107,7 @@ body {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
+  padding: 8px 12px;
   background: var(--sc-bar-bg);
 }
 .titlebar {
@@ -133,17 +133,18 @@ body {
 /* ---------- Panels ---------- */
 .panel {
   margin: 0;
-  padding: 8px 10px;
+  padding: 8px 12px;
   background: var(--sc-surface);
   border-bottom: 1px solid var(--sc-divider);
 }
 
 .row {
   display: grid;
-  grid-template-columns: 64px 1fr;
+  grid-template-columns: 88px 1fr;   /* the longest label ("Color theme") on one line */
+  column-gap: 12px;
   align-items: center;
   margin: 0;
-  padding: 4px 0;
+  padding: 6px 0;
   border: 0;
   min-inline-size: 0;
 }
@@ -160,6 +161,7 @@ body {
   float: left;               /* lets legend sit in the grid's first column */
   padding: 0;
   color: var(--sc-text-muted);
+  white-space: nowrap;
 }
 
 /* ---------- Segmented control ---------- */
@@ -182,7 +184,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 26px;
+  height: 28px;
   padding: 0 8px;
   border: 1px solid var(--sc-border);
   background: var(--sc-btn-bg);
