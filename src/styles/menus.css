@@ -444,6 +444,40 @@ html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_button
   opacity: 0.7;
 }
 
+/* Rearrange buttons (selectors.js toolbar.arrangeBar): Reset / Done sit in
+   the pane, not a dialog, so the rules above miss them. Reset as the plain
+   bevelled button, Done as the accent one; every layout. */
+html.sc-enabled #controls [data-testid="controls-panel-arrange-bar"] button {
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  color: var(--sc-text);
+}
+html.sc-enabled #controls [data-testid="controls-panel-arrange-bar"] button:not(:disabled):hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled #controls [data-testid="controls-panel-arrange-bar"] button:not(:disabled):active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+html.sc-enabled #controls [data-testid="controls-panel-arrange-bar"] button:disabled {
+  box-shadow: none;
+  color: var(--sc-text-muted);
+  opacity: 0.5;
+}
+html.sc-enabled #controls [data-testid="controls-panel-arrange-bar"] button#controls-panel-arrange-done {
+  border-color: var(--sc-accent-border);
+  background: var(--sc-accent-shine);
+  color: var(--sc-on-accent);
+}
+html.sc-enabled #controls [data-testid="controls-panel-arrange-bar"] button#controls-panel-arrange-done:not(:disabled):hover {
+  background: var(--sc-accent-shine-hover);
+}
+html.sc-enabled #controls [data-testid="controls-panel-arrange-bar"] button#controls-panel-arrange-done:not(:disabled):active {
+  box-shadow: var(--sc-accent-pressed-shade);
+}
+
 /* Print: the 60px zoom figure -> a readable 32px value between the steps. */
 html.sc-enabled [data-tab-control="print"] [class*="_zoom"] {
   font: 600 32px / 1 var(--sc-font);
