@@ -163,7 +163,7 @@
     theme: 'Dark or light controls, menus and panels. Auto follows Songsterr’s own theme setting, so the controls and the tab stay in the same scheme.',
     density: 'Size of the player buttons: Compact is 32px tall, Comfortable 38px.',
     animations: 'On: windows, menus and buttons slide and fade. Off: they open and change instantly. The tab and the playback cursor are not affected.',
-    noteFlash: 'Beta. While the tab plays (Synth or Orig.), each tab number lights up and fades out over the note’s length. A Songsterr update may pause it until the extension catches up.',
+    noteFlash: 'Beta. While the tab plays (Synth or Orig.), each tab number lights up and fades out over the note’s length. May stop working with future Songsterr updates.',
     flashColor: 'Colour of the note flash. Orange stands out from Songsterr’s blue playback cursor. Theme uses your Color theme.',
     flashCustom: 'Pick any colour for the note flash.',
     showAuthor: 'Shows “Last edited by <name>” under the song title, linking to the tab’s author.',

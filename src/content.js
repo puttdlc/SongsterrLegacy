@@ -793,7 +793,7 @@
     { key: 'noteFlash', title: 'Note flash (beta)', kind: 'plain', pair: true, options: [
       ['false', 'Off', 'Plain tab'],
       ['true', 'On', 'Notes light up as they play']],
-      note: 'Beta: still being polished. You can turn it off any time.' }
+      note: 'Beta: may stop working with future Songsterr updates. You can turn it off any time.' }
   ];
   const WELCOME_FADE_MS = 300;
   let welcomePending = false;
