@@ -140,7 +140,7 @@ body {
 
 .row {
   display: grid;
-  grid-template-columns: 88px 1fr;   /* the longest label ("Color theme") on one line */
+  grid-template-columns: 102px 1fr;  /* the longest label ("Color theme") and its (i) on one line */
   column-gap: 12px;
   align-items: center;
   margin: 0;
@@ -303,4 +303,79 @@ body {
 #diag-results .region td {
   background: var(--sc-surface);
   font-weight: 600;
+}
+
+/* ---------- Setting info (i) and its tip ---------- */
+.row legend .info {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  margin: 0 0 0 5px;
+  padding: 0;
+  vertical-align: -1px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  background: none;
+  color: var(--sc-text-muted);
+  font: italic 700 9px/1 Georgia, "Times New Roman", serif;
+  opacity: 0.7;
+  cursor: help;
+}
+.row legend .info:hover,
+.row legend .info:focus-visible {
+  color: var(--sc-selected-fg);
+  opacity: 1;
+}
+.row legend .info:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: 1px;
+}
+#tip {
+  position: fixed;
+  left: 12px;
+  right: 12px;
+  z-index: 3;
+  padding: 7px 9px;
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  background: var(--sc-surface-sunken);
+  box-shadow: 0 0 0 1px var(--sc-divider), 0 4px 12px var(--sc-shade-strong);
+  color: var(--sc-text);
+  font-size: 12px;
+  line-height: 1.4;
+  pointer-events: none;
+}
+#tip[hidden] { display: none; }
+
+/* ---------- "More settings below" ---------- */
+#more-below {
+  position: fixed;
+  left: 50%;
+  bottom: 10px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 12px;
+  transform: translateX(-50%);
+  border: 1px solid var(--sc-border);
+  border-radius: 13px;
+  background: var(--sc-selected-bg);
+  box-shadow: var(--sc-bevel), 0 3px 10px var(--sc-shade-strong);
+  color: var(--sc-selected-fg);
+  font: 600 12px var(--sc-font);
+  white-space: nowrap;
+  cursor: pointer;
+}
+#more-below[hidden] { display: none; }
+#more-below svg { animation: sc-nudge 1.6s ease-in-out infinite; }
+@keyframes sc-nudge {
+  0%, 100% { transform: translateY(-1px); }
+  50% { transform: translateY(2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #more-below svg { animation: none; }
 }

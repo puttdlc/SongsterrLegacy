@@ -487,3 +487,173 @@ html.sc-enabled :is([class*="_planBadge"], [class*="_plusBadge"]) svg {
     font-family: var(--sc-font);
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * welcome (selectors.js: welcome.card): the first-run card (content.js
+ * syncWelcome), ours. Centred in the space every layout leaves free (inset
+ * variables). Each option has a small sketch of where the bar goes, drawn
+ * with the one <i> inside .sc-wl-pic.
+ * ------------------------------------------------------------------------- */
+@keyframes sc-welcome-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+html.sc-enabled #sc-welcome {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483000;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--sc-top-inset, 0px) + 16px) 16px calc(var(--sc-bottom-inset, 0px) + 16px)
+    calc(var(--sc-left-inset, 0px) + 16px);
+  background: rgba(0, 0, 0, 0.3);
+  font-family: var(--sc-font);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--sc-text);
+}
+html.sc-enabled #sc-welcome * {
+  box-sizing: border-box;
+}
+html.sc-enabled #sc-welcome .sc-wl-card {
+  width: 560px;
+  max-width: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding: 20px 22px 18px;
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius-panel);
+  background: var(--sc-surface);
+  box-shadow: var(--sc-bevel), 0 8px 28px rgba(0, 0, 0, 0.35);
+  animation: sc-welcome-in 0.25s ease-out;
+}
+html.sc-enabled #sc-welcome h2 {
+  margin: 0 0 4px;
+  font: 700 18px/1.3 var(--sc-font);
+  color: var(--sc-text);
+}
+html.sc-enabled #sc-welcome .sc-wl-intro {
+  margin: 0 0 14px;
+  color: var(--sc-text-muted);
+}
+html.sc-enabled #sc-welcome .sc-wl-row {
+  margin-top: 12px;
+}
+html.sc-enabled #sc-welcome .sc-wl-label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--sc-text-muted);
+}
+html.sc-enabled #sc-welcome .sc-wl-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+html.sc-enabled #sc-welcome .sc-wl-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+  margin: 0;
+  padding: 8px 6px 7px;
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  color: var(--sc-text);
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.12s, border-color 0.12s;
+}
+html.sc-enabled #sc-welcome .sc-wl-option:not([aria-checked="true"]):hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled #sc-welcome .sc-wl-option[aria-checked="true"] {
+  border-color: var(--sc-accent);
+  background: var(--sc-selected-bg);
+  box-shadow: var(--sc-bevel-pressed), 0 0 0 1px var(--sc-accent);
+  color: var(--sc-selected-fg);
+}
+html.sc-enabled #sc-welcome .sc-wl-option:focus-visible,
+html.sc-enabled #sc-welcome .sc-wl-done:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: 2px;
+}
+html.sc-enabled #sc-welcome .sc-wl-option b {
+  margin-top: 4px;
+  font-weight: 700;
+  font-size: 13px;
+}
+html.sc-enabled #sc-welcome .sc-wl-option small {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* Sketches: a page (sunken) with the bar in the accent colour. */
+html.sc-enabled #sc-welcome .sc-wl-pic {
+  position: relative;
+  width: 72px;
+  height: 44px;
+  overflow: hidden;
+  border: 1px solid var(--sc-border);
+  border-radius: 2px;
+  background: var(--sc-surface-sunken);
+}
+html.sc-enabled #sc-welcome .sc-wl-pic i {
+  position: absolute;
+  background: var(--sc-accent);
+}
+html.sc-enabled #sc-welcome .sc-wl-pic-layout-fusion i    { right: 3px; bottom: 3px; width: 26px; height: 12px; border-radius: 1px; }
+html.sc-enabled #sc-welcome .sc-wl-pic-layout-classic i   { left: 0; right: 0; bottom: 0; height: 9px; }
+html.sc-enabled #sc-welcome .sc-wl-pic-layout-minimal i   { top: 3px; right: 3px; bottom: 3px; width: 8px; border-radius: 1px; }
+html.sc-enabled #sc-welcome .sc-wl-pic-navLayout-fusion i  { left: 3px; bottom: 3px; width: 26px; height: 8px; border-radius: 1px; }
+html.sc-enabled #sc-welcome .sc-wl-pic-navLayout-classic i { left: 0; right: 0; top: 0; height: 9px; }
+html.sc-enabled #sc-welcome .sc-wl-pic-navLayout-minimal i { left: 0; top: 0; bottom: 0; width: 12px; }
+
+/* Theme sketches show the scheme itself, so their colours are fixed. */
+html.sc-enabled #sc-welcome .sc-wl-pic[class*="-theme-"] i {
+  left: 8px;
+  right: 8px;
+  bottom: 6px;
+  height: 9px;
+  border-radius: 1px;
+}
+html.sc-enabled #sc-welcome .sc-wl-pic-theme-dark  { background: #202226; }
+html.sc-enabled #sc-welcome .sc-wl-pic-theme-dark i  { background: #3a3d44; box-shadow: inset 0 1px #4a4e57; }
+html.sc-enabled #sc-welcome .sc-wl-pic-theme-light { background: #f4f5f7; }
+html.sc-enabled #sc-welcome .sc-wl-pic-theme-light i { background: #dfe2e7; box-shadow: inset 0 1px #fff; }
+html.sc-enabled #sc-welcome .sc-wl-pic-theme-auto  { background: linear-gradient(135deg, #f4f5f7 50%, #202226 50%); }
+html.sc-enabled #sc-welcome .sc-wl-pic-theme-auto i  { background: linear-gradient(135deg, #dfe2e7 50%, #3a3d44 50%); }
+
+html.sc-enabled #sc-welcome .sc-wl-more {
+  margin: 16px 0 14px;
+  padding: 9px 11px;
+  border-left: 3px solid var(--sc-accent);
+  border-radius: 2px;
+  background: var(--sc-surface-sunken);
+  color: var(--sc-text-muted);
+  font-size: 12px;
+}
+html.sc-enabled #sc-welcome .sc-wl-done {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  border: 1px solid var(--sc-accent-border, var(--sc-accent));
+  border-radius: var(--sc-radius);
+  background: var(--sc-accent-bg, var(--sc-accent));
+  box-shadow: var(--sc-bevel);
+  color: var(--sc-on-accent);
+  font: 700 16px/1 var(--sc-font);
+  cursor: pointer;
+}
+html.sc-enabled #sc-welcome .sc-wl-done:hover {
+  background: var(--sc-accent-bg-hover, var(--sc-accent-hover, var(--sc-accent)));
+}

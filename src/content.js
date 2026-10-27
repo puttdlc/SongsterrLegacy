@@ -23,8 +23,8 @@
 
   const DEFAULTS = Object.freeze({
     enabled: true,
-    layout: 'minimal',      // Controls: minimal (shown as "Legacy") | classic | fusion
-    navLayout: 'minimal',   // Quick menu: classic (top bar) | fusion (bottom-left dock) | minimal (left sidebar)
+    layout: 'classic',      // Controls: minimal (shown as "Legacy") | classic | fusion
+    navLayout: 'classic',   // Quick menu: classic (top bar) | fusion (bottom-left dock) | minimal (left sidebar)
     classicBar: 'spread',   // Classic controls: spread (labels, equal spacing) | icons (packed, no labels)
     accent: 'auto',         // auto | blue | green | red | custom | off
     accentCustom: '#2f9e44', // #rrggbb, used when accent = custom
@@ -140,6 +140,7 @@
     updatePaneToggle();
     updateVideoToggle();
     syncKeepOpen();
+    syncWelcome();
     schedule();
     try {
       localStorage.setItem(MIRROR_KEY, JSON.stringify(settings));
@@ -763,6 +764,113 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Welcome card (selectors.js: welcome.card; base.css welcome), shown to
+  // brand-new users only. A new user has nothing in chrome.storage.sync and
+  // no settings mirror in this page's localStorage (both exist for anyone
+  // who used an earlier version). They get `welcomed: false`, which keeps the
+  // card up on every Songsterr page until "Got it." sets it to true. Existing
+  // users never get the key, so they never see it. The choices save at once,
+  // so the page changes behind the card.
+  // ---------------------------------------------------------------------------
+  const WELCOME_KEY = 'welcomed';
+  const WELCOME_ROWS = [
+    { key: 'layout', title: 'Controls', options: [
+      ['fusion', 'Fusion', 'Compact, bottom right'],
+      ['classic', 'Classic', 'Full bar along the bottom'],
+      ['minimal', 'Legacy', 'Button column on the right']] },
+    { key: 'navLayout', title: 'Quick menu', options: [
+      ['fusion', 'Fusion', 'Docked bottom left'],
+      ['classic', 'Classic', 'Bar along the top'],
+      ['minimal', 'Legacy', 'Sidebar on the left']] },
+    { key: 'theme', title: 'Theme', options: [
+      ['dark', 'Dark', 'Dark controls'],
+      ['light', 'Light', 'Light controls'],
+      ['auto', 'Auto', "Follows Songsterr's theme"]] }
+  ];
+  let welcomePending = false;
+  let welcomeEl = null;
+
+  function buildWelcome() {
+    const el = document.createElement('div');
+    el.id = 'sc-welcome';
+    el.setAttribute('role', 'dialog');
+    el.setAttribute('aria-labelledby', 'sc-welcome-title');
+    const card = document.createElement('div');
+    card.className = 'sc-wl-card';
+    const title = document.createElement('h2');
+    title.id = 'sc-welcome-title';
+    title.textContent = 'Welcome to Classic Skin!';
+    const intro = document.createElement('p');
+    intro.className = 'sc-wl-intro';
+    intro.textContent = 'Pick the look you like best. Every choice applies right away, so feel free to try them all.';
+    card.append(title, intro);
+    for (const row of WELCOME_ROWS) {
+      const group = document.createElement('div');
+      group.className = 'sc-wl-row';
+      group.setAttribute('role', 'radiogroup');
+      group.setAttribute('aria-label', row.title);
+      const label = document.createElement('div');
+      label.className = 'sc-wl-label';
+      label.textContent = row.title;
+      const options = document.createElement('div');
+      options.className = 'sc-wl-options';
+      for (const [value, name, hint] of row.options) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sc-wl-option';
+        btn.setAttribute('role', 'radio');
+        btn.dataset.key = row.key;
+        btn.dataset.value = value;
+        const pic = document.createElement('span');
+        pic.className = `sc-wl-pic sc-wl-pic-${row.key}-${value}`;
+        pic.append(document.createElement('i'));
+        const text = document.createElement('b');
+        text.textContent = name;
+        const sub = document.createElement('small');
+        sub.textContent = hint;
+        btn.append(pic, text, sub);
+        btn.addEventListener('click', () => save({ [row.key]: value }));
+        options.append(btn);
+      }
+      group.append(label, options);
+      card.append(group);
+    }
+    const more = document.createElement('p');
+    more.className = 'sc-wl-more';
+    more.textContent = 'More settings (accent colour, gradients, density, animation and more) are in the extension menu: click the Classic Skin icon in your browser toolbar. If it isn’t there, look under the puzzle-piece icon.';
+    const done = document.createElement('button');
+    done.type = 'button';
+    done.className = 'sc-wl-done';
+    done.textContent = 'Got it.';
+    done.addEventListener('click', () => {
+      welcomePending = false;
+      syncWelcome();
+      try {
+        chrome.storage.sync.set({ [WELCOME_KEY]: true });
+      } catch (_) { /* extension reloaded */ }
+    });
+    card.append(more, done);
+    el.append(card);
+    // Keys typed in the card (arrows, space) must not reach Songsterr's
+    // shortcuts (seek, play).
+    el.addEventListener('keydown', (event) => event.stopPropagation());
+    return el;
+  }
+
+  function syncWelcome() {
+    if (!welcomePending || !settings.enabled || !document.body) {
+      if (welcomeEl && welcomeEl.isConnected) welcomeEl.remove();
+      return;
+    }
+    if (!welcomeEl) welcomeEl = buildWelcome();
+    for (const btn of welcomeEl.querySelectorAll('.sc-wl-option')) {
+      const on = settings[btn.dataset.key] === btn.dataset.value;
+      if (btn.getAttribute('aria-checked') !== String(on)) btn.setAttribute('aria-checked', String(on));
+    }
+    if (!welcomeEl.isConnected) document.body.append(welcomeEl);
+  }
+
+  // ---------------------------------------------------------------------------
   // Upkeep, coalesced. Songsterr is a single-page app and re-renders often
   // (the playback cursor animates constantly), so DOM changes only schedule
   // one cheap pass at most every 250ms.
@@ -780,6 +888,7 @@
       syncClassic();
       syncKeepOpen();
       syncTabWidth();
+      syncWelcome();
     }, 250);
   }
 
@@ -793,8 +902,22 @@
   // 2. Source of truth + live updates.
   try {
     chrome.storage.sync.get(DEFAULTS).then(apply, () => {});
+    // Welcome card: read everything stored, to tell a new user from one who
+    // never changed a setting (see syncWelcome).
+    chrome.storage.sync.get(null).then((stored) => {
+      if (stored[WELCOME_KEY] === false) welcomePending = true;
+      else if (!(WELCOME_KEY in stored) && !Object.keys(stored).length && !mirrored) {
+        welcomePending = true;
+        chrome.storage.sync.set({ [WELCOME_KEY]: false });
+      }
+      syncWelcome();
+    }, () => {});
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== 'sync') return;
+      if (changes[WELCOME_KEY] && changes[WELCOME_KEY].newValue === true) {
+        welcomePending = false;
+        syncWelcome();
+      }
       const next = { ...settings };
       for (const [key, { newValue }] of Object.entries(changes)) {
         if (key in DEFAULTS) next[key] = newValue === undefined ? DEFAULTS[key] : newValue;

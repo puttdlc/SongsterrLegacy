@@ -34,7 +34,7 @@
       <div class="seg" role="radiogroup" aria-label="Player controls layout">
         <label title="Player docked in the bottom-right corner as a compact strip"><input type="radio" name="layout" value="fusion"><span>Fusion</span></label>
         <label title="The older Songsterr player: one full-width bar along the bottom"><input type="radio" name="layout" value="classic"><span>Classic</span></label>
-        <label title="The 2018-era player: a column of round icon buttons along the right edge"><input type="radio" name="layout" value="minimal"><span>Legacy</span></label>
+        <label title="The 2018-era player: a column of square icon buttons along the right edge"><input type="radio" name="layout" value="minimal"><span>Legacy</span></label>
       </div>
     </fieldset>
 
@@ -177,6 +177,11 @@
   </section>
 
   <footer class="statusbar muted">Changes apply instantly to open Songsterr tabs.</footer>
+
+  <div id="tip" role="tooltip" hidden></div>
+  <button type="button" id="more-below" hidden>More settings below
+    <svg viewBox="0 0 10 6" width="10" height="6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </button>
 
   <script src="popup.js"></script>
 </body>

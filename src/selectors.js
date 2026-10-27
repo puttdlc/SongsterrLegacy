@@ -95,6 +95,11 @@
       toggle: { sel: '#sc-video-toggle', tier: 'id', note: "Ours: collapse tab appended to <body> by content.js, shown while the panel is." }
     },
 
+    welcome: {
+      status: 'styled',
+      card: { sel: '#sc-welcome', tier: 'id', note: "Ours: first-run welcome card appended to <body> by content.js (new users only, until \"Got it.\")." }
+    },
+
     tracklist: {
       status: 'styled',
       dialog:   { sel: '#default-mixer', tier: 'id', note: 'Mixer dialog (role="dialog"), lazy-loaded when the track list opens.' },

@@ -9,8 +9,8 @@
 
   const DEFAULTS = {
     enabled: true,
-    layout: 'minimal',
-    navLayout: 'minimal',
+    layout: 'classic',
+    navLayout: 'classic',
     classicBar: 'spread',
     accent: 'auto',          // auto = Classic green, Fusion / Legacy blue (see content.js)
     accentCustom: '#2f9e44',
@@ -148,6 +148,81 @@
     }
     render(current);
   });
+
+  // ---------- Setting info (i) ----------
+  // One tip per setting, keyed by the row's input name. The icon goes in the
+  // row's legend; the tip is one shared element placed under (or above) it.
+  const TIPS = {
+    enabled: 'Turns the whole reskin on or off. Off brings back Songsterr’s own look at once, no reload needed.',
+    gradients: 'On: buttons and title bars have a soft top-to-bottom shine. Off: they are filled with a flat colour. Their bevelled edges stay either way, so buttons still look raised.',
+    layout: 'How the player controls are laid out. Fusion: a compact strip docked bottom right. Classic: the older Songsterr player, one full-width bar along the bottom. Legacy: the 2018-era column of icon buttons down the right edge.',
+    navLayout: 'Where the site menu (Search, My tabs, Help …) sits. Fusion: docked bottom left, and it can be collapsed. Classic: a bar along the top, each icon above its label. Legacy: the 2018-era sidebar down the left edge.',
+    classicBar: 'Classic controls only. Spread: a label under every icon, buttons spaced equally across the bar. Icons: icons only, packed to the left.',
+    accent: 'The accent colour of pressed buttons, highlights and the play button. Off: no accent, buttons match the Dark or Light theme. Until you pick one, Classic uses green and the other layouts blue.',
+    accentCustom: 'Pick any colour for the accent. Its lighter and darker shades are worked out from it.',
+    theme: 'Dark or light controls, menus and panels. Auto follows Songsterr’s own theme setting, so the controls and the tab stay in the same scheme.',
+    density: 'Size of the player buttons: Compact is 32px tall, Comfortable 38px.',
+    animations: 'On: windows, menus and buttons slide and fade. Off: they open and change instantly. The tab and the playback cursor are not affected.',
+    noteFlash: 'Experimental. While the tab plays (Synth or Orig.), each tab number lights up and fades out over the note’s length.',
+    flashColor: 'Colour of the note flash. Orange stands out from Songsterr’s blue playback cursor. Theme uses your Color theme.',
+    flashCustom: 'Pick any colour for the note flash.',
+    showAuthor: 'Shows “Last edited by <name>” under the song title, linking to the tab’s author.',
+    navCollapsed: 'Fusion quick menu only. Collapsed tucks the bottom-left menu away. The tab at the bottom left of the page does the same.',
+    paneMinimized: 'Fusion controls only. Minimised keeps just the favourite / display mode / editor strip. The chevron at the end of that strip does the same.',
+    videoCollapsed: 'Classic and Legacy controls only. On songs with a synced video or audio mix, Collapsed slides that panel out of the way (down in Classic, right in Legacy) and it keeps playing. The tab on the panel’s edge does the same.',
+    keepOpen: 'Fusion controls only. Songsterr folds its player panel whenever you click a button in it or press play. On: once you open it, it stays open until you close it with the handle or drag it.'
+  };
+  const tip = document.getElementById('tip');
+  const TIP_GAP = 6;
+
+  function showTip(icon) {
+    tip.textContent = icon.dataset.tip;
+    tip.hidden = false;
+    const r = icon.getBoundingClientRect();
+    const below = r.bottom + TIP_GAP;
+    const top = below + tip.offsetHeight <= window.innerHeight - TIP_GAP
+      ? below : Math.max(TIP_GAP, r.top - TIP_GAP - tip.offsetHeight);
+    tip.style.top = `${top}px`;
+  }
+  function hideTip() {
+    tip.hidden = true;
+  }
+
+  for (const row of form.querySelectorAll('.row')) {
+    const input = row.querySelector('input[name]');
+    const legend = row.querySelector('legend');
+    const text = input && TIPS[input.name];
+    if (!legend || !text) continue;
+    const icon = document.createElement('button');
+    icon.type = 'button';
+    icon.className = 'info';
+    icon.textContent = 'i';
+    icon.dataset.tip = text;
+    icon.setAttribute('aria-label', `About ${legend.textContent.trim()}: ${text}`);
+    icon.setAttribute('aria-describedby', 'tip');
+    icon.addEventListener('pointerenter', () => showTip(icon));
+    icon.addEventListener('pointerleave', hideTip);
+    icon.addEventListener('focus', () => showTip(icon));
+    icon.addEventListener('blur', hideTip);
+    legend.append(icon);
+  }
+  window.addEventListener('scroll', hideTip, { passive: true });
+
+  // ---------- "More settings below" ----------
+  // The popup is capped in height, so the lower rows scroll out of sight.
+  // The pill shows while there is more to scroll to.
+  const moreBelow = document.getElementById('more-below');
+  function syncMoreBelow() {
+    const rest = document.documentElement.scrollHeight - window.scrollY - window.innerHeight;
+    moreBelow.hidden = rest <= 24;
+  }
+  moreBelow.addEventListener('click', () => {
+    window.scrollBy({ top: Math.round(window.innerHeight * 0.6), behavior: 'smooth' });
+  });
+  window.addEventListener('scroll', syncMoreBelow, { passive: true });
+  window.addEventListener('resize', syncMoreBelow);
+  new ResizeObserver(syncMoreBelow).observe(document.body);
+  syncMoreBelow();
 
   // ---------- Diagnostics ----------
   const diagBtn = document.getElementById('diagnose');
