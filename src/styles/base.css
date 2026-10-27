@@ -512,7 +512,7 @@ html.sc-enabled #sc-welcome {
   justify-content: center;
   padding: calc(var(--sc-top-inset, 0px) + 16px) 16px calc(var(--sc-bottom-inset, 0px) + 16px)
     calc(var(--sc-left-inset, 0px) + 16px);
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.65);
   font-family: var(--sc-font);
   font-size: 13px;
   line-height: 1.4;
