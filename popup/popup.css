@@ -150,7 +150,7 @@ body {
 }
 .row + .row { border-top: 1px solid var(--sc-divider); }
 .row[hidden] { display: none; }
-/* Small line under a row's control (second column), e.g. "Experimental". */
+/* Small line under a row's control (second column), e.g. "Beta". */
 .row-note {
   grid-column: 2;
   margin: 3px 0 0;

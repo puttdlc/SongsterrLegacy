@@ -37,7 +37,7 @@
     keepOpen: true,         // Fusion: undo Songsterr folding the player on its own
     animations: true,       // false = UI transitions and animations cut to an instant (base.css)
     gradients: true,        // false = buttons and title strips filled flat, bevels kept (tokens.css)
-    noteFlash: false,       // experimental: tab numbers flash during playback (page-flash.js)
+    noteFlash: false,       // beta: tab numbers flash during playback (page-flash.js)
     flashColor: 'orange',   // orange | pink | theme (the accent) | custom
     flashCustom: '#f76707'  // #rrggbb, used when flashColor = custom
   });
@@ -790,10 +790,10 @@
       ['auto', 'Auto', "Follows Songsterr's theme"]] },
     { key: 'accent', title: 'Color theme', kind: 'swatch', pair: true, options: [
       ['blue', 'Blue'], ['green', 'Green'], ['red', 'Red'], ['off', 'Off']] },
-    { key: 'noteFlash', title: 'Note flash (experimental)', kind: 'plain', pair: true, options: [
+    { key: 'noteFlash', title: 'Note flash (beta)', kind: 'plain', pair: true, options: [
       ['false', 'Off', 'Plain tab'],
       ['true', 'On', 'Notes light up as they play']],
-      note: 'Experimental: it may glitch, and a Songsterr update can break it. You can turn it off any time.' }
+      note: 'Beta: still being polished. You can turn it off any time.' }
   ];
   const WELCOME_FADE_MS = 300;
   let welcomePending = false;
