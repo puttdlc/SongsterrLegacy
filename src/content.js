@@ -773,22 +773,88 @@
   // so the page changes behind the card.
   // ---------------------------------------------------------------------------
   const WELCOME_KEY = 'welcomed';
+  // kind: pic = sketch + name + hint, swatch = colour + name, plain = name + hint.
+  // Rows with `pair` sit side by side (base.css welcome).
   const WELCOME_ROWS = [
-    { key: 'layout', title: 'Controls', options: [
+    { key: 'layout', title: 'Controls', kind: 'pic', options: [
       ['fusion', 'Fusion', 'Compact, bottom right'],
       ['classic', 'Classic', 'Full bar along the bottom'],
       ['minimal', 'Legacy', 'Button column on the right']] },
-    { key: 'navLayout', title: 'Quick menu', options: [
+    { key: 'navLayout', title: 'Quick menu', kind: 'pic', options: [
       ['fusion', 'Fusion', 'Docked bottom left'],
       ['classic', 'Classic', 'Bar along the top'],
       ['minimal', 'Legacy', 'Sidebar on the left']] },
-    { key: 'theme', title: 'Theme', options: [
+    { key: 'theme', title: 'Theme', kind: 'pic', options: [
       ['dark', 'Dark', 'Dark controls'],
       ['light', 'Light', 'Light controls'],
-      ['auto', 'Auto', "Follows Songsterr's theme"]] }
+      ['auto', 'Auto', "Follows Songsterr's theme"]] },
+    { key: 'accent', title: 'Color theme', kind: 'swatch', pair: true, options: [
+      ['blue', 'Blue'], ['green', 'Green'], ['red', 'Red'], ['off', 'Off']] },
+    { key: 'noteFlash', title: 'Note flash (experimental)', kind: 'plain', pair: true, options: [
+      ['false', 'Off', 'Plain tab'],
+      ['true', 'On', 'Notes light up as they play']],
+      note: 'Experimental: it may glitch, and a Songsterr update can break it. You can turn it off any time.' }
   ];
+  const WELCOME_FADE_MS = 300;
   let welcomePending = false;
   let welcomeEl = null;
+  let welcomeLeaving = 0;
+  let welcomeFinish = null;
+
+  /** The value a welcome button stands for, as the setting stores it. */
+  function welcomeValue(key, value) {
+    return BOOLEANS.includes(key) ? value === 'true' : value;
+  }
+
+  /** What the card shows as chosen ("auto" accent = the colour it means). */
+  function welcomeCurrent(key) {
+    return String(key === 'accent' ? accentFor(settings) : settings[key]);
+  }
+
+  function buildWelcomeRow(row) {
+    const group = document.createElement('div');
+    group.className = `sc-wl-row sc-wl-kind-${row.kind}`;
+    group.setAttribute('role', 'radiogroup');
+    group.setAttribute('aria-label', row.title);
+    const label = document.createElement('div');
+    label.className = 'sc-wl-label';
+    label.textContent = row.title;
+    const options = document.createElement('div');
+    options.className = 'sc-wl-options';
+    options.style.setProperty('--sc-wl-cols', row.options.length);
+    for (const [value, name, hint] of row.options) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sc-wl-option';
+      btn.setAttribute('role', 'radio');
+      btn.dataset.key = row.key;
+      btn.dataset.value = value;
+      if (row.kind !== 'plain') {
+        const pic = document.createElement('span');
+        pic.className = `sc-wl-pic sc-wl-pic-${row.key}-${value}`;
+        pic.append(document.createElement('i'));
+        btn.append(pic);
+      }
+      const text = document.createElement('b');
+      text.textContent = name;
+      btn.append(text);
+      if (hint) {
+        const sub = document.createElement('small');
+        sub.textContent = hint;
+        btn.append(sub);
+      }
+      btn.addEventListener('click', () => save({ [row.key]: welcomeValue(row.key, value) }));
+      options.append(btn);
+    }
+    group.append(label, options);
+    if (row.note) {
+      const note = document.createElement('p');
+      note.className = 'sc-wl-note';
+      note.textContent = row.note;
+      group.append(note);
+    }
+    return group;
+  }
 
   function buildWelcome() {
     const el = document.createElement('div');
@@ -802,42 +868,24 @@
     title.textContent = 'Welcome to Classic Skin!';
     const intro = document.createElement('p');
     intro.className = 'sc-wl-intro';
-    intro.textContent = 'Pick the look you like best. Every choice applies right away, so feel free to try them all.';
+    intro.textContent = 'Pick the look you like. Each choice applies right away, so try them all.';
     card.append(title, intro);
+    let pair = null;
     for (const row of WELCOME_ROWS) {
-      const group = document.createElement('div');
-      group.className = 'sc-wl-row';
-      group.setAttribute('role', 'radiogroup');
-      group.setAttribute('aria-label', row.title);
-      const label = document.createElement('div');
-      label.className = 'sc-wl-label';
-      label.textContent = row.title;
-      const options = document.createElement('div');
-      options.className = 'sc-wl-options';
-      for (const [value, name, hint] of row.options) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'sc-wl-option';
-        btn.setAttribute('role', 'radio');
-        btn.dataset.key = row.key;
-        btn.dataset.value = value;
-        const pic = document.createElement('span');
-        pic.className = `sc-wl-pic sc-wl-pic-${row.key}-${value}`;
-        pic.append(document.createElement('i'));
-        const text = document.createElement('b');
-        text.textContent = name;
-        const sub = document.createElement('small');
-        sub.textContent = hint;
-        btn.append(pic, text, sub);
-        btn.addEventListener('click', () => save({ [row.key]: value }));
-        options.append(btn);
+      if (!row.pair) {
+        card.append(buildWelcomeRow(row));
+        continue;
       }
-      group.append(label, options);
-      card.append(group);
+      if (!pair) {
+        pair = document.createElement('div');
+        pair.className = 'sc-wl-pair';
+        card.append(pair);
+      }
+      pair.append(buildWelcomeRow(row));
     }
     const more = document.createElement('p');
     more.className = 'sc-wl-more';
-    more.textContent = 'More settings (accent colour, gradients, density, animation and more) are in the extension menu: click the Classic Skin icon in your browser toolbar. If it isn’t there, look under the puzzle-piece icon.';
+    more.textContent = 'More settings (custom colours, gradients, density, animation …) are in the extension menu: the Classic Skin icon in your browser toolbar, or under the puzzle-piece icon.';
     const done = document.createElement('button');
     done.type = 'button';
     done.className = 'sc-wl-done';
@@ -857,14 +905,44 @@
     return el;
   }
 
+  /** Fades the card out (base.css welcome, a transition, so Animation: Off
+   *  makes it instant), then removes it. The timer covers a missed
+   *  transitionend. */
+  function fadeWelcome() {
+    if (welcomeLeaving) return;
+    const el = welcomeEl;
+    const finish = (keep) => {
+      clearTimeout(welcomeLeaving);
+      welcomeLeaving = 0;
+      welcomeFinish = null;
+      el.removeEventListener('transitionend', onEnd);
+      el.classList.remove('sc-wl-leaving');
+      if (!keep) el.remove();
+    };
+    welcomeFinish = finish;
+    const onEnd = (event) => {
+      if (event.target === el) finish();
+    };
+    el.addEventListener('transitionend', onEnd);
+    el.classList.add('sc-wl-leaving');
+    welcomeLeaving = setTimeout(finish, WELCOME_FADE_MS + 200);
+  }
+
   function syncWelcome() {
-    if (!welcomePending || !settings.enabled || !document.body) {
-      if (welcomeEl && welcomeEl.isConnected) welcomeEl.remove();
+    if (!welcomeEl || !welcomeEl.isConnected) {
+      if (!welcomePending || !settings.enabled || !document.body) return;
+    } else if (!settings.enabled) {
+      welcomeEl.remove();   /* unstyled without sc-enabled: no fade */
       return;
+    } else if (!welcomePending) {
+      fadeWelcome();
+      return;
+    } else if (welcomeFinish) {
+      welcomeFinish(true);  /* asked for again while fading out: stay */
     }
     if (!welcomeEl) welcomeEl = buildWelcome();
     for (const btn of welcomeEl.querySelectorAll('.sc-wl-option')) {
-      const on = settings[btn.dataset.key] === btn.dataset.value;
+      const on = welcomeCurrent(btn.dataset.key) === btn.dataset.value;
       if (btn.getAttribute('aria-checked') !== String(on)) btn.setAttribute('aria-checked', String(on));
     }
     if (!welcomeEl.isConnected) document.body.append(welcomeEl);
@@ -914,8 +992,10 @@
     }, () => {});
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area !== 'sync') return;
-      if (changes[WELCOME_KEY] && changes[WELCOME_KEY].newValue === true) {
-        welcomePending = false;
+      // true: "Got it." (here or in another tab). false: the popup's
+      // "Wipe Cache & Settings", which shows the card again.
+      if (changes[WELCOME_KEY]) {
+        welcomePending = changes[WELCOME_KEY].newValue === false;
         syncWelcome();
       }
       const next = { ...settings };

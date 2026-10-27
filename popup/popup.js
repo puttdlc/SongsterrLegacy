@@ -224,6 +224,45 @@
   new ResizeObserver(syncMoreBelow).observe(document.body);
   syncMoreBelow();
 
+  // ---------- Wipe Cache & Settings ----------
+  // Two clicks (or a double-click): the first arms the button for a few
+  // seconds, the second clears chrome.storage.sync and sets `welcomed: false`,
+  // so open Songsterr tabs go back to the defaults (content.js rewrites its
+  // settings mirror from them) and show the welcome card again.
+  const wipeBtn = document.getElementById('wipe');
+  const wipeStatus = document.getElementById('wipe-status');
+  const WIPE_IDLE = wipeStatus.textContent;
+  const WIPE_ARM_MS = 4000;
+  let wipeArmed = 0;
+
+  function disarmWipe(message) {
+    clearTimeout(wipeArmed);
+    wipeArmed = 0;
+    wipeBtn.classList.remove('armed');
+    wipeBtn.textContent = 'Wipe Cache & Settings';
+    wipeStatus.textContent = message || WIPE_IDLE;
+  }
+
+  wipeBtn.addEventListener('click', async () => {
+    if (!wipeArmed) {
+      wipeBtn.classList.add('armed');
+      wipeBtn.textContent = 'Click again to confirm';
+      wipeStatus.textContent = 'This resets everything. It can\u2019t be undone.';
+      wipeArmed = setTimeout(() => disarmWipe(), WIPE_ARM_MS);
+      return;
+    }
+    disarmWipe();
+    try {
+      await chrome.storage.sync.clear();
+      await chrome.storage.sync.set({ welcomed: false });
+      current = { ...DEFAULTS };
+      render(current);
+      disarmWipe('Done. Everything is back to default, and the welcome card is back on Songsterr.');
+    } catch (_) {
+      disarmWipe('Couldn\u2019t wipe the settings. Try again.');
+    }
+  });
+
   // ---------- Diagnostics ----------
   const diagBtn = document.getElementById('diagnose');
   const diagStatus = document.getElementById('diag-status');

@@ -379,3 +379,18 @@ body {
 @media (prefers-reduced-motion: reduce) {
   #more-below svg { animation: none; }
 }
+
+/* ---------- Wipe Cache & Settings ---------- */
+.wipe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#wipe { flex: none; min-width: 152px; }
+#wipe.armed,
+#wipe.armed:hover {
+  border-color: #8f2d2d;
+  background: #c23b3b;
+  color: #fff;
+}
+#wipe-status { font-size: 11px; }
