@@ -244,6 +244,13 @@ html.sc-enabled :is(
   outline-offset: -2px;
   z-index: 2; /* buttons are already positioned by the site */
 }
+/* Not text fields: their label and keycaps (Help "Ask AI Assistant", Cmd K)
+   are siblings drawn over them, and a lifted field covered them on focus. */
+html.sc-enabled :is(
+  main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"], #controls
+) input:not([type="button"], [type="submit"]):focus-visible {
+  z-index: auto;
+}
 
 /* Thin, square scrollbars inside chrome. */
 html.sc-enabled :is(main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"]) {
