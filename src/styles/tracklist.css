@@ -10,7 +10,7 @@
  *     div#mixer-items-scroller > div (tracks, gap 10px)
  *       div#mixer-item-<partId>[data-active]       one row per track
  *         a (instrument icon + name)               click = switch track
- *         [class*=_soloMuteButtons] > button x2    solo / mute
+ *         [class*=_soloMute] > button x2    solo / mute
  *
  * Design: flat rows separated by hairlines (were 10px-radius cards with
  * gaps); hover lightens; the active track gets an accent tint plus a 3px
@@ -83,10 +83,10 @@ html.sc-enabled [id^="mixer-item-"][data-active="true"] [class*="_name"] {
 /* ---------------------------------------------------------------------------
  * tracklist.soloMute: two joined buttons
  * ------------------------------------------------------------------------- */
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] {
   gap: 0;
 }
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] button {
   box-sizing: border-box;
   width: 30px;
   height: 26px;
@@ -96,29 +96,29 @@ html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button {
   background: var(--sc-btn-bg);
   box-shadow: var(--sc-bevel);
 }
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > :first-child button,
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > button:first-child {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] > :first-child button,
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] > button:first-child {
   border-radius: var(--sc-radius) 0 0 var(--sc-radius);
 }
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > :last-child button,
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] > button:last-child {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] > :last-child button,
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] > button:last-child {
   border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
 }
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:not(:disabled, [aria-pressed="true"]):hover {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] button:not(:disabled, [aria-pressed="true"]):hover {
   background: var(--sc-btn-bg-hover);
 }
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:not(:disabled):active {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] button:not(:disabled):active {
   background: var(--sc-btn-pressed);
   box-shadow: var(--sc-bevel-pressed);
 }
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button[aria-pressed="true"] {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] button[aria-pressed="true"] {
   background: var(--sc-selected-bg);
   box-shadow: var(--sc-bevel-pressed);
 }
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button[aria-pressed="true"] svg {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] button[aria-pressed="true"] svg {
   fill: var(--sc-selected-fg);
 }
-html.sc-enabled [id^="mixer-item-"] [class*="_soloMuteButtons"] button:disabled {
+html.sc-enabled [id^="mixer-item-"] [class*="_soloMute"] button:disabled {
   background: var(--sc-btn-bg);
 }
 

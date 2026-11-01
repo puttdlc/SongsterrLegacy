@@ -876,7 +876,7 @@ html.sc-enabled [data-id="notification"] [class*="_reasons"] {
   font-size: var(--sc-font-size-small);
   font-weight: 400;
 }
-html.sc-enabled [data-id="notification"] [class*="_primaryAction"] {
+html.sc-enabled [data-id="notification"] :is([class*="_primaryAction"], [class*="_buttons"] > button) {
   border: 1px solid var(--sc-accent-border);
   border-radius: 2px;
   background: var(--sc-accent-bg);
@@ -884,10 +884,10 @@ html.sc-enabled [data-id="notification"] [class*="_primaryAction"] {
   box-shadow: var(--sc-bevel);
   padding: 5px 12px;
 }
-html.sc-enabled [data-id="notification"] [class*="_primaryAction"]:hover {
+html.sc-enabled [data-id="notification"] :is([class*="_primaryAction"], [class*="_buttons"] > button):hover {
   background: var(--sc-accent-bg-hover);
 }
-html.sc-enabled [data-id="notification"] [class*="_secondaryAction"] {
+html.sc-enabled [data-id="notification"] :is([class*="_secondaryAction"], a[class*="_link"]) {
   color: var(--sc-accent);
 }
 /* Close (x): same square button as menus.dialogHeader. */
@@ -1092,19 +1092,19 @@ html.sc-enabled [class*="_speedSliderPointer"] {
  * multitrack, edit lyrics ...). 10px-radius tiles -> bevelled squares; on
  * = accent. Solo / mute keep their own joined pair (tracklist.css).
  * ------------------------------------------------------------------------- */
-html.sc-enabled [id^="mixer-item-"] :is(button, a)[class*="_button"]:not([class*="_soloMuteButtons"] *) {
+html.sc-enabled [id^="mixer-item-"] :is(button, a)[class*="_button"]:not([class*="_soloMute"] *) {
   border: 1px solid var(--sc-border);
   border-radius: 2px;
   background: var(--sc-btn-bg);
   box-shadow: var(--sc-bevel);
   color: var(--sc-icon);
 }
-html.sc-enabled [id^="mixer-item-"] :is(button, a)[class*="_button"]:not([class*="_soloMuteButtons"] *):not(:disabled, [aria-pressed="true"]):hover {
+html.sc-enabled [id^="mixer-item-"] :is(button, a)[class*="_button"]:not([class*="_soloMute"] *):not(:disabled, [aria-pressed="true"]):hover {
   background: var(--sc-btn-bg-hover);
   color: var(--sc-text);
 }
 html.sc-enabled [id^="mixer-item-"] :is(button[aria-pressed="true"], a[class*="_active"])[class*="_button"],
-html.sc-enabled [id^="mixer-item-"] a[class*="_active"]:not([class*="_soloMuteButtons"] *) {
+html.sc-enabled [id^="mixer-item-"] a[class*="_active"]:not([class*="_soloMute"] *) {
   border-color: var(--sc-accent-border);
   background: var(--sc-accent-bg);
   color: var(--sc-on-accent);
