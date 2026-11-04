@@ -103,6 +103,23 @@
     else root.style.removeProperty('--sc-flash-color');
   }
 
+  // Songsterr measures the space left above its bottom bar as
+  // max(--bottombar-height, window height - top of every [data-bottom-bar])
+  // (dropdown list heights, select direction, custom tuning window, the
+  // padding under the tab). The Classic and Legacy quick menus move that bar
+  // to the top or the left, where its top is 0, so the space came out as 0:
+  // Search's tuning list lost its max-height and couldn't scroll. While the
+  // bar isn't at the bottom the marker is renamed, and --bottombar-height
+  // (set per layout in the CSS) is the only measure left.
+  function syncBottomBar() {
+    const atBottom = !settings.enabled || settings.navLayout === 'fusion';
+    const [from, to] = atBottom ? ['data-sc-bottom-bar', 'data-bottom-bar'] : ['data-bottom-bar', 'data-sc-bottom-bar'];
+    for (const el of document.querySelectorAll(`[${from}]`)) {
+      el.setAttribute(to, el.getAttribute(from));
+      el.removeAttribute(from);
+    }
+  }
+
   function classesFor(s) {
     if (!s.enabled) return [];
     const list = ['sc-enabled', `sc-layout-${s.layout}`, `sc-menu-${s.navLayout}`, `sc-accent-${accentFor(s)}`,
@@ -136,6 +153,7 @@
     syncClasses();
     syncAccentColor();
     syncFlashColor();
+    syncBottomBar();
     updateNavToggle();
     updatePaneToggle();
     updateVideoToggle();
@@ -960,6 +978,7 @@
       timer = 0;
       if (wanted.some((c) => !root.classList.contains(c))) syncClasses();
       syncNavToggle();
+      syncBottomBar();
       syncPaneToggle();
       syncVideoToggle();
       syncAuthor();
