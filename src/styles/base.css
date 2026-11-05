@@ -21,6 +21,8 @@
  * Chrome containers (selectors.js -> chrome.*):
  *   main[id^="panel-"]          side panels: Search, My tabs, Help, Account ...
  *   [role="dialog"]             mixer, settings, speed/upsell popups, inbox ...
+ *   [id="audio-upload-modal-content"]   Upload audio file (no role; attribute
+ *                               form so it adds no id specificity)
  *   [role="menu"], [role="listbox"]   profile menu, dropdown lists
  *   #controls, [data-controls-top-panel], [class*="_bottomBarWide"]
  */
@@ -80,7 +82,7 @@ html.sc-enabled:not(#sc-specificity) {
  * 2. Colour remap inside chrome containers
  * ------------------------------------------------------------------------- */
 html.sc-enabled :is(
-  main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"],
+  main[id^="panel-"], [role="dialog"], [id="audio-upload-modal-content"], [role="menu"], [role="listbox"],
   #controls, [data-controls-top-panel], [class*="_bottomBarWide"]
 ) {
   /* text */
@@ -149,6 +151,8 @@ html.sc-enabled :is(
      Songsterr's own popup colour, not ours. */
   --source-item-chosen: var(--sc-selected-bg);
   --source-popup-chosen-text: var(--sc-selected-fg);
+  /* "plus" / "pro" plan badge on the Account nav item: Songsterr green. */
+  --bottombar-account-plus-icon: var(--sc-accent-bg);
   --button-group-bg: var(--sc-surface-sunken);
   --button-group-active: var(--sc-accent-fill);
   --button-group-devider: var(--sc-divider);
@@ -208,7 +212,7 @@ html.sc-enabled :is(
  * 3. Typography + focus
  * ------------------------------------------------------------------------- */
 html.sc-enabled :is(
-  main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"],
+  main[id^="panel-"], [role="dialog"], [id="audio-upload-modal-content"], [role="menu"], [role="listbox"],
   #controls, [data-controls-top-panel], [class*="_bottomBarWide"]
 ) {
   font-family: var(--sc-font);
@@ -238,11 +242,16 @@ html.sc-enabled #controls :is([class*="_badge "], [class$="_badge"], [class*="_s
   color: var(--sc-on-accent);
   fill: var(--sc-on-accent);
 }
+/* Same for the plan badge in the nav and on the User profile (accent via
+   --bottombar-account-plus-icon); its "plus" lettering was the bar colour. */
+html.sc-enabled :is([class*="_planBadge"], main[id^="panel-"] [class*="_plusBadge"]) svg {
+  fill: var(--sc-on-accent);
+}
 
 /* One consistent ring for every restyled control. Drawn inset so joined
    (segmented) buttons don't have it clipped by their neighbours. */
 html.sc-enabled :is(
-  main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"], #controls
+  main[id^="panel-"], [role="dialog"], [id="audio-upload-modal-content"], [role="menu"], [role="listbox"], #controls
 ) :is(button, a, input, [role="button"], [role="menuitem"], [role="combobox"]):focus-visible {
   outline: 2px solid var(--sc-focus);
   outline-offset: -2px;
@@ -251,13 +260,13 @@ html.sc-enabled :is(
 /* Not text fields: their label and keycaps (Help "Ask AI Assistant", Cmd K)
    are siblings drawn over them, and a lifted field covered them on focus. */
 html.sc-enabled :is(
-  main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"], #controls
+  main[id^="panel-"], [role="dialog"], [id="audio-upload-modal-content"], [role="menu"], [role="listbox"], #controls
 ) input:not([type="button"], [type="submit"]):focus-visible {
   z-index: auto;
 }
 
 /* Thin, square scrollbars inside chrome. */
-html.sc-enabled :is(main[id^="panel-"], [role="dialog"], [role="menu"], [role="listbox"]) {
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"], [id="audio-upload-modal-content"], [role="menu"], [role="listbox"]) {
   scrollbar-color: var(--sc-divider) transparent;
   scrollbar-width: thin;
 }
@@ -316,7 +325,7 @@ html.sc-enabled.sc-note-flash.sc-no-motion #tablature path.sc-flash {
 }
 html.sc-enabled:is(.sc-layout-classic, .sc-layout-minimal):where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
   position: fixed;
-  z-index: calc(var(--zIndexControls, 73) + 2);
+  z-index: calc(var(--zIndexControls, 73) + 1);   /* above the bar (73), under the popups layer (75): same #apptab context (content.js) */
   box-sizing: border-box;
   display: flex;
   align-items: center;

@@ -34,10 +34,14 @@ html.sc-enabled main[id^="panel-"][class*="_mainPanel"] {
   padding: 14px 6px 6px 16px;
   box-shadow: var(--sc-elev);
 }
-/* Right-hand variant (rare: narrow side panels docked like the mixer). */
+/* Right-hand variant (rare: narrow side panels docked like the mixer; the
+   User profile). Songsterr builds these edge to edge (a full-width title
+   bar, rows split by full-width lines) with padding 0; the main panels'
+   padding above left a gap between them and the frame. */
 html.sc-enabled main[id^="panel-"][class*="_sidePanel"] {
   left: auto;
   right: 0;
+  padding: 0;
   border-right: 0;
   border-left: 1px solid var(--sc-border);
 }
@@ -401,42 +405,42 @@ html.sc-enabled button:has(> svg[class*="_icon "]:is([class*="_iconMinus"], [cla
 /* Plain action buttons in the player's windows (Download formats, History
    "Comment" ...): flat dark pills -> bevelled buttons. Submit buttons
    (Print) keep the accent fill. */
-html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_actionsButton"]:not([class*="_buttonSubmit"]) {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_actionsButton"]:not([class*="_buttonSubmit"]) {
   border: 1px solid var(--sc-border);
   border-radius: var(--sc-radius);
   background: var(--sc-btn-bg);
   box-shadow: var(--sc-bevel);
   color: var(--sc-text);
 }
-html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_actionsButton"]:not([class*="_buttonSubmit"]):not(:disabled):hover {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_actionsButton"]:not([class*="_buttonSubmit"]):not(:disabled):hover {
   background: var(--sc-btn-bg-hover);
 }
-html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_actionsButton"]:not([class*="_buttonSubmit"]):not(:disabled):active {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_actionsButton"]:not([class*="_buttonSubmit"]):not(:disabled):active {
   background: var(--sc-btn-pressed);
   box-shadow: var(--sc-bevel-pressed);
 }
-html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_actionsButton"]:disabled {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_actionsButton"]:disabled {
   opacity: 0.5;
 }
 
 /* Submit buttons (Print ...): flat accent slab ->
    the bevelled accent button of the Classic play button. */
-html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"] {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_buttonSubmit"] {
   border: 1px solid var(--sc-accent-border);
   border-radius: var(--sc-radius);
   background: var(--sc-accent-shine);
   box-shadow: var(--sc-bevel);
   color: var(--sc-on-accent);
 }
-html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):hover {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):hover {
   background: var(--sc-accent-shine-hover);
 }
-html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):active {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):active {
   box-shadow: var(--sc-accent-pressed-shade);
 }
 /* Disabled ("All caught up" ...): a muted neutral button, not a faded
    accent one (Songsterr swaps the fill, which left a lone accent outline). */
-html.sc-enabled :is([role="dialog"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:disabled {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:disabled {
   border-color: var(--sc-border);
   background: var(--sc-btn-bg);
   box-shadow: none;
@@ -790,7 +794,10 @@ html.sc-enabled #inbox-popup {
   border: 1px solid var(--sc-border);
   border-radius: 0;
 }
-html.sc-enabled #inbox-popup [class*="_actions"] {
+/* :not(button): "Mark all as read" is `_actionsButtonThin`, which matched
+   too, and the strip's background hid its accent fill (only the border
+   showed; white text on white in light mode). */
+html.sc-enabled #inbox-popup [class*="_actions"]:not(button) {
   padding: 6px 10px;
   background: var(--sc-toolbar-bg);
   border-bottom: 1px solid var(--sc-border);

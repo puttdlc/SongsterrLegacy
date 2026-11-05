@@ -278,7 +278,7 @@
   // the page (classic.video, minimal.video), where it can cover the tab. This
   // tab slides it away and back (Classic: on its top edge, down behind the
   // player bar; Legacy: on its left edge, off to the right); the video keeps
-  // playing. Its height is published as --sc-video-h for the Classic tab. It lives in <body>, outside Songsterr's app root. CSS shows it
+  // playing. Its height is published as --sc-video-h for the Classic tab. It lives beside #controls (see syncVideoToggle). CSS shows it
   // while the panel is open and only hides the panel while it is in the page
   // (base.css video.toggle), so the two change together and the panel can
   // never get stuck hidden.
@@ -310,8 +310,15 @@
       videoToggle = buildVideoToggle();
       updateVideoToggle();
     }
-    if (videoToggle.parentNode !== document.body) document.body.append(videoToggle);
-    const panel = settings.enabled && settings.layout !== 'fusion' ? document.querySelector(VIDEO_PANEL) : null;
+    // Beside #controls, in Songsterr's #apptab stacking context: from <body>
+    // its z-index beat the whole of #apptab, Settings and every other popup
+    // included, so the tab floated over them. In here it sits above the bar
+    // and below the popups layer (base.css). <body> only while there's no
+    // #controls (CSS hides the tab then anyway).
+    const controls = document.getElementById('controls');
+    const host = (controls && controls.parentElement) || document.body;
+    if (videoToggle.parentNode !== host) host.append(videoToggle);
+    const panel =settings.enabled && settings.layout !== 'fusion' ? document.querySelector(VIDEO_PANEL) : null;
     // Classic puts the tab on the panel's top edge, so CSS needs its height.
     // Measure the panel itself: the wrapper around it has extra room for the
     // shadow. Not affected while slid away (translate doesn't change layout).
