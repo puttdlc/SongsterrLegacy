@@ -410,6 +410,45 @@ html.sc-enabled.sc-layout-fusion #controls #control-source [class*="_background"
   background-color: var(--sc-source-on, var(--sc-accent-bg));
 }
 
+/* With an uploaded audio file Songsterr shows a source-menu button instead
+   of the toggle. Join it to play like the toggle; its icon was drawn in
+   --controls-surface (our panel colour) and was invisible. */
+html.sc-enabled.sc-layout-fusion #controls #item-play-button:has([class*="_sourceWrapper"]) #control-play {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+html.sc-enabled.sc-layout-fusion #controls #item-play-button [class*="_sourceWrapper"] {
+  margin-left: -1px;
+  border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
+}
+html.sc-enabled.sc-layout-fusion #controls #item-play-button [class*="_sourceWrapper"]::before {
+  display: none;
+}
+html.sc-enabled.sc-layout-fusion #controls #item-play-button [class*="_sourceWrapper"] > button {
+  box-sizing: border-box;
+  min-width: var(--sc-ctl-w);
+  height: var(--sc-ctl-h);
+  border: 1px solid var(--sc-border);
+  border-radius: 0 var(--sc-radius) var(--sc-radius) 0;
+  background: var(--sc-btn-bg);
+  box-shadow: var(--sc-bevel);
+  transition: background-color var(--sc-ease), box-shadow var(--sc-ease);
+}
+html.sc-enabled.sc-layout-fusion #controls #item-play-button [class*="_sourceWrapper"] > button svg {
+  fill: var(--sc-icon);
+  transition: fill var(--sc-ease);
+}
+html.sc-enabled.sc-layout-fusion #controls #item-play-button [class*="_sourceWrapper"] > button:not(:disabled):hover {
+  background: var(--sc-btn-bg-hover);
+}
+html.sc-enabled.sc-layout-fusion #controls #item-play-button [class*="_sourceWrapper"] > button:not(:disabled):is(:hover, :active) svg {
+  fill: var(--sc-text);
+}
+html.sc-enabled.sc-layout-fusion #controls #item-play-button [class*="_sourceWrapper"] > button:not(:disabled):active {
+  background: var(--sc-btn-pressed);
+  box-shadow: var(--sc-bevel-pressed);
+}
+
 /* ---------------------------------------------------------------------------
  * toolbar.metronomeSettings: the "..." tab above the metronome button
  * ------------------------------------------------------------------------- */

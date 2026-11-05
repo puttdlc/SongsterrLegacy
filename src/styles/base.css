@@ -145,6 +145,10 @@ html.sc-enabled :is(
   --filter-text-chosen: var(--sc-selected-fg);
   --filter-chosen: var(--sc-selected-bg);
   --filter-focus: var(--sc-focus);
+  /* Audio source menu (with an uploaded file): chosen row. Its text was
+     Songsterr's own popup colour, not ours. */
+  --source-item-chosen: var(--sc-selected-bg);
+  --source-popup-chosen-text: var(--sc-selected-fg);
   --button-group-bg: var(--sc-surface-sunken);
   --button-group-active: var(--sc-accent-fill);
   --button-group-devider: var(--sc-divider);

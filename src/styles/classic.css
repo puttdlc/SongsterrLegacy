@@ -513,6 +513,20 @@ html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWr
 html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"] > button::after {
   content: none;
 }
+/* Its icon is drawn in --controls-surface (our bar colour): invisible. */
+html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"] > button svg {
+  fill: var(--sc-icon);
+  transition: fill var(--sc-ease);
+}
+html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"] > button:not(:disabled):hover {
+  background: var(--sc-row-hover);
+}
+html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"] > button:not(:disabled):hover svg {
+  fill: var(--sc-text);
+}
+html.sc-enabled.sc-layout-classic #controls #item-play-button [class*="_sourceWrapper"] > button:not(:disabled):active {
+  background: var(--sc-btn-pressed);
+}
 
 /* ---------------------------------------------------------------------------
  * classic.metronomeSettings: the "..." tab above the metronome button
