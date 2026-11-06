@@ -166,11 +166,16 @@
       copies:     { sel: '#tablature path.sc-flash', tier: 'id', note: 'Ours: clipped, fading copies laid over the original path (base.css notes.flash).' }
     },
 
+    tabLines: {
+      status: 'styled (opt-in)',
+      strings: { sel: '#tablature path[class*="_strings"]', tier: 'stem', note: 'One path per tab line: the string lines (cut around fret numbers) and the bar lines. Only its stroke-width is changed (base.css notes.lines).' }
+    },
+
     // Never styled: listed so nobody adds rules here by accident.
     notation: {
       status: 'off-limits',
       apptab:    { sel: '#apptab', tier: 'id', note: 'Tab page section. Only its background may be adjusted.' },
-      tablature: { sel: '#tablature', tier: 'id', note: 'Notation renderer output. Do not style (note flash only adds its own copies).' }
+      tablature: { sel: '#tablature', tier: 'id', note: 'Notation renderer output. Do not style (exceptions: note flash adds its own copies; Tab lines sets the strings path stroke-width).' }
     }
   };
 
