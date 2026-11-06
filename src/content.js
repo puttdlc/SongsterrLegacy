@@ -30,7 +30,7 @@
     accentCustom: '#2f9e44', // #rrggbb, used when accent = custom
     theme: 'auto',          // dark | light | auto
     density: 'compact',     // compact | comfortable
-    tabLines: 'thin',       // tab string + bar line weight: thin (Songsterr's 1px) | medium | bold (base.css notes.lines)
+    tabLines: 'default',    // tab string + bar line weight: thin (0.5px) | default (Songsterr's 1px) | thick (1.5px) | heavy (2px) (base.css notes.lines)
     showAuthor: true,
     navCollapsed: false,
     paneMinimized: false,
@@ -49,7 +49,7 @@
     accent: ['auto', 'blue', 'green', 'red', 'custom', 'off'],
     theme: ['dark', 'light', 'auto'],
     density: ['compact', 'comfortable'],
-    tabLines: ['thin', 'medium', 'bold'],
+    tabLines: ['thin', 'default', 'thick', 'heavy'],
     flashColor: ['orange', 'pink', 'theme', 'custom']
   };
   const BOOLEANS = ['showAuthor', 'navCollapsed', 'paneMinimized', 'videoCollapsed', 'keepOpen', 'animations', 'gradients', 'noteFlash'];
@@ -131,7 +131,7 @@
     if (!s.animations) list.push('sc-no-motion');
     if (!s.gradients) list.push('sc-flat');
     if (s.noteFlash) list.push('sc-note-flash');
-    if (s.tabLines !== 'thin') list.push(`sc-tab-lines-${s.tabLines}`);
+    if (s.tabLines !== 'default') list.push(`sc-tab-lines-${s.tabLines}`);
     // Collapsing only exists for the Fusion quick menu (bottom-left dock).
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
     // Minimising only exists in Fusion; Classic and Legacy are fixed bars.

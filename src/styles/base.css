@@ -314,13 +314,16 @@ html.sc-enabled.sc-note-flash.sc-no-motion #tablature path.sc-flash {
 
 /* ---------------------------------------------------------------------------
  * notes.lines (tabLines setting, sc-tab-lines-*): weight of the tab's string
- * and bar lines (one path per tab line). Thin adds no class: Songsterr's 1px.
+ * and bar lines (one path per tab line). Default adds no class: Songsterr's 1px.
  * Only stroke-width changes, so the tab's layout never moves.
  * ------------------------------------------------------------------------- */
-html.sc-enabled.sc-tab-lines-medium #tablature path[class*="_strings"] {
+html.sc-enabled.sc-tab-lines-thin #tablature path[class*="_strings"] {
+  stroke-width: 0.5px;
+}
+html.sc-enabled.sc-tab-lines-thick #tablature path[class*="_strings"] {
   stroke-width: 1.5px;
 }
-html.sc-enabled.sc-tab-lines-bold #tablature path[class*="_strings"] {
+html.sc-enabled.sc-tab-lines-heavy #tablature path[class*="_strings"] {
   stroke-width: 2px;
 }
 
