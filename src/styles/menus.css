@@ -423,24 +423,25 @@ html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*=
   opacity: 0.5;
 }
 
-/* Submit buttons (Print ...): flat accent slab ->
-   the bevelled accent button of the Classic play button. */
-html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_buttonSubmit"] {
+/* Submit buttons (Print, the mixer's "Add track" link in the editor ...):
+   flat accent slab -> the bevelled accent button of the Classic play button. */
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) :is(button, a)[class*="_buttonSubmit"] {
   border: 1px solid var(--sc-accent-border);
   border-radius: var(--sc-radius);
   background: var(--sc-accent-shine);
   box-shadow: var(--sc-bevel);
   color: var(--sc-on-accent);
 }
-html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):hover {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) :is(button, a)[class*="_buttonSubmit"]:not(:disabled):hover {
   background: var(--sc-accent-shine-hover);
+  color: var(--sc-on-accent);
 }
-html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:not(:disabled):active {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) :is(button, a)[class*="_buttonSubmit"]:not(:disabled):active {
   box-shadow: var(--sc-accent-pressed-shade);
 }
 /* Disabled ("All caught up" ...): a muted neutral button, not a faded
    accent one (Songsterr swaps the fill, which left a lone accent outline). */
-html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) button[class*="_buttonSubmit"]:disabled {
+html.sc-enabled :is([role="dialog"], [id="audio-upload-modal-content"], [class*="_sidebar"]) :is(button, a)[class*="_buttonSubmit"]:disabled {
   border-color: var(--sc-border);
   background: var(--sc-btn-bg);
   box-shadow: none;
