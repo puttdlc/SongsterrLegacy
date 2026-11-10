@@ -329,3 +329,7 @@ src/
 popup/              settings popup (same bevel/segmented look)
 icons/              original 16/32/48/128 icon
 ```
+
+## License
+
+Copyright (c) 2026 puttdlc. Licensed under the GNU General Public License v3.0; see `LICENSE`.
