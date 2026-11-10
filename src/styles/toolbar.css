@@ -381,7 +381,7 @@ html.sc-enabled.sc-layout-fusion #controls #control-play:disabled {
 }
 
 /* Joined with the source toggle when present. */
-html.sc-enabled.sc-layout-fusion #controls #item-play-button:has(#control-source) #control-play {
+html.sc-enabled.sc-layout-fusion #controls #item-play-button[data-sc-source] #control-play {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -413,7 +413,7 @@ html.sc-enabled.sc-layout-fusion #controls #control-source [class*="_background"
 /* With an uploaded audio file Songsterr shows a source-menu button instead
    of the toggle. Join it to play like the toggle; its icon was drawn in
    --controls-surface (our panel colour) and was invisible. */
-html.sc-enabled.sc-layout-fusion #controls #item-play-button:has([class*="_sourceWrapper"]) #control-play {
+html.sc-enabled.sc-layout-fusion #controls #item-play-button[data-sc-source] #control-play {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -504,22 +504,22 @@ html.sc-enabled.sc-layout-fusion #controls [class*="_panel"]:has(> [class*="_vid
 html.sc-enabled.sc-layout-fusion #controls {
   transition: transform 0.3s ease-out, translate 0.2s ease-out, visibility 0s;
 }
-html.sc-enabled.sc-layout-fusion.sc-pane-min:has(#sc-pane-toggle) #controls {
+html.sc-enabled.sc-layout-fusion.sc-pane-min #controls {
   translate: 0 calc(100% + 2px);
   visibility: hidden;              /* out of the tab order while minimised */
   transition: transform 0.3s ease-out, translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
-html.sc-enabled.sc-layout-fusion.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel] {
+html.sc-enabled.sc-layout-fusion.sc-pane-min [data-controls-top-panel] {
   bottom: 0;
   transition: bottom 0.2s ease-out, opacity 0.2s;
 }
 /* Songsterr fades the strip out during playback; while minimised it is the
    only visible control, so keep it. */
-html.sc-enabled.sc-layout-fusion.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel][data-hidden="true"] {
+html.sc-enabled.sc-layout-fusion.sc-pane-min [data-controls-top-panel][data-hidden="true"] {
   opacity: 1;
   visibility: visible;
 }
-html.sc-enabled.sc-layout-fusion.sc-pane-min:has(#sc-pane-toggle) [data-controls-top-panel] > [class*="_controlsTopPanel"] {
+html.sc-enabled.sc-layout-fusion.sc-pane-min [data-controls-top-panel] > [class*="_controlsTopPanel"] {
   pointer-events: auto;
 }
 

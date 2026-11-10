@@ -338,7 +338,7 @@ html.sc-enabled.sc-tab-lines-heavy #tablature path[class*="_strings"] {
 #sc-video-toggle {
   display: none;
 }
-html.sc-enabled:is(.sc-layout-classic, .sc-layout-minimal):where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
+html.sc-enabled:is(.sc-layout-classic, .sc-layout-minimal).sc-video-open #sc-video-toggle {
   position: fixed;
   z-index: calc(var(--zIndexControls, 73) + 1);   /* above the bar (73), under the popups layer (75): same #apptab context (content.js) */
   box-sizing: border-box;
@@ -415,7 +415,9 @@ html.sc-enabled div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-
   margin-top: calc(-1 * var(--sc-tab-top-clear, 0px));
   pointer-events: none;
 }
-html.sc-enabled div[data-line-unit-index]:has(svg[data-testid^="multitrack-line-group"]) > * {
+/* (no :has here: Songsterr's own children are already auto, and a :has() ancestor with a
+   universal child costs a full restyle on every DOM change while scrolling) */
+html.sc-enabled div[data-line-unit-index] > * {
   pointer-events: auto;
 }
 

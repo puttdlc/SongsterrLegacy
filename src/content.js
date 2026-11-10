@@ -135,9 +135,11 @@
     // Collapsing only exists for the Fusion quick menu (bottom-left dock).
     if (s.navCollapsed && s.navLayout === 'fusion') list.push('sc-nav-collapsed');
     // Minimising only exists in Fusion; Classic and Legacy are fixed bars.
-    if (s.paneMinimized && s.layout === 'fusion') list.push('sc-pane-min');
+    // (only once our toggle is in the page, so the pane can't be hidden with no way back)
+    if (s.paneMinimized && s.layout === 'fusion' && paneToggle && paneToggle.isConnected) list.push('sc-pane-min');
     // Fusion keeps the video panel inside its pane (minimised with it).
     if (s.videoCollapsed && s.layout !== 'fusion') list.push('sc-video-collapsed');
+    if (videoOpen) list.push('sc-video-open');
     if (s.layout === 'classic') list.push(`sc-bar-${s.classicBar}`, ...CLASSIC_LEVELS[classicLevel]);
     return list;
   }
@@ -149,6 +151,14 @@
     for (const c of wanted) {
       if (!root.classList.contains(c)) root.classList.add(c);
     }
+  }
+
+  // Re-derive the wanted classes after a state that classesFor reads changed.
+  function refreshClasses() {
+    const next = classesFor(settings);
+    if (next.length === wanted.length && next.every((c, i) => c === wanted[i])) return;
+    wanted = next;
+    syncClasses();
   }
 
   function apply(raw) {
@@ -163,6 +173,8 @@
     updateVideoToggle();
     syncKeepOpen();
     syncWelcome();
+    marksDirty = true;   // the skin may have just come on: mark what is already there
+    placePopups();
     schedule();
     try {
       localStorage.setItem(MIRROR_KEY, JSON.stringify(settings));
@@ -267,6 +279,7 @@
     const strip = document.querySelector(TOP_STRIP);
     if (!strip || !settings.enabled || settings.layout !== 'fusion') {
       if (paneToggle && paneToggle.isConnected) paneToggle.remove();
+      refreshClasses();
       return;
     }
     if (!paneToggle) {
@@ -274,6 +287,7 @@
       updatePaneToggle();
     }
     if (paneToggle.parentNode !== strip || strip.lastChild !== paneToggle) strip.append(paneToggle);
+    refreshClasses();
   }
 
   // ---------------------------------------------------------------------------
@@ -287,8 +301,37 @@
   // (base.css video.toggle), so the two change together and the panel can
   // never get stuck hidden.
   // ---------------------------------------------------------------------------
-  const VIDEO_PANEL = '#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"]))';
+  // The wrapper in #controls holding an open synced-video / audio-mix panel:
+  // a child of #controls other than the handle and the controls card, with a
+  // _panel child that isn't _panelHidden. Marked data-sc-video-wrap for CSS
+  // (no :has(): see "Marks" below) and published as html.sc-video-open.
   let videoToggle = null;
+  let videoOpen = false;
+
+  function findVideoPanel() {
+    const controls = document.getElementById('controls');
+    if (!controls) return null;
+    for (const child of controls.children) {
+      if (child.tagName !== 'DIV' || child.id === 'controls-panel-handle' || String(child.className).includes('_controlsCard')) continue;
+      for (const inner of child.children) {
+        const name = String(inner.className);
+        if (name.includes('_panel') && !name.includes('_panelHidden')) return child;
+      }
+    }
+    return null;
+  }
+
+  let videoWrap = null;
+  function syncVideoMarks(panel) {
+    if (videoWrap && videoWrap !== panel) videoWrap.removeAttribute('data-sc-video-wrap');
+    videoWrap = panel;
+    if (panel) setAttr(panel, 'data-sc-video-wrap', '');
+    const open = !!panel;
+    if (open !== videoOpen) {
+      videoOpen = open;
+      refreshClasses();
+    }
+  }
 
   function buildVideoToggle() {
     const btn = document.createElement('button');
@@ -322,7 +365,8 @@
     const controls = document.getElementById('controls');
     const host = (controls && controls.parentElement) || document.body;
     if (videoToggle.parentNode !== host) host.append(videoToggle);
-    const panel =settings.enabled && settings.layout !== 'fusion' ? document.querySelector(VIDEO_PANEL) : null;
+    const panel = settings.enabled && settings.layout !== 'fusion' ? findVideoPanel() : null;
+    syncVideoMarks(panel);
     // Classic puts the tab on the panel's top edge, so CSS needs its height.
     // Measure the panel itself: the wrapper around it has extra room for the
     // shadow. Not affected while slid away (translate doesn't change layout).
@@ -484,6 +528,100 @@
     if (el.style.getPropertyValue('--sc-pop-x') !== x) el.style.setProperty('--sc-pop-x', x);
   }
 
+  // ---------------------------------------------------------------------------
+  // Marks: data-sc-* attributes standing in for :has() selectors
+  // A :has() whose anchor is an ancestor of something that changes often (the
+  // lazily loaded lines, tooltips ...) makes Chrome re-style that whole
+  // subtree on every such change when the rule has anything but a class or
+  // an id after the :has(): measured at ~3.3s vs ~0.9s of style work per
+  // scrolling session on a 4x slowed CPU, with the page's own classes being
+  // [class*="_x"] fragments. So CSS keys on these marks instead, set here
+  // before paint (placePopups). Never use a :has() followed by a combinator
+  // and an attribute / tag selector in the stylesheets. One with a plain class
+  // or id as the subject (X:has(> .y)) is cheap.
+  // Light marks run every pass (a few children); the heavy ones scan the
+  // document and only run after a node was added or removed, or a segment
+  // item's class changed (marksDirty, set by the observer).
+  // ---------------------------------------------------------------------------
+  const NAV_NAMES = { favorites: 'favorites', mytabs: 'favorites', signin: 'account', account: 'account' };
+  let marksDirty = true;
+
+  function syncNavMarks() {
+    const list = document.getElementById('tablist');
+    if (!list) return;
+    for (const group of list.children) {
+      if (group.tagName !== 'DIV') continue;
+      for (const item of group.children) {
+        const link = item.querySelector('a[id^="menu-"]');
+        const raw = link ? link.id.slice(5) : '';
+        const name = raw ? (NAV_NAMES[raw] || raw) : '';
+        if (name) setAttr(item, 'data-sc-nav', name);
+        else if (item.hasAttribute('data-sc-nav')) item.removeAttribute('data-sc-nav');
+      }
+    }
+    if (document.getElementById('menu-inbox')) setAttr(list, 'data-sc-inbox', '');
+    else if (list.hasAttribute('data-sc-inbox')) list.removeAttribute('data-sc-inbox');
+  }
+
+  // Play button joined with the source toggle / source menu.
+  function syncPlayMarks() {
+    const item = document.getElementById('item-play-button');
+    if (!item) return;
+    const joined = !!item.querySelector('#control-source, [class*="_sourceWrapper"]');
+    if (joined) setAttr(item, 'data-sc-source', '');
+    else if (item.hasAttribute('data-sc-source')) item.removeAttribute('data-sc-source');
+  }
+
+  // Set `attr` on exactly `wanted` (a Set of elements), clearing it elsewhere.
+  function markOnly(attr, wanted) {
+    for (const el of document.querySelectorAll(`[${attr}]`)) {
+      if (!wanted.has(el)) el.removeAttribute(attr);
+    }
+    for (const el of wanted) setAttr(el, attr, '');
+  }
+
+  function syncHeavyMarks() {
+    const profileHead = new Set();
+    const profile = new Set();
+    for (const info of document.querySelectorAll('[class*="_profileInfo"]')) {
+      const head = info.parentElement;
+      if (!head || !String(head.className).includes('_header')) continue;
+      profileHead.add(head);
+      if (head.parentElement) profile.add(head.parentElement);
+    }
+    markOnly('data-sc-profile-head', profileHead);
+    markOnly('data-sc-profile', profile);
+
+    const groups = new Set();
+    const dividers = new Set();
+    for (const item of document.querySelectorAll('[class*="_groupItemActive"]')) {
+      const group = item.parentElement;
+      if (!group || !String(group.className).includes('_group') || !item.closest('main[id^="panel-"], [role="dialog"]')) continue;
+      groups.add(group);
+      const before = item.previousElementSibling;
+      if (before && String(before.className).includes('_divider')) dividers.add(before);
+    }
+    markOnly('data-sc-group-active', groups);
+    markOnly('data-sc-div-active', dividers);
+
+    const fretboards = new Set();
+    for (const slot of document.querySelectorAll('[class*="_settingsSlot"]')) {
+      const panel = slot.parentElement && slot.parentElement.closest('[class*="_panel"]');
+      if (panel) fretboards.add(panel);
+    }
+    markOnly('data-sc-fretboard', fretboards);
+  }
+
+  function syncMarks() {
+    if (!settings.enabled) return;
+    syncNavMarks();
+    syncPlayMarks();
+    if (marksDirty) {
+      marksDirty = false;
+      syncHeavyMarks();
+    }
+  }
+
   // Both placements read layout, so DOM changes (constant during playback)
   // are coalesced to one pass per frame. Animation frames run before paint.
   // The video panel's height is published here too, so the Classic tab sits
@@ -493,6 +631,7 @@
     if (placeFrame) return;
     placeFrame = requestAnimationFrame(() => {
       placeFrame = 0;
+      syncMarks();
       placeLegacyPopups();
       placeLegacyLevelled();
       placeClassicPopups();
@@ -1037,7 +1176,14 @@
   } catch (_) { /* extension context gone (e.g. reloaded); keep last classes */ }
 
   // 3. Safety net + upkeep triggers.
-  new MutationObserver(() => {
+  new MutationObserver((records) => {
+    for (const r of records) {
+      // (the notation's lazily loaded lines churn while scrolling and hold nothing we mark)
+      if (r.type === 'childList' ? !r.target.closest('#tablature') : String(r.target.className).includes('_groupItem')) {
+        marksDirty = true;
+        break;
+      }
+    }
     placePopups();
     schedule();
   }).observe(root, {

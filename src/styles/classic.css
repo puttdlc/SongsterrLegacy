@@ -437,7 +437,7 @@ html.sc-enabled.sc-layout-classic.sc-flat #controls #control-play[aria-pressed="
 html.sc-enabled.sc-layout-classic #controls #control-play:disabled {
   opacity: 0.45;
 }
-html.sc-enabled.sc-layout-classic #controls #item-play-button:has(#control-source) #control-play {
+html.sc-enabled.sc-layout-classic #controls #item-play-button[data-sc-source] #control-play {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -655,7 +655,7 @@ html.sc-enabled.sc-layout-classic {
    clips what leaves it (overflow: hidden) and lets clicks through; 24px of
    padding on the top and left leave room for the panel's shadow. The panel
    inside carries the background, border and scrolling. */
-html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
+html.sc-enabled.sc-layout-classic #controls > div[data-sc-video-wrap]:not(#controls-panel-handle) {
   position: fixed;
   right: 0;
   bottom: var(--sc-classic-h);
@@ -666,7 +666,7 @@ html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [c
   overflow: hidden;
   pointer-events: none;
 }
-html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+html.sc-enabled.sc-layout-classic #controls > div[data-sc-video-wrap]:not(#controls-panel-handle) > [class*="_panel"] {
   box-sizing: border-box;
   max-height: calc(100vh - var(--sc-classic-h) - 24px);
   padding-top: 12px;
@@ -691,12 +691,12 @@ html.sc-enabled.sc-layout-classic #controls > div:not(#controls-panel-handle, [c
    it runs on the main thread while translate runs on the compositor; while
    a video plays the clip lagged and the panel showed over the bar when
    collapsing. One moving part can't drift.) */
-html.sc-enabled.sc-layout-classic.sc-video-collapsed:has(#sc-video-toggle) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+html.sc-enabled.sc-layout-classic.sc-video-collapsed.sc-video-open #controls > div[data-sc-video-wrap]:not(#controls-panel-handle) > [class*="_panel"] {
   translate: 0 100%;
   visibility: hidden;                /* out of the tab order while collapsed */
   transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
-html.sc-enabled.sc-layout-classic:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
+html.sc-enabled.sc-layout-classic.sc-video-open #sc-video-toggle {
   right: calc(var(--sc-video-w) / 2 - 24px);
   bottom: calc(var(--sc-classic-h) + var(--sc-video-h, 0px));
   width: 48px;
@@ -706,7 +706,7 @@ html.sc-enabled.sc-layout-classic:where(:has(#controls > div:not(#controls-panel
   border-radius: var(--sc-radius) var(--sc-radius) 0 0;
   transition: bottom 0.2s ease-out;
 }
-html.sc-enabled.sc-layout-classic.sc-video-collapsed:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
+html.sc-enabled.sc-layout-classic.sc-video-collapsed.sc-video-open #sc-video-toggle {
   bottom: var(--sc-classic-h);
 }
 html.sc-enabled.sc-layout-classic #sc-video-toggle svg {

@@ -166,7 +166,7 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_groupItemActi
   fill: var(--sc-on-accent);
   box-shadow: var(--sc-accent-pressed-shade);
 }
-html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"]:has(> [class*="_groupItemActive"]) > [class*="_activeButton"] {
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [data-sc-group-active] > [class*="_activeButton"] {
   visibility: hidden;
 }
 /* Hairline dividers between segments; hide the ones next to the selection. */
@@ -175,7 +175,7 @@ html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"] > [cl
   height: auto;
 }
 html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"] > [class*="_groupItemActive"] + [class*="_divider"],
-html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"] > [class*="_divider"]:has(+ [class*="_groupItemActive"]) {
+html.sc-enabled :is(main[id^="panel-"], [role="dialog"]) [class*="_group"] > [data-sc-div-active] {
   visibility: hidden;
 }
 
@@ -612,7 +612,7 @@ html.sc-enabled #revisions-list button[class*="_revisionButton"]:disabled {
  * cards become flat rows split by hairlines, like History and Inbox, with the
  * song / date line small and muted above the description.
  * ------------------------------------------------------------------------- */
-html.sc-enabled [class*="_header"]:has(> [class*="_profileInfo"]) > [class*="_popupHeader"]:not([class*="_popupHeaderTitle"]) {
+html.sc-enabled [data-sc-profile-head] > [class*="_popupHeader"]:not([class*="_popupHeaderTitle"]) {
   min-height: calc(var(--sc-ctl-h) + 4px);
   margin-bottom: 12px;
   padding: 0 36px;
@@ -620,13 +620,13 @@ html.sc-enabled [class*="_header"]:has(> [class*="_profileInfo"]) > [class*="_po
   border-bottom: 1px solid var(--sc-border);
   box-shadow: inset 0 1px 0 var(--sc-highlight);
 }
-html.sc-enabled [class*="_header"]:has(> [class*="_profileInfo"]) [class*="_popupHeaderTitle"] {
+html.sc-enabled [data-sc-profile-head] [class*="_popupHeaderTitle"] {
   display: flex;
   align-items: center;
   justify-content: center;
   font: 600 15px / 1 var(--sc-font);
 }
-html.sc-enabled [class*="_header"]:has(> [class*="_profileInfo"]) [class*="_popupCloseButton"] {
+html.sc-enabled [data-sc-profile-head] [class*="_popupCloseButton"] {
   top: 50%;
   right: 4px;
   transform: translateY(-50%);
@@ -638,12 +638,12 @@ html.sc-enabled [class*="_profileInfo"] :is([class*="_email"], [class*="_karmaLa
   font-size: var(--sc-font-size);
   color: var(--sc-text-muted);
 }
-html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] {
+html.sc-enabled [data-sc-profile] [class*="_list"] {
   gap: 0;
   padding: 0;
   border-top: 1px solid var(--sc-divider);
 }
-html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] > a[class*="_item"] {
+html.sc-enabled [data-sc-profile] [class*="_list"] > a[class*="_item"] {
   gap: 4px;
   padding: 10px 15px;
   border-radius: 0;
@@ -651,21 +651,21 @@ html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_l
   background: transparent;
   text-decoration: none;
 }
-html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] > a[class*="_item"]:is(:hover, :focus-visible) {
+html.sc-enabled [data-sc-profile] [class*="_list"] > a[class*="_item"]:is(:hover, :focus-visible) {
   background: var(--sc-row-hover);
 }
-html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] [class*="_info"] {
+html.sc-enabled [data-sc-profile] [class*="_list"] [class*="_info"] {
   gap: 2px;
   margin: 0;
   font-size: var(--sc-font-size-small);
   color: var(--sc-text-muted);
 }
-html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_list"] [class*="_text"] {
+html.sc-enabled [data-sc-profile] [class*="_list"] [class*="_text"] {
   font-size: var(--sc-font-size);
   line-height: 1.35;
   color: var(--sc-text);
 }
-html.sc-enabled :has(> [class*="_header"] > [class*="_profileInfo"]) [class*="_stub"] h2 {
+html.sc-enabled [data-sc-profile] [class*="_stub"] h2 {
   font: 600 16px / 1.3 var(--sc-font);
 }
 
@@ -1187,7 +1187,7 @@ html.sc-enabled main[id^="panel-"] [class*="_playlist"]:has(> [class*="_header"]
   border: 1px solid var(--sc-border);
   border-radius: var(--sc-radius);
 }
-html.sc-enabled main[id^="panel-"] [class*="_playlist"]:has(> [class*="_header"]) > [class*="_header"] {
+html.sc-enabled main[id^="panel-"] [class*="_playlist"] > [class*="_header"] {
   border-radius: 0;
   padding: 12px 14px;
 }
@@ -1388,7 +1388,7 @@ html.sc-enabled [class*="_radioButtonDefault"] [class*="_radio"] {
  * the sounding note. Note dots, strings and frets keep Songsterr's look:
  * like the notation, that is the instrument diagram players read.
  * ------------------------------------------------------------------------- */
-html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) {
+html.sc-enabled [data-sc-fretboard] {
   --fretboard-panel-bg: var(--sc-surface);
   --fretboard-surface-border: var(--sc-border);
   --fretboard-settings: var(--sc-icon);
@@ -1401,18 +1401,18 @@ html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*
   border-radius: 0;
   box-shadow: var(--sc-elev);
 }
-html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) [class*="_surface"]:not([class*="_surface"] *) {
+html.sc-enabled [data-sc-fretboard] [class*="_surface"]:not([class*="_surface"] *) {
   border-radius: var(--sc-radius);
 }
-html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) [class*="_headerTitle"] {
+html.sc-enabled [data-sc-fretboard] [class*="_headerTitle"] {
   font: 600 var(--sc-font-size-small) / 16px var(--sc-font);
   color: var(--sc-text);
 }
-html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) [class*="_annotation"] {
+html.sc-enabled [data-sc-fretboard] [class*="_annotation"] {
   font-family: var(--sc-font);
   color: var(--sc-text-muted);
 }
-html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) button[class*="_closeButton"] {
+html.sc-enabled [data-sc-fretboard] button[class*="_closeButton"] {
   width: 20px;
   min-width: 20px;
   height: 20px;
@@ -1420,10 +1420,10 @@ html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*
   border: 1px solid transparent;
   border-radius: 2px;
 }
-html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) button[class*="_closeButton"] > svg {
+html.sc-enabled [data-sc-fretboard] button[class*="_closeButton"] > svg {
   display: none;
 }
-html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) button[class*="_closeButton"]::before {
+html.sc-enabled [data-sc-fretboard] button[class*="_closeButton"]::before {
   content: "";
   width: 9px;
   height: 9px;
@@ -1431,7 +1431,7 @@ html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 1l8 8M9 1l-8 8' stroke='%23000' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 10'%3E%3Cpath d='M1 1l8 8M9 1l-8 8' stroke='%23000' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E") center / contain no-repeat;
 }
-html.sc-enabled [class*="_panel"]:has([class*="_settingsSlot"]):not(:has([class*="_panel"] [class*="_settingsSlot"])) button[class*="_closeButton"]:hover {
+html.sc-enabled [data-sc-fretboard] button[class*="_closeButton"]:hover {
   border-color: var(--sc-border);
   background: var(--sc-btn-bg-hover);
   box-shadow: var(--sc-bevel);

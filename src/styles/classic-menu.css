@@ -83,22 +83,22 @@ html.sc-enabled.sc-menu-classic #tablist [class*="_itemWrapper"] {
    moves items between groups): Plus | Search ... For teachers | Help |
    Inbox, Account / Sign in. Unknown items go last. */
 html.sc-enabled.sc-menu-classic #tablist > div {
-  & > :has(a[id^="menu-"])           { order: 9; }
-  & > :has(#menu-plus)               { order: 1; }
-  & > :has(#menu-search)             { order: 2; }
-  & > :has(#menu-favorites, #menu-mytabs) { order: 3; }
-  & > :has(#menu-newtab)             { order: 4; }
-  & > :has(#menu-teacherPlan)        { order: 5; }
-  & > :has(#menu-help)               { order: 6; }
-  & > :has(#menu-inbox)              { order: 7; }
-  & > :has(#menu-account, #menu-signin) { order: 8; }
+  & > [data-sc-nav]           { order: 9; }
+  & > [data-sc-nav="plus"]               { order: 1; }
+  & > [data-sc-nav="search"]             { order: 2; }
+  & > :is([data-sc-nav="favorites"], [data-sc-nav="mytabs"]) { order: 3; }
+  & > [data-sc-nav="newtab"]             { order: 4; }
+  & > [data-sc-nav="teacherPlan"]        { order: 5; }
+  & > [data-sc-nav="help"]               { order: 6; }
+  & > [data-sc-nav="inbox"]              { order: 7; }
+  & > :is([data-sc-nav="account"], [data-sc-nav="signin"]) { order: 8; }
 }
 
 /* Cluster gaps: before Search, before Help, and before Inbox (before Sign in
    / Account when there's no inbox, e.g. logged out). */
 html.sc-enabled.sc-menu-classic #tablist {
-  & > div > :has(#menu-search, #menu-help, #menu-inbox),
-  &:not(:has(#menu-inbox)) > div > :has(#menu-account, #menu-signin) {
+  & > div > :is([data-sc-nav="search"], [data-sc-nav="help"], [data-sc-nav="inbox"]),
+  &:not([data-sc-nav="inbox"]) > div > :is([data-sc-nav="account"], [data-sc-nav="signin"]) {
     margin-left: auto;
   }
 }

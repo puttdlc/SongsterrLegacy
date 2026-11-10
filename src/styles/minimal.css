@@ -502,7 +502,7 @@ html.sc-enabled.sc-layout-minimal.sc-menu-fusion [class*="_bottomBarWide"] {
    what leaves it (overflow: hidden) and lets clicks through; 24px of
    padding on the top and left leave room for the panel's shadow. The
    panel inside carries the background, border and scrolling. */
-html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) {
+html.sc-enabled.sc-layout-minimal #controls > div[data-sc-video-wrap]:not(#controls-panel-handle) {
   position: fixed;
   bottom: var(--sc-bottom-inset, 0px);
   right: var(--sc-rail-w);
@@ -513,7 +513,7 @@ html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [c
   overflow: hidden;
   pointer-events: none;
 }
-html.sc-enabled.sc-layout-minimal #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+html.sc-enabled.sc-layout-minimal #controls > div[data-sc-video-wrap]:not(#controls-panel-handle) > [class*="_panel"] {
   box-sizing: border-box;
   max-height: calc(100vh - var(--sc-top-inset, 0px) - var(--sc-bottom-inset, 0px) - 24px);
   padding-top: 12px;
@@ -538,16 +538,16 @@ html.sc-enabled.sc-layout-minimal {
    Only the panel moves; the wrapper's own edge (the column's left edge)
    clips it, so it never shows over the column (see classic.videoCollapse
    for why this isn't an animated clip-path). */
-html.sc-enabled.sc-layout-minimal.sc-video-collapsed:has(#sc-video-toggle) #controls > div:not(#controls-panel-handle, [class*="_controlsCard"]):has(> [class*="_panel"]:not([class*="_panelHidden"])) > [class*="_panel"] {
+html.sc-enabled.sc-layout-minimal.sc-video-collapsed.sc-video-open #controls > div[data-sc-video-wrap]:not(#controls-panel-handle) > [class*="_panel"] {
   translate: 100% 0;
   visibility: hidden;                /* out of the tab order while collapsed */
   transition: translate 0.2s ease-out, visibility 0s linear 0.2s;
 }
-html.sc-enabled.sc-layout-minimal:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
+html.sc-enabled.sc-layout-minimal.sc-video-open #sc-video-toggle {
   bottom: calc(var(--sc-bottom-inset, 0px) + 12px);
   right: calc(var(--sc-rail-w) + var(--sc-video-w));
 }
-html.sc-enabled.sc-layout-minimal.sc-video-collapsed:where(:has(#controls > div:not(#controls-panel-handle, [class*="_controlsCard"]) > [class*="_panel"]:not([class*="_panelHidden"]))) #sc-video-toggle {
+html.sc-enabled.sc-layout-minimal.sc-video-collapsed.sc-video-open #sc-video-toggle {
   right: var(--sc-rail-w);
 }
 

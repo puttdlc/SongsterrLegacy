@@ -121,7 +121,7 @@ html.sc-enabled.sc-menu-minimal #tablist > div {
    is nested deeper, in _helpMenu). Only children holding a menu link count:
    the inbox popup is a direct child too (rendered right after its item),
    and width: 100% stretched it across the screen. */
-html.sc-enabled.sc-menu-minimal #tablist > div > :has(a[id^="menu-"]) {
+html.sc-enabled.sc-menu-minimal #tablist > div > [data-sc-nav] {
   flex: 0 0 auto;
   width: 100%;
   height: auto;
@@ -131,21 +131,21 @@ html.sc-enabled.sc-menu-minimal #tablist > div > :has(a[id^="menu-"]) {
 /* Order, by item: Search, Favorites | New tab, For teachers | Plus, Help |
    Inbox, Account / Sign in. Unknown items go last. */
 html.sc-enabled.sc-menu-minimal #tablist > div {
-  & > :has(#menu-search)      { order: 1; }
-  & > :has(#menu-favorites)   { order: 2; }
-  & > :has(#menu-mytabs)      { order: 2; }
-  & > :has(#menu-newtab)      { order: 3; }
-  & > :has(#menu-teacherPlan) { order: 4; }
-  & > :has(#menu-plus)        { order: 5; }
-  & > :has(#menu-help)        { order: 6; }
-  & > :has(#menu-inbox)       { order: 7; }
-  & > :has(#menu-account, #menu-signin) { order: 8; }
+  & > [data-sc-nav="search"]      { order: 1; }
+  & > [data-sc-nav="favorites"]   { order: 2; }
+  & > [data-sc-nav="mytabs"]      { order: 2; }
+  & > [data-sc-nav="newtab"]      { order: 3; }
+  & > [data-sc-nav="teacherPlan"] { order: 4; }
+  & > [data-sc-nav="plus"]        { order: 5; }
+  & > [data-sc-nav="help"]        { order: 6; }
+  & > [data-sc-nav="inbox"]       { order: 7; }
+  & > :is([data-sc-nav="account"], [data-sc-nav="signin"]) { order: 8; }
 }
 /* Cluster gaps, before New tab, Plus and Inbox (before Account / Sign in
    when there's no inbox, e.g. logged out). */
 html.sc-enabled.sc-menu-minimal #tablist {
-  & > div > :has(#menu-newtab, #menu-plus, #menu-inbox),
-  &:not(:has(#menu-inbox)) > div > :has(#menu-account, #menu-signin) {
+  & > div > :is([data-sc-nav="newtab"], [data-sc-nav="plus"], [data-sc-nav="inbox"]),
+  &:not([data-sc-nav="inbox"]) > div > :is([data-sc-nav="account"], [data-sc-nav="signin"]) {
     margin-top: clamp(10px, 5vh, 48px);
   }
 }
