@@ -133,7 +133,6 @@ html.sc-enabled.sc-menu-minimal #tablist > div > [data-sc-nav] {
 html.sc-enabled.sc-menu-minimal #tablist > div {
   & > [data-sc-nav="search"]      { order: 1; }
   & > [data-sc-nav="favorites"]   { order: 2; }
-  & > [data-sc-nav="mytabs"]      { order: 2; }
   & > [data-sc-nav="newtab"]      { order: 3; }
   & > [data-sc-nav="teacherPlan"] { order: 4; }
   & > [data-sc-nav="plus"]        { order: 5; }
@@ -145,7 +144,7 @@ html.sc-enabled.sc-menu-minimal #tablist > div {
    when there's no inbox, e.g. logged out). */
 html.sc-enabled.sc-menu-minimal #tablist {
   & > div > :is([data-sc-nav="newtab"], [data-sc-nav="plus"], [data-sc-nav="inbox"]),
-  &:not([data-sc-nav="inbox"]) > div > :is([data-sc-nav="account"], [data-sc-nav="signin"]) {
+  &:not([data-sc-inbox]) > div > :is([data-sc-nav="account"], [data-sc-nav="signin"]) {
     margin-top: clamp(10px, 5vh, 48px);
   }
 }

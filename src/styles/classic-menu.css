@@ -98,7 +98,7 @@ html.sc-enabled.sc-menu-classic #tablist > div {
    / Account when there's no inbox, e.g. logged out). */
 html.sc-enabled.sc-menu-classic #tablist {
   & > div > :is([data-sc-nav="search"], [data-sc-nav="help"], [data-sc-nav="inbox"]),
-  &:not([data-sc-nav="inbox"]) > div > :is([data-sc-nav="account"], [data-sc-nav="signin"]) {
+  &:not([data-sc-inbox]) > div > :is([data-sc-nav="account"], [data-sc-nav="signin"]) {
     margin-left: auto;
   }
 }
