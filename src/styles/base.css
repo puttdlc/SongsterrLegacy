@@ -73,6 +73,9 @@ html.sc-enabled:not(#sc-specificity) {
   --cursor-body-0: var(--sc-accent);
   --tuning-button: var(--sc-accent);
 
+  /* Help page: the yellow bar beside the chosen topic. */
+  --help-panel-chosen-before: var(--sc-accent);
+
   /* Popups anchored to the bottom nav: sit directly on our slimmer bar. */
   --bottombar-height: calc(var(--sc-nav-h, 32px) + 1px);
   --bottombar-popup-offset: 0px;
