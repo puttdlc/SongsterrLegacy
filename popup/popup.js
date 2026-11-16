@@ -55,13 +55,13 @@
     if (accentInput) accentInput.checked = true;
     const custom = /^#[0-9a-f]{6}$/i.test(String(settings.accentCustom)) ? settings.accentCustom : DEFAULTS.accentCustom;
     form.elements.accentCustom.value = custom;
-    document.getElementById('custom-hex').textContent = custom;
+    if (document.activeElement?.id !== 'custom-hex') document.getElementById('custom-hex').value = custom;
     document.getElementById('custom-swatch').style.setProperty('--swatch', custom);
     document.getElementById('custom-row').hidden = accent !== 'custom';
     document.documentElement.dataset.accent = accent;
     const flashCustom = /^#[0-9a-f]{6}$/i.test(String(settings.flashCustom)) ? settings.flashCustom : DEFAULTS.flashCustom;
     form.elements.flashCustom.value = flashCustom;
-    document.getElementById('flash-custom-hex').textContent = flashCustom;
+    if (document.activeElement?.id !== 'flash-custom-hex') document.getElementById('flash-custom-hex').value = flashCustom;
     document.getElementById('flash-custom-swatch').style.setProperty('--swatch', flashCustom);
     document.getElementById('flash-theme-swatch').style.setProperty('--swatch',
       { blue: '#3a82e4', green: '#2f9e44', red: '#d64545', custom, off: '#8b8f97' }[accent]);
@@ -126,6 +126,23 @@
     render(current);
     chrome.storage.sync.set({ [input.name]: value });
   });
+
+  // The hex code is a text field: typing a valid code (3 or 6 digits, # optional)
+  // picks that colour through the colour input's own change path.
+  for (const field of form.querySelectorAll('.hex-input')) {
+    const picker = form.elements[field.dataset.for];
+    field.addEventListener('input', () => {
+      let v = field.value.trim().replace(/^#?/, '#');
+      if (/^#[0-9a-f]{3}$/i.test(v)) v = '#' + [...v.slice(1)].map((c) => c + c).join('');
+      if (!/^#[0-9a-f]{6}$/i.test(v)) return;
+      v = v.toLowerCase();
+      if (picker.value === v && field.value === v) return;
+      picker.value = v;
+      picker.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    // Leaving the field with half a code puts the saved colour back.
+    field.addEventListener('blur', () => { field.value = picker.value; });
+  }
 
   // While the accent is "auto", the colour it stands for is shown checked, and
   // clicking a checked radio fires no change event. Treat that click as

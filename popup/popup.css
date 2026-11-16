@@ -257,9 +257,20 @@ body {
   outline: 2px solid var(--sc-focus);
   outline-offset: 1px;
 }
-#custom-hex {
+.hex-input {
+  width: 76px;
+  height: 24px;
+  padding: 0 6px;
+  border: 1px solid var(--sc-border);
+  border-radius: var(--sc-radius);
+  background: var(--sc-surface-sunken);
+  color: inherit;
   font: 12px ui-monospace, monospace;
   text-transform: uppercase;
+}
+.hex-input:focus-visible {
+  outline: 2px solid var(--sc-focus);
+  outline-offset: 1px;
 }
 
 /* ---------- Diagnostics ---------- */
