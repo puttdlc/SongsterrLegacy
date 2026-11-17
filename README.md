@@ -16,11 +16,6 @@ inset shadows). It changes the look only. The site behaves exactly as before.
 - The notation renderer's output is never styled.
 - Privacy: no data collected or sent. See [PRIVACY.md](PRIVACY.md).
 
-> **Build status: step 3.** The classic style is now site-wide: player pane,
-> nav bar, side panels (Search, My tabs, Help, Account ...), dialogs (mixer,
-> settings, feature popups, inbox), menus, switches and segmented controls, plus
-> the clickable tab author.
-
 ## Install
 
 1. Open `chrome://extensions`.
