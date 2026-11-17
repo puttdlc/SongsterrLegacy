@@ -173,8 +173,8 @@
   const TIPS = {
     enabled: 'Turns the whole reskin on or off. Off brings back Songsterr’s own look at once, no reload needed.',
     gradients: 'On: buttons and title bars have a soft top-to-bottom shine. Off: they are filled with a flat colour. Their bevelled edges stay either way, so buttons still look raised.',
-    layout: 'How the player controls are laid out. Fusion: a compact strip docked bottom right. Classic: the older Songsterr player, one full-width bar along the bottom. Legacy: the 2018-era column of icon buttons down the right edge.',
-    navLayout: 'Where the site menu (Search, My tabs, Help …) sits. Fusion: docked bottom left, and it can be collapsed. Classic: a bar along the top, each icon above its label. Legacy: the 2018-era sidebar down the left edge.',
+    layout: 'How the player controls are laid out. Fusion: a compact strip docked bottom right. Classic: the older Songsterr player, one full-width bar along the bottom. Legacy: the 2020-era column of icon buttons down the right edge.',
+    navLayout: 'Where the site menu (Search, My tabs, Help …) sits. Fusion: docked bottom left, and it can be collapsed. Classic: a bar along the top, each icon above its label. Legacy: the 2020-era sidebar down the left edge.',
     tabLines: 'Thickness of the tab’s string lines and bar lines. Default is Songsterr’s own 1px. Thin is lighter; Thick and Heavy are easier to follow.',
     classicBar: 'Classic controls only. Spread: a label under every icon, buttons spaced equally across the bar. Icons: icons only, packed to the left.',
     accent: 'The accent colour of pressed buttons, highlights and the play button. Off: no accent, buttons match the Dark or Light theme. Until you pick one, Classic uses green and the other layouts blue.',

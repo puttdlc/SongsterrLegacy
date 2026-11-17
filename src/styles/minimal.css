@@ -3,7 +3,7 @@
  * ===============================================
  * Region keys: selectors.js -> minimal.*
  *
- * The 2018-era Songsterr player: a narrow column of round, icon-only buttons
+ * The 2020-era Songsterr player: a narrow column of round, icon-only buttons
  * along the right edge, play on top. Favourite / display mode / editor sit
  * at the top left of the page, the track list opens beside the column.
  *
@@ -205,7 +205,7 @@ html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle
 }
 
 /* Pressed, and toggled on (loop, solo, track list open, favourited ...):
-   a filled accent circle with a white icon, like the 2018-era player. */
+   a filled accent circle with a white icon, like the 2020-era player. */
 html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"]:not(#control-source):not(:disabled):active,
 html.sc-enabled.sc-layout-minimal #controls :is(button, a)[id^="control-"][aria-pressed="true"]:not(#control-source),
 html.sc-enabled.sc-layout-minimal [data-controls-top-panel] :is(#favorite-toggle[class*="_toggleChosen"], #control-editor[aria-pressed="true"]) {
@@ -554,7 +554,7 @@ html.sc-enabled.sc-layout-minimal.sc-video-collapsed.sc-video-open #sc-video-tog
 /* ---------------------------------------------------------------------------
  * minimal.mixer: the track list, the transpose panel, the settings dialog
  * ("More") and the Metronome window open beside the column, level with
- * their button, like the 2018-era dropdowns. They are fixed, so content.js
+ * their button, like the 2020-era dropdowns. They are fixed, so content.js
  * publishes each one's top as --sc-pop-<button id> (the button's top,
  * pushed up just enough to stay on screen) before it is first painted; the
  * fallbacks are Songsterr's own placement.
