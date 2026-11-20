@@ -7,10 +7,12 @@
  * <html> has sc-enabled and sc-note-flash (the popup's "Note flash").
  *
  * Reads, from Songsterr's store (found in its Preact tree, it isn't global):
- *   player.instance.getCursor()   song position in ms (the clock the synth
+ *   <player>.getCursor()          song position in ms (the clock the synth
  *                                 and Songsterr's own fretboard follow; with
  *                                 Orig. it is the video time mapped through
- *                                 Songsterr's sync points)
+ *                                 Songsterr's sync points). <player> is
+ *                                 services.playerRuntime.getPlayer('tab')
+ *                                 (older builds: player.instance)
  *   part.current.timestamps       one time (ms) per beat start, all voices
  *                                 merged, in play order (repeats unrolled)
  *   part.current.timeline         Map: timestamp -> that onset's layout, whose
@@ -30,7 +32,8 @@
  * otherwise none (no flash), like selectors.js: when something stops
  * matching, that part goes quiet and Songsterr's page is unaffected.
  *   store        Preact tree under #root                -> none
- *   clock        player.instance.getCursor()            -> none
+ *   clock        playerRuntime.getPlayer('tab')         -> player.instance
+ *                                                       -> none
  *   clock rate   measured from the clock                -> speed setting -> 1
  *   tracks       multiPart.view.parts (multitrack)      -> part.current -> none
  *   beat map     part.timeline (+ timestamps)           -> rebuilt from
@@ -281,22 +284,35 @@
     return null;
   }
 
+  // The audio/video player object (it has getCursor). Songsterr moved it
+  // from state.player.instance to services.playerRuntime (Nov 2026).
+  function playerInstance(state) {
+    try {
+      const rt = state.services && state.services.playerRuntime;
+      const p = rt && typeof rt.getPlayer === 'function' ? rt.getPlayer('tab') : null;
+      if (p && typeof p.getCursor === 'function') return p;
+    } catch (_) { /* fall back */ }
+    const old = state.player && state.player.instance;
+    return old && typeof old.getCursor === 'function' ? old : null;
+  }
+
   // Returns the player state when a flash should run this frame, else null.
   function activePlayer() {
     if (!enabled()) return null;
     const state = readState();
     const player = state && state.player;
-    if (!player || !player.shouldPlay || !player.instance) return null;
-    if (typeof player.instance.getCursor !== 'function') return null;
+    if (!player || !player.shouldPlay) return null;
+    const instance = playerInstance(state);
+    if (!instance) return null;
     const tracks = shownTracks(state);
-    return tracks.length ? { player, tracks } : null;
+    return tracks.length ? { player, instance, tracks } : null;
   }
 
   // Song ms per real ms. Starts from the speed setting (else 1), then
   // follows the clock itself (the video's real tempo with Orig.). Jumps
   // (seeks, loops) and stalls (buffering) are left out of the average.
   function clockRate(player, cursor, now) {
-    const setting = Number(player.speed) > 0 ? Number(player.speed) / 100 : 1;
+    const setting = Number(player.speed) > 0 ? Number(player.speed) / 100 : 1;   // the instance's speed
     if (!clock) { clock = { cursor, at: now, rate: setting }; return setting; }
     const dt = now - clock.at;
     if (dt >= 100) {
@@ -309,9 +325,9 @@
   }
 
   function step(active) {
-    const cursor = Number(active.player.instance.getCursor());
+    const cursor = Number(active.instance.getCursor());
     if (!Number.isFinite(cursor)) return;
-    const rate = clockRate(active.player, cursor, performance.now());
+    const rate = clockRate(active.instance, cursor, performance.now());
     const single = active.tracks.length === 1;
     for (const data of active.tracks) {
       try {
