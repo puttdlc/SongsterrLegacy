@@ -444,8 +444,7 @@ html.sc-enabled [class*="_card"][data-feature] {
   box-shadow: 0 0 0 1px var(--sc-border), var(--sc-elev);
 }
 html.sc-enabled [data-feature] > [class*="_field"] {
-  border-radius: var(--sc-radius);
-  box-shadow: var(--sc-bevel);
+  border-radius: var(--sc-radius) 0 var(--sc-radius) var(--sc-radius);
 }
 html.sc-enabled [data-feature] > [class*="_fieldOn"] {
   background: var(--sc-accent-shine);
@@ -491,6 +490,8 @@ html.sc-enabled #tablature [data-loop-handle] > [class*="_icon"] {
    which shows the field colour). */
 html.sc-enabled [class*="_card"][data-feature] {
   padding: 0;
+  background: transparent;   /* the field covers it; its own colour fringed the rounded corners */
+  border-top-right-radius: 0;   /* the dark shape fills this corner; a round clip left a green fringe */
 }
 html.sc-enabled [data-feature] > [class*="_field"] > [class*="_top"] {
   position: relative;
