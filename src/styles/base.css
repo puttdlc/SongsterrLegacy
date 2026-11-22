@@ -436,6 +436,24 @@ html.sc-enabled div[data-line-unit-index] > * {
 html.sc-enabled [class*="_toast"]:not([class*="_toast"] *) {
   top: max(40px, var(--sc-top-inset, 0px));
 }
+/* Toggle card ("Count-in is on", metronome ...): Songsterr paints the field
+   with its own green / red and fills the icons with --popup-surface. On =
+   accent, off = neutral, icons follow the text colour. */
+html.sc-enabled [data-feature] > [class*="_fieldOn"] {
+  background: var(--sc-accent-fill, var(--sc-accent));
+  color: var(--sc-on-accent);
+}
+html.sc-enabled [data-feature] > [class*="_fieldOff"] {
+  background: var(--sc-surface-raised);
+  color: var(--sc-text-muted);
+}
+html.sc-enabled [data-feature] > [class*="_field"] :is([class*="_icon"], [class*="_mark"]) {
+  fill: currentColor;
+}
+html.sc-enabled [data-feature] > [class*="_field"] [class*="_icon"] {
+  stroke: currentColor;
+}
+
 /* Alerts stack: 50px from the top and 20px from the right edge. */
 html.sc-enabled [class*="_notifications"]:has(> [data-id="notification"]) {
   top: calc(var(--sc-top-inset, 0px) + 50px);
