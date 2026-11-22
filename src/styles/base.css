@@ -535,12 +535,20 @@ html.sc-enabled [data-feature] > [class*="_fieldOn"] > [class*="_top"] {
 html.sc-enabled [data-feature] > [class*="_fieldOff"] > [class*="_top"] {
   --sc-mark-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 115.003 65'%3E%3Cpath d='M85.94 16.94a1.5 1.5 0 0 0-2.12 0l-10.45 10.4-10.18-10.4a1.5 1.5 0 0 0-2.122 2.122l10.181 10.4-10.18 9.9a1.5 1.5 0 0 0 2.12 2.121l10.181-9.9 10.448 9.9a1.5 1.5 0 1 0 2.121-2.12l-10.448-9.901 10.448-10.4a1.5 1.5 0 0 0 0-2.122'/%3E%3C/svg%3E");
 }
-html.sc-enabled:is(.sc-theme-light, .sc-theme-auto[color-scheme="light"]) [data-feature] > [class*="_field"] > [class*="_top"]::before {
+/* Light theme: the check stays a cut-out (shows the accent field), but the
+   cross would vanish into the pale field, so it gets a muted dark copy. */
+html.sc-enabled:is(.sc-theme-light, .sc-theme-auto[color-scheme="light"]) [data-feature] > [class*="_fieldOn"] > [class*="_top"]::before {
   display: none;
 }
+html.sc-enabled:is(.sc-theme-light, .sc-theme-auto[color-scheme="light"]) [data-feature] > [class*="_fieldOff"] > [class*="_top"]::before {
+  background: var(--sc-text-muted);
+}
 @media (prefers-color-scheme: light) {
-  html.sc-enabled.sc-theme-auto:not([color-scheme="dark"]) [data-feature] > [class*="_field"] > [class*="_top"]::before {
+  html.sc-enabled.sc-theme-auto:not([color-scheme="dark"]) [data-feature] > [class*="_fieldOn"] > [class*="_top"]::before {
     display: none;
+  }
+  html.sc-enabled.sc-theme-auto:not([color-scheme="dark"]) [data-feature] > [class*="_fieldOff"] > [class*="_top"]::before {
+    background: var(--sc-text-muted);
   }
 }
 
