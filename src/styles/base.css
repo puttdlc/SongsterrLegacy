@@ -487,6 +487,49 @@ html.sc-enabled #tablature [data-loop-handle] > [class*="_icon"] {
   fill: var(--sc-on-accent);
 }
 
+/* Thin bezel, and the blob behind the check / cross in the theme's surface.
+   The check is a cut-out in Songsterr's shape, so in the dark theme a
+   text-coloured copy sits behind it (the light theme keeps the cut-out,
+   which shows the field colour). */
+html.sc-enabled [class*="_card"][data-feature] {
+  padding: 4px;
+}
+html.sc-enabled [data-feature] > [class*="_field"] > [class*="_top"] {
+  position: relative;
+}
+html.sc-enabled [data-feature] > [class*="_field"] [class*="_mark"] {
+  position: relative;
+  fill: var(--sc-surface);
+}
+/* Off: raised field, so the blob goes darker to stay visible (light theme). */
+html.sc-enabled [data-feature] > [class*="_fieldOff"] [class*="_mark"] {
+  fill: var(--sc-surface-sunken);
+}
+html.sc-enabled [data-feature] > [class*="_field"] > [class*="_top"]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 115px;
+  height: 65px;
+  background: var(--sc-text);
+  mask: var(--sc-mark-glyph) center / 100% 100% no-repeat;
+}
+html.sc-enabled [data-feature] > [class*="_fieldOn"] > [class*="_top"] {
+  --sc-mark-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 115.003 65'%3E%3Cpath d='M92.199 18.06a2 2 0 0 0-3.392-2.12L72.863 41.45 64.61 30.31a2 2 0 1 0-3.214 2.38l10 13.5a2 2 0 0 0 3.303-.13z'/%3E%3C/svg%3E");
+}
+html.sc-enabled [data-feature] > [class*="_fieldOff"] > [class*="_top"] {
+  --sc-mark-glyph: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 115.003 65'%3E%3Cpath d='M85.94 16.94a1.5 1.5 0 0 0-2.12 0l-10.45 10.4-10.18-10.4a1.5 1.5 0 0 0-2.122 2.122l10.181 10.4-10.18 9.9a1.5 1.5 0 0 0 2.12 2.121l10.181-9.9 10.448 9.9a1.5 1.5 0 1 0 2.121-2.12l-10.448-9.901 10.448-10.4a1.5 1.5 0 0 0 0-2.122'/%3E%3C/svg%3E");
+}
+html.sc-enabled:is(.sc-theme-light, .sc-theme-auto[color-scheme="light"]) [data-feature] > [class*="_field"] > [class*="_top"]::before {
+  display: none;
+}
+@media (prefers-color-scheme: light) {
+  html.sc-enabled.sc-theme-auto:not([color-scheme="dark"]) [data-feature] > [class*="_field"] > [class*="_top"]::before {
+    display: none;
+  }
+}
+
 /* Color theme "Off": the accent tokens are surfaces, which vanish on the page
    or lose the on/off difference. Use the text colour, inverted, instead. */
 html.sc-enabled.sc-accent-off [data-feature] > [class*="_fieldOn"] {
