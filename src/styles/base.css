@@ -497,14 +497,28 @@ html.sc-enabled [class*="_card"][data-feature] {
 html.sc-enabled [data-feature] > [class*="_field"] > [class*="_top"] {
   position: relative;
 }
+html.sc-enabled [data-feature] > [class*="_field"] {
+  --sc-blob: var(--sc-surface);
+}
+html.sc-enabled [data-feature] > [class*="_fieldOff"] {
+  --sc-blob: var(--sc-surface-sunken);
+}
 html.sc-enabled [data-feature] > [class*="_field"] [class*="_mark"] {
   position: relative;
-  fill: var(--sc-surface);
+  fill: var(--sc-blob);
+}
+/* The shape's own top-right corner is rounded (14px) but the field's is 3px,
+   which left a sliver of field colour there: fill the corner. */
+html.sc-enabled [data-feature] > [class*="_field"] > [class*="_top"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: var(--sc-blob);
 }
 /* Off: raised field, so the blob goes darker to stay visible (light theme). */
-html.sc-enabled [data-feature] > [class*="_fieldOff"] [class*="_mark"] {
-  fill: var(--sc-surface-sunken);
-}
 html.sc-enabled [data-feature] > [class*="_field"] > [class*="_top"]::before {
   content: "";
   position: absolute;
