@@ -464,6 +464,30 @@ html.sc-enabled [data-feature] > [class*="_field"] [class*="_icon"] {
   stroke: currentColor;
 }
 
+/* Loop range (Plus): the drag handles on each end are paths, the shaded
+   range is a rect with rx="8". Songsterr colours them with --loop-color
+   (its own green) and multiplies the range onto the page. Handles follow
+   the accent with a tight shadow, the range gets the theme's corner. */
+html.sc-enabled {
+  --loop-color: var(--sc-accent-fill, var(--sc-accent));
+  --loop-hover-color: var(--sc-accent-hover);
+}
+html.sc-enabled #tablature [class*="_background"][rx="8"] {
+  rx: var(--sc-radius);
+  mix-blend-mode: normal;
+  fill: var(--sc-accent);
+  fill-opacity: 0.12;
+  stroke: var(--sc-accent-border);
+  stroke-opacity: 0.5;
+  stroke-width: 1px;
+}
+html.sc-enabled #tablature [data-loop-handle] > [class*="_shape"] {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+html.sc-enabled #tablature [data-loop-handle] > [class*="_icon"] {
+  fill: var(--sc-on-accent);
+}
+
 /* Alerts stack: 50px from the top and 20px from the right edge. */
 html.sc-enabled [class*="_notifications"]:has(> [data-id="notification"]) {
   top: calc(var(--sc-top-inset, 0px) + 50px);
