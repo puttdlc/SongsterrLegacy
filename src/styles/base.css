@@ -439,12 +439,22 @@ html.sc-enabled [class*="_toast"]:not([class*="_toast"] *) {
 /* Toggle card ("Count-in is on", metronome ...): Songsterr paints the field
    with its own green / red and fills the icons with --popup-surface. On =
    accent, off = neutral, icons follow the text colour. */
+html.sc-enabled [class*="_card"][data-feature] {
+  border-radius: var(--sc-radius-panel);
+  box-shadow: 0 0 0 1px var(--sc-border), var(--sc-elev);
+}
+html.sc-enabled [data-feature] > [class*="_field"] {
+  border-radius: var(--sc-radius);
+  box-shadow: var(--sc-bevel);
+}
 html.sc-enabled [data-feature] > [class*="_fieldOn"] {
-  background: var(--sc-accent-fill, var(--sc-accent));
+  background: var(--sc-accent-shine);
+  box-shadow: var(--sc-bevel), 0 0 0 1px var(--sc-accent-border);
   color: var(--sc-on-accent);
 }
 html.sc-enabled [data-feature] > [class*="_fieldOff"] {
-  background: var(--sc-surface-raised);
+  background: linear-gradient(to bottom, var(--sc-surface-raised), var(--sc-surface));
+  box-shadow: var(--sc-bevel), 0 0 0 1px var(--sc-border);
   color: var(--sc-text-muted);
 }
 html.sc-enabled [data-feature] > [class*="_field"] :is([class*="_icon"], [class*="_mark"]) {
