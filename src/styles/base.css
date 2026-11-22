@@ -510,10 +510,10 @@ html.sc-enabled [data-feature] > [class*="_field"] [class*="_mark"] {
 html.sc-enabled [data-feature] > [class*="_field"] > [class*="_top"]::after {
   content: "";
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 16px;
-  height: 16px;
+  top: -1px;
+  right: -1px;
+  width: 17px;
+  height: 44px;
   background: var(--sc-blob);
 }
 /* Off: raised field, so the blob goes darker to stay visible (light theme). */
