@@ -487,6 +487,24 @@ html.sc-enabled #tablature [data-loop-handle] > [class*="_icon"] {
   fill: var(--sc-on-accent);
 }
 
+/* Color theme "Off": the accent tokens are surfaces, which vanish on the page
+   or lose the on/off difference. Use the text colour, inverted, instead. */
+html.sc-enabled.sc-accent-off [data-feature] > [class*="_fieldOn"] {
+  background: var(--sc-text);
+  box-shadow: var(--sc-bevel), 0 0 0 1px var(--sc-divider);
+  color: var(--sc-surface);
+}
+html.sc-enabled.sc-accent-off {
+  --loop-color: var(--sc-text-muted);
+  --loop-hover-color: var(--sc-text);
+}
+html.sc-enabled.sc-accent-off #tablature [class*="_background"][rx="8"] {
+  stroke: var(--sc-text-muted);
+}
+html.sc-enabled.sc-accent-off #tablature [data-loop-handle] > [class*="_icon"] {
+  fill: var(--sc-surface);
+}
+
 /* Alerts stack: 50px from the top and 20px from the right edge. */
 html.sc-enabled [class*="_notifications"]:has(> [data-id="notification"]) {
   top: calc(var(--sc-top-inset, 0px) + 50px);
