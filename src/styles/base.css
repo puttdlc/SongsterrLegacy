@@ -477,9 +477,10 @@ html.sc-enabled #tablature [class*="_background"][rx="8"] {
   mix-blend-mode: normal;
   fill: var(--sc-accent);
   fill-opacity: 0.12;
-  stroke: var(--sc-accent-border);
-  stroke-opacity: 0.5;
-  stroke-width: 1px;
+  /* A solid 2px frame: Songsterr's handle bars are shorter than the range
+     (they skip the lyrics line), so the frame carries the edges to full height. */
+  stroke: var(--sc-accent-fill, var(--sc-accent));
+  stroke-width: 2px;
 }
 html.sc-enabled #tablature [data-loop-handle] > [class*="_shape"] {
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
