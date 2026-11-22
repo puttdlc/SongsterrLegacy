@@ -328,7 +328,6 @@ html.sc-enabled.sc-tab-lines-thick #tablature path[class*="_strings"] {
 }
 html.sc-enabled.sc-tab-lines-heavy #tablature path[class*="_strings"] {
   stroke-width: 2px;
-  stroke-opacity: 0.5;
 }
 
 /* ---------------------------------------------------------------------------
@@ -479,6 +478,7 @@ html.sc-enabled #tablature [class*="_background"][rx="8"] {
      (they skip the lyrics line), so the frame carries the edges to full height. */
   stroke: var(--sc-accent-fill, var(--sc-accent));
   stroke-width: 2px;
+  stroke-opacity: 0.5;
 }
 html.sc-enabled #tablature [data-loop-handle] > [class*="_shape"] {
   filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
