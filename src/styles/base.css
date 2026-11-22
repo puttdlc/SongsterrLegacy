@@ -492,7 +492,7 @@ html.sc-enabled #tablature [data-loop-handle] > [class*="_icon"] {
    text-coloured copy sits behind it (the light theme keeps the cut-out,
    which shows the field colour). */
 html.sc-enabled [class*="_card"][data-feature] {
-  padding: 4px;
+  padding: 0;
 }
 html.sc-enabled [data-feature] > [class*="_field"] > [class*="_top"] {
   position: relative;
