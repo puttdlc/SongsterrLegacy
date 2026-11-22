@@ -449,12 +449,10 @@ html.sc-enabled [data-feature] > [class*="_field"] {
 }
 html.sc-enabled [data-feature] > [class*="_fieldOn"] {
   background: var(--sc-accent-shine);
-  box-shadow: var(--sc-bevel), 0 0 0 1px var(--sc-accent-border);
   color: var(--sc-on-accent);
 }
 html.sc-enabled [data-feature] > [class*="_fieldOff"] {
   background: linear-gradient(to bottom, var(--sc-surface-raised), var(--sc-surface));
-  box-shadow: var(--sc-bevel), 0 0 0 1px var(--sc-border);
   color: var(--sc-text-muted);
 }
 html.sc-enabled [data-feature] > [class*="_field"] :is([class*="_icon"], [class*="_mark"]) {
@@ -556,7 +554,6 @@ html.sc-enabled:is(.sc-theme-light, .sc-theme-auto[color-scheme="light"]) [data-
    or lose the on/off difference. Use the text colour, inverted, instead. */
 html.sc-enabled.sc-accent-off [data-feature] > [class*="_fieldOn"] {
   background: var(--sc-text);
-  box-shadow: var(--sc-bevel), 0 0 0 1px var(--sc-divider);
   color: var(--sc-surface);
 }
 html.sc-enabled.sc-accent-off {
