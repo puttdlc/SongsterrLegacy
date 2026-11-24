@@ -66,6 +66,11 @@ html.sc-enabled:not(#sc-specificity) {
   --tooltip-shadow: 0 0 0 1px var(--sc-border), 0 2px 6px var(--sc-shade);
   --tooltip-arrow-opacity: 1;
 
+  /* "This tab was created by AI" tag by the title: solid theme surface. */
+  --ai-tab-bg: var(--sc-surface-raised);
+  --ai-tab-bg-hover: var(--sc-row-hover);
+  --ai-tab-text: var(--sc-text);
+
   /* Playback cursor and the tuning fork button beside the first staff:
      Songsterr green / blue -> the accent. The extra multitrack cursors
      (--cursor-body-1..4) keep their own colours to tell tracks apart. */
@@ -566,6 +571,25 @@ html.sc-enabled.sc-accent-off #tablature [class*="_background"][rx="8"] {
 }
 html.sc-enabled.sc-accent-off #tablature [data-loop-handle] > [class*="_icon"] {
   fill: var(--sc-surface);
+}
+
+/* AI tab tag (top right of the page): Songsterr pins it at top: 20px, which
+   the Classic menu bar covered, and 12px from the right, under the Legacy
+   column. Square corners, hairline and tight shadow like the other cards;
+   the icon takes the accent. */
+html.sc-enabled a[class*="_ai"]:has(> [class*="_container"]) {
+  top: calc(var(--sc-top-inset, 0px) + 20px);
+  right: calc(var(--sc-right-inset, 0px) + 12px);
+}
+html.sc-enabled a[class*="_ai"] > [class*="_container"] {
+  border-radius: var(--sc-radius-panel);
+  box-shadow: 0 0 0 1px var(--sc-border), var(--sc-elev);
+}
+html.sc-enabled a[class*="_ai"] > [class*="_container"] svg {
+  fill: var(--sc-accent);
+}
+html.sc-enabled a[class*="_ai"] > [class*="_container"]:is(:hover, :focus, :active) svg {
+  fill: var(--sc-accent);
 }
 
 /* Alerts stack: 50px from the top and 20px from the right edge. */
