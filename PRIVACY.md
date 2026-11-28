@@ -1,7 +1,7 @@
 # Privacy Policy
 
 **Classic Skin - Songsterr Extension**
-Last updated: 7 October 2026
+Last updated: 28 November 2026
 
 Classic Skin is an unofficial browser extension that restyles the interface of
 songsterr.com. It is not affiliated with or endorsed by Songsterr.
@@ -19,11 +19,14 @@ The only data the extension saves is its own settings:
 | Setting | Values |
 |---|---|
 | Reskin | on / off |
-| Theme | dark / light / auto |
-| Density | compact / comfortable |
-| Author line | show / hide |
-| Nav bar | shown / collapsed |
-| Player | full / minimised |
+| Controls and Quick menu layouts | Classic / Legacy / Fusion |
+| Classic bar buttons | spread / icons |
+| Theme, color theme and custom color | choices you make in the popup |
+| Density and tab line thickness | choices you make in the popup |
+| Author line, animations, gradients, Stay open | on / off |
+| Note flash and its color | on / off, color |
+| Nav bar, player and video panel | shown / collapsed |
+| Welcome card | whether you have dismissed it |
 
 These are stored in two places:
 
@@ -41,16 +44,19 @@ personal information is stored.
 
 ## What the extension reads
 
-To show the "Last edited by <author>" line under a song title, the extension reads the
-author's name from song information the Songsterr page has already loaded:
+All of this is read from the Songsterr page already open in your browser, used
+there, and never stored or sent anywhere:
 
-- on first page load, from data embedded in the page;
-- while you move between songs, from a copy of the site's own song-information
-  responses (`/api/meta/...`). The extension makes **no** request of its own and
-  does not change what the site sends or receives.
+- **The tab author**, for the "Last edited by <author>" line: from data
+  embedded in the page on first load, and from the page's in-memory data while
+  you move between songs.
+- **The loaded tab and playback position**, for the optional note flash (beta,
+  off by default): which notes are playing and where they are drawn.
+- **The track and instrument names**, for the track selector in the Classic
+  layout.
 
-The author name is only used to display that line on the page. It is not
-stored or sent anywhere.
+The extension makes **no** request of its own, does not watch the site's
+requests, and does not change the site's data.
 
 ## Permissions
 

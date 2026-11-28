@@ -1,64 +1,89 @@
 /*
- * Classic Skin: passive metadata observer (runs in the page's MAIN world)
+ * Classic Skin: tab author reader (runs in the page's MAIN world)
  * ===========================================================================
- * Songsterr's header no longer shows who wrote a tab, but the data is still in
- * the song metadata the site already downloads (/api/meta/{songId}[/{revId}],
- * field "author"). On the first page load content.js reads it from the
- * embedded <script id="state">. When you move between songs inside the
- * single-page app, that script goes stale, so this file watches the site's
- * OWN metadata responses and passes the author name to content.js.
+ * Songsterr's header no longer shows who wrote a tab, but the page already
+ * holds it: its in-memory store has meta.current.author. On the first page
+ * load content.js reads it from the embedded <script id="state">. When you
+ * move between songs inside the single-page app, that script goes stale, so
+ * this file reads the store and passes the author name to content.js.
  *
  * Guarantees:
- *   - Makes no requests of its own. It only reads a clone of a response the
- *     site requested itself.
- *   - Never changes the request, the response, or what the site receives:
- *     the original promise is returned untouched.
- *   - Forwards nothing but { songId, revisionId, latest, author: { name, profileName } }.
- *     `latest` is true for /api/meta/{songId} (the current version), false for
- *     /api/meta/{songId}/{revisionId} (one revision: history, diffs), so
- *     content.js never shows an old revision's author on the current tab.
+ *   - Makes no requests and watches none; no function of the page is patched.
+ *   - Read-only: never dispatches to the store or changes anything in it.
+ *   - Forwards nothing but { songId, revisionId, latest, author: { name, profileName } },
+ *     and only when that changes. `latest` is true only when the address is
+ *     that song with no revision in it, so content.js doesn't show an old
+ *     revision's author on the current tab.
+ *   - If the store can't be found or changes shape, no author is shown.
  */
 (() => {
   'use strict';
 
-  const META_URL = /\/api\/meta\/(\d+)(?:\/(\d+))?(?:[?#]|$)/;
   const EVENT = 'sc-classic:meta';
-  const original = window.fetch;
-  if (typeof original !== 'function' || original.__scClassic) return;
+  const POLL_MS = 500;
+  const PAGE = /-s(\d+)(?:t\d+)?(?:\/r(\d+))?\/?$/;
+  const oldViews = new Set();   // revision ids opened by a /r<id> address
+  let store = null;
+  let sent = '';
 
-  function urlOf(input) {
-    if (typeof input === 'string') return input;
-    if (input instanceof URL) return input.href;
-    if (input && typeof input.url === 'string') return input.url;
-    return '';
+  function storeIn(props) {
+    if (!props) return null;
+    for (const key of ['store', 'context', 'value']) {
+      const s = props[key];
+      if (s && typeof s.get === 'function' && typeof s.dispatch === 'function') return s;
+    }
+    return null;
   }
 
-  function report(data, match) {
-    if (!data || typeof data !== 'object' || !data.author) return;
-    const { name, profileName } = data.author;
-    document.dispatchEvent(new CustomEvent(EVENT, {
-      detail: JSON.stringify({
-        songId: data.songId ?? match[1],
-        revisionId: data.revisionId ?? match[2],
-        latest: !match[2],
-        author: { name: String(name || ''), profileName: String(profileName || '') }
-      })
-    }));
-  }
-
-  function observedFetch(input, init) {
-    const result = original.apply(this, arguments);
-    try {
-      const match = urlOf(input).match(META_URL);
-      if (match) {
-        result
-          .then((res) => (res && res.ok ? res.clone().json() : null))
-          .then((data) => report(data, match), () => {});
+  // Not a global: found in the Preact tree, as page-flash.js does.
+  function findStore() {
+    const el = document.getElementById('root');
+    if (!el || !el.__k) return null;
+    const queue = [el.__k];
+    for (let seen = 0; queue.length && seen < 500; seen++) {
+      const node = queue.shift();
+      if (!node) continue;
+      const found = storeIn(node.props);
+      if (found) return found;
+      if (Array.isArray(node.__k)) {
+        for (const child of node.__k) if (child && typeof child === 'object') queue.push(child);
       }
-    } catch (_) { /* never interfere with the site's request */ }
-    return result;
+    }
+    return null;
   }
-  Object.defineProperty(observedFetch, '__scClassic', { value: true });
 
-  window.fetch = observedFetch;
+  function currentMeta() {
+    if (!store) store = findStore();
+    if (!store) return null;
+    try {
+      const meta = store.get()?.meta;
+      if (meta) return meta.current || null;
+    } catch (_) { /* stale: look it up again */ }
+    store = null;
+    return null;
+  }
+
+  function check() {
+    try {
+      const current = currentMeta();
+      if (!current || !current.author || current.songId == null) return;
+      const { songId, revisionId } = current;
+      const page = location.pathname.match(PAGE);
+      const here = Boolean(page) && page[1] === String(songId);
+      if (here && page[2] === String(revisionId)) oldViews.add(page[2]);
+      // Just after leaving a revision's address the store can still hold that
+      // revision: never call one of those the current version.
+      const latest = here && !page[2] && !oldViews.has(String(revisionId));
+      const { name, profileName } = current.author;
+      const detail = JSON.stringify({
+        songId, revisionId, latest,
+        author: { name: String(name || ''), profileName: String(profileName || '') }
+      });
+      if (detail === sent) return;
+      sent = detail;
+      document.dispatchEvent(new CustomEvent(EVENT, { detail }));
+    } catch (_) { /* never disturb the page */ }
+  }
+
+  setInterval(check, POLL_MS);
 })();

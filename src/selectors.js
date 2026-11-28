@@ -15,7 +15,7 @@
  *                      stems with [class*="_stem"] and never use the hash.
  *
  * Tiers (most to least stable): id > aria/role/data > stem > hash.
- * Non-DOM dependency: page-meta.js matches the site's /api/meta/{songId} URLs.
+ * Non-DOM dependency: page-meta.js reads meta.current from the site's store.
  * No selector currently relies on a full hashed class name.
  *
  * Nothing in here hides content. If a selector stops matching, the rules that

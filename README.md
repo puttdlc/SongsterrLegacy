@@ -8,7 +8,8 @@ Unofficial. Not affiliated with or endorsed by Songsterr.
 
 A Manifest V3 Chrome extension that reskins songsterr.com with flat, rectangular,
 tightly aligned controls and subtle edge lighting (bevels, hairline highlights,
-inset shadows). It changes the look only. The site behaves exactly as before.
+inset shadows). It also shows who last edited a tab, can keep the player
+panel open, and has an optional note flash (beta) during playback.
 
 - No network requests, analytics, remote code, fonts or CDNs.
 - Permissions: `storage` only, and the content script runs only on `*://*.songsterr.com/*`.

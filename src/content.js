@@ -642,8 +642,8 @@
   // ---------------------------------------------------------------------------
   // Author (selectors.js: header.author). Data sources, no requests made:
   //   - <script id="state"> embedded in the first page load (meta.current.author)
-  //   - "sc-classic:meta" events from page-meta.js, which reads the site's own
-  //     /api/meta responses during in-app navigation.
+  //   - "sc-classic:meta" events from page-meta.js, which reads the site's
+  //     in-memory store during in-app navigation.
   // Rendered as our own <div id="sc-author"> appended to #header (after the
   // site's children, so Songsterr's renderer keeps its own nodes in order).
   // The link goes to the author's public profile, /user/<profileName>, the
