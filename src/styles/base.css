@@ -938,11 +938,12 @@ html.sc-enabled.sc-accent-off span[class*="_versionDate"] {
   background: color-mix(in srgb, var(--sc-diff-old) 14%, transparent);
   color: var(--text, currentColor);
 }
-/* Changed bars, and the blocks behind the changed notes */
-html.sc-enabled [class*="_diffLine"][class*="_before"] {
+/* Changed bars, and the blocks behind the changed notes. Unchanged bars have
+   the same classes, so a bar is told apart by holding highlight blocks. */
+html.sc-enabled [class*="_diffLine"][class*="_before"]:has(rect[class*="_diffHighlight"]) {
   background: color-mix(in srgb, var(--sc-diff-old) 7%, transparent);
 }
-html.sc-enabled [class*="_diffLine"][class*="_after"] {
+html.sc-enabled [class*="_diffLine"][class*="_after"]:has(rect[class*="_diffHighlight"]) {
   background: color-mix(in srgb, var(--sc-diff-new) 10%, transparent);
 }
 html.sc-enabled svg[data-testid^="Revision Before"] rect[class*="_diffHighlight"] {
