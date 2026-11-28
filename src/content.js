@@ -647,8 +647,7 @@
   // Rendered as our own <div id="sc-author"> appended to #header (after the
   // site's children, so Songsterr's renderer keeps its own nodes in order).
   // The name is a button that opens Songsterr's History list by pressing its
-  // own button (profiles are reached from the names in that list). With no
-  // History button it goes to the author's profile, /user/<profileName>.
+  // own button (profiles are reached from the names in that list).
   // Authors are kept per revision ("r<id>") and, for the current version of
   // a song, per song ("s<id>"). Keyed by song alone, opening an old revision
   // (or a diff) put its author on the current tab until Songsterr happened
@@ -707,12 +706,9 @@
     return { songId: m[1], revisionId: m[2] || null };
   }
 
-  function openHistory(profileName) {
+  function openHistory() {
     const button = document.getElementById('control-revision');
-    if (!button || button.disabled) {
-      if (profileName) location.assign(`/user/${encodeURIComponent(profileName)}`);
-      return;
-    }
+    if (!button) return;
     // The button toggles: leave an open list open.
     const open = button.getAttribute('aria-pressed') === 'true' || document.getElementById('revisions-list');
     if (!open) button.click();
@@ -727,7 +723,7 @@
     name.title = 'Show edit history';
     name.addEventListener('click', (event) => {
       event.stopPropagation();   /* not an outside click for the list */
-      openHistory(name.dataset.profile);
+      openHistory();
     });
     el.append(name);
     return el;
@@ -745,7 +741,6 @@
     if (!authorEl) authorEl = buildAuthor();
     const name = authorEl.lastChild;
     if (name.textContent !== info.name) name.textContent = info.name;
-    if (name.dataset.profile !== info.profileName) name.dataset.profile = info.profileName;
     // Prefer the header's empty, centred "info" slot under the title; fall back
     // to the end of #header if a future build drops it.
     const slot = header.querySelector(':scope > [class*="_wrap"] > [class*="_info"]') || header;
