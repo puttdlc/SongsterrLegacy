@@ -908,3 +908,55 @@ html.sc-enabled #sc-welcome .sc-wl-done {
 html.sc-enabled #sc-welcome .sc-wl-done:hover {
   background: var(--sc-accent-bg-hover, var(--sc-accent-hover, var(--sc-accent)));
 }
+
+/* ---------------------------------------------------------------------------
+ * diff.colors: the revision compare view. Songsterr marks BEFORE pink and
+ * AFTER green, with yellow date tiles. Here AFTER takes the Color theme and
+ * BEFORE a neutral grey, so old and new stay apart in every theme. The view
+ * sits on the notation background, which follows Songsterr's own theme, so
+ * tints are see-through and greys mix from the page's text colour. The strips
+ * under the headings and the History list's rows keep Songsterr's colours.
+ * ------------------------------------------------------------------------- */
+html.sc-enabled {
+  --sc-diff-new: var(--sc-accent);
+  --sc-diff-old: var(--text, #80838a);
+}
+html.sc-enabled.sc-accent-off {
+  --sc-diff-new: var(--text, #80838a);   /* --sc-accent follows our theme, not the page's */
+}
+/* Date tiles */
+html.sc-enabled span[class*="_versionDate"] {
+  background: var(--sc-accent-bg);
+  color: var(--sc-on-accent);
+}
+html.sc-enabled [class*="_versionBefore"] span[class*="_versionDate"] {
+  background: color-mix(in srgb, var(--sc-diff-old) 14%, transparent);
+  color: var(--text, currentColor);
+}
+/* Off: our fill and text belong to our theme; use the page's grey on both. */
+html.sc-enabled.sc-accent-off span[class*="_versionDate"] {
+  background: color-mix(in srgb, var(--sc-diff-old) 14%, transparent);
+  color: var(--text, currentColor);
+}
+/* Changed bars, and the blocks behind the changed notes */
+html.sc-enabled [class*="_diffLine"][class*="_before"] {
+  background: color-mix(in srgb, var(--sc-diff-old) 7%, transparent);
+}
+html.sc-enabled [class*="_diffLine"][class*="_after"] {
+  background: color-mix(in srgb, var(--sc-diff-new) 10%, transparent);
+}
+html.sc-enabled svg[data-testid^="Revision Before"] rect[class*="_diffHighlight"] {
+  fill: color-mix(in srgb, var(--sc-diff-old) 16%, transparent);
+}
+html.sc-enabled svg[data-testid^="Revision After"] rect[class*="_diffHighlight"] {
+  fill: color-mix(in srgb, var(--sc-diff-new) 28%, transparent);
+}
+/* The changed notes themselves (not note flash's copies) */
+html.sc-enabled [data-player-key="diffBefore"] [class*="_changed"]:not(.sc-flash),
+html.sc-enabled svg[data-testid^="Revision Before"] [class*="_changed"]:not(.sc-flash) {
+  fill: color-mix(in srgb, var(--text, #888) 70%, #888);
+}
+html.sc-enabled [data-player-key="diffAfter"] [class*="_changed"]:not(.sc-flash),
+html.sc-enabled svg[data-testid^="Revision After"] [class*="_changed"]:not(.sc-flash) {
+  fill: color-mix(in srgb, var(--sc-diff-new) 55%, var(--text, #000));
+}
