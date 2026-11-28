@@ -11,7 +11,7 @@
  *           div[class*=_icon] (svg) + div[class*=_text]
  *   button#sc-nav-toggle                                  (nav.toggle, ours, in <body>)
  *
- *   #header [class*=_info] > div#sc-author > a[href=/user/...]  (header.author, ours, added by content.js)
+ *   #header [class*=_info] > div#sc-author > button  (header.author, ours, added by content.js)
  *
  * Nav design: the floating 30px-radius pill becomes a toolbar docked to the
  * bottom-left corner, flush with the screen edge. Items are icon + label side
@@ -211,7 +211,7 @@ html.sc-enabled.sc-menu-fusion.sc-nav-collapsed #sc-nav-toggle svg {
 /* ---------------------------------------------------------------------------
  * header.author: "Last edited by <name>" line under the song title.
  * #sc-author is our own element (content.js), appended inside #header. The
- * name links to the author's Songsterr profile. Colours use the site's text
+ * name opens the History list (content.js openHistory). Colours use the site's text
  * variables because the header sits on the notation background, which
  * follows Songsterr's own theme.
  * ------------------------------------------------------------------------- */
@@ -226,17 +226,25 @@ html.sc-enabled.sc-show-author #header #sc-author {
   font: 400 var(--sc-font-size) / 1.3 var(--sc-font);
   letter-spacing: 0.2px;
 }
-html.sc-enabled #sc-author a {
+html.sc-enabled #sc-author button {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
   color: var(--text, currentColor);
   font-weight: 600;
   text-decoration: none;
   border-bottom: 1px dotted currentColor;
+  cursor: pointer;
 }
-html.sc-enabled #sc-author a[href]:hover {
+html.sc-enabled #sc-author button:hover {
   color: var(--link-color-active, var(--sc-accent));
   border-bottom-style: solid;
 }
-html.sc-enabled #sc-author a:focus-visible {
+html.sc-enabled #sc-author button:focus-visible {
   outline: 2px solid var(--sc-focus);
   outline-offset: 2px;
 }

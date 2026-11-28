@@ -10,7 +10,7 @@
  *      video panel (our own elements, placed outside Songsterr's app root) and
  *      a minimise toggle for the player pane (appended to the favourite /
  *      display-mode / editor strip),
- *   5. shows the tab author as a "Last edited by <name>" link under the song title,
+ *   5. shows the tab author as "Last edited by <name>" under the song title,
  *   6. in the Classic layout, feeds the track name to the track selector and
  *      measures the right-hand strip so the bar can make room for it,
  *   7. keeps Songsterr's player panel open once the user opens it (Fusion),
@@ -646,8 +646,9 @@
   //     in-memory store during in-app navigation.
   // Rendered as our own <div id="sc-author"> appended to #header (after the
   // site's children, so Songsterr's renderer keeps its own nodes in order).
-  // The link goes to the author's public profile, /user/<profileName>, the
-  // same URL Songsterr uses in its revision list.
+  // The name is a button that opens Songsterr's History list by pressing its
+  // own button (profiles are reached from the names in that list). With no
+  // History button it goes to the author's profile, /user/<profileName>.
   // Authors are kept per revision ("r<id>") and, for the current version of
   // a song, per song ("s<id>"). Keyed by song alone, opening an old revision
   // (or a diff) put its author on the current tab until Songsterr happened
@@ -706,12 +707,29 @@
     return { songId: m[1], revisionId: m[2] || null };
   }
 
+  function openHistory(profileName) {
+    const button = document.getElementById('control-revision');
+    if (!button || button.disabled) {
+      if (profileName) location.assign(`/user/${encodeURIComponent(profileName)}`);
+      return;
+    }
+    // The button toggles: leave an open list open.
+    const open = button.getAttribute('aria-pressed') === 'true' || document.getElementById('revisions-list');
+    if (!open) button.click();
+  }
+
   function buildAuthor() {
     const el = document.createElement('div');
     el.id = 'sc-author';
     el.append('Last edited by ');
-    const link = document.createElement('a');
-    el.append(link);
+    const name = document.createElement('button');
+    name.type = 'button';
+    name.title = 'Show edit history';
+    name.addEventListener('click', (event) => {
+      event.stopPropagation();   /* not an outside click for the list */
+      openHistory(name.dataset.profile);
+    });
+    el.append(name);
     return el;
   }
 
@@ -725,16 +743,9 @@
       return;
     }
     if (!authorEl) authorEl = buildAuthor();
-    const link = authorEl.lastChild;
-    if (link.textContent !== info.name) link.textContent = info.name;
-    const href = info.profileName ? `/user/${encodeURIComponent(info.profileName)}` : '';
-    if (href) {
-      if (link.getAttribute('href') !== href) link.setAttribute('href', href);
-      link.title = `${info.name}'s profile`;
-    } else {
-      link.removeAttribute('href');
-      link.removeAttribute('title');
-    }
+    const name = authorEl.lastChild;
+    if (name.textContent !== info.name) name.textContent = info.name;
+    if (name.dataset.profile !== info.profileName) name.dataset.profile = info.profileName;
     // Prefer the header's empty, centred "info" slot under the title; fall back
     // to the end of #header if a future build drops it.
     const slot = header.querySelector(':scope > [class*="_wrap"] > [class*="_info"]') || header;
